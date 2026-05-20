@@ -1,0 +1,206 @@
+{
+  "$schema": "https://mcp.jom.services/.well-known/mcp-catalog-schema.json",
+  "version": "1.0.0",
+  "published": "2026-05-19",
+  "publisher": {
+    "name": "JOM Services / Pest Pro Rid All",
+    "domain": "jom.services",
+    "hub": "https://mcp.jom.services",
+    "contact": "moemeyer@gmail.com"
+  },
+  "servers": [
+    {
+      "id": "briostack-mcp",
+      "name": "BrioStack Operations MCP",
+      "description": "Full BrioStack pest-control field-operations data layer. Customers, appointments, invoices, services, AR snapshot, daily ops, employee roster, leads, branches.",
+      "category": "field-operations",
+      "status": "production",
+      "transport": "streamable-http",
+      "endpoint": "https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp",
+      "healthcheck": "https://vnf9mp2vik.us-east-2.awsapprunner.com/",
+      "auth": {
+        "type": "none",
+        "note": "Network-restricted. Access requires IP allowlisting or VPN. Contact publisher."
+      },
+      "hosting": {
+        "provider": "AWS App Runner",
+        "region": "us-east-2",
+        "arn": "arn:aws:apprunner:us-east-2:767397993913:service/briostack-mcp-prod/4eda73f27c634148ba4bb7505971926e",
+        "image": "767397993913.dkr.ecr.us-east-2.amazonaws.com/pestpro/briostack-mcp:latest",
+        "platform": "linux/amd64"
+      },
+      "credentials": {
+        "source": "AWS Secrets Manager",
+        "path": "pestpro/integrations/briostack",
+        "region": "us-east-2"
+      },
+      "tool_count": 32,
+      "tools": [
+        { "name": "search_customers",          "category": "customers",     "description": "Search customers by name, phone, email, or address" },
+        { "name": "get_customer_details",       "category": "customers",     "description": "Fetch full customer record by Briostack customer ID" },
+        { "name": "get_customer_full_profile",  "category": "customers",     "description": "Aggregate customer profile: account + services + appointments + invoices" },
+        { "name": "get_customer_services",      "category": "customers",     "description": "List active service plans for a customer" },
+        { "name": "list_customer_contact_methods","category":"customers",    "description": "Phone, email, and contact preferences on file" },
+        { "name": "list_appointments",          "category": "appointments",  "description": "List appointments with filters (date range, status, branch, tech)" },
+        { "name": "get_appointment",            "category": "appointments",  "description": "Fetch single appointment by ID" },
+        { "name": "service_appointment",        "category": "appointments",  "description": "Create a new service appointment" },
+        { "name": "reschedule_appointment",     "category": "appointments",  "description": "Reschedule an existing appointment to a new date/time" },
+        { "name": "open_appointment",           "category": "appointments",  "description": "Set appointment status to open/active" },
+        { "name": "close_appointment",          "category": "appointments",  "description": "Mark appointment as completed/closed" },
+        { "name": "update_appointment_status",  "category": "appointments",  "description": "Update appointment status field" },
+        { "name": "get_invoices",               "category": "billing",       "description": "List invoices for a customer with balance and line-item detail" },
+        { "name": "get_service_invoices",       "category": "billing",       "description": "Invoices linked to a specific service plan" },
+        { "name": "get_invoice_schedules",      "category": "billing",       "description": "Recurring invoice schedule for a customer" },
+        { "name": "get_ar_snapshot",            "category": "billing",       "description": "Accounts receivable snapshot — total outstanding, aging buckets" },
+        { "name": "get_billing_intelligence_reference","category":"billing", "description": "Reference guide for billing field meanings and computation rules" },
+        { "name": "get_daily_ops_snapshot",     "category": "operations",    "description": "Today's operations summary: appointments, revenue, open tasks" },
+        { "name": "list_services",              "category": "operations",    "description": "All service types offered" },
+        { "name": "list_service_categories",    "category": "operations",    "description": "Service category taxonomy" },
+        { "name": "list_employees",             "category": "operations",    "description": "Employee roster with roles and branches" },
+        { "name": "list_branches",              "category": "operations",    "description": "Branch/office locations" },
+        { "name": "list_leads",                 "category": "operations",    "description": "Open leads pipeline" },
+        { "name": "list_communications",        "category": "operations",    "description": "Communication log for a customer (calls, texts, notes)" },
+        { "name": "brio_raw_get",               "category": "raw-api",       "description": "Pass-through HTTP GET to any BrioStack REST endpoint" },
+        { "name": "brio_raw_post",              "category": "raw-api",       "description": "Pass-through HTTP POST (creates new records)" },
+        { "name": "brio_raw_patch",             "category": "raw-api",       "description": "Pass-through HTTP PATCH (partial updates — verified working on /appointments)" },
+        { "name": "brio_raw_put",               "category": "raw-api",       "description": "Pass-through HTTP PUT (full replace)" },
+        { "name": "brio_raw_delete",            "category": "raw-api",       "description": "Pass-through HTTP DELETE" },
+        { "name": "brio_raw_options",           "category": "raw-api",       "description": "Discover supported methods on any endpoint" },
+        { "name": "brio_get_openapi_spec",      "category": "raw-api",       "description": "Fetch the full BrioStack OpenAPI specification" },
+        { "name": "brio_rate_status",           "category": "raw-api",       "description": "Current API rate limit usage (20 req/60 s)" }
+      ]
+    },
+    {
+      "id": "cardpointe-mcp",
+      "name": "CardPointe Payments MCP",
+      "description": "CardPointe / CardConnect payment processing. Authorize, capture, void, refund, ACH, stored profiles, deposit reporting.",
+      "category": "payments",
+      "status": "local",
+      "transport": "stdio",
+      "endpoint": null,
+      "note": "Currently runs as a local stdio MCP. Remote hosting planned.",
+      "auth": {
+        "type": "api-key",
+        "note": "Credentials via AWS Secrets Manager key pestpro/integrations/cardpointe"
+      },
+      "credentials": {
+        "source": "AWS Secrets Manager",
+        "path": "pestpro/integrations/cardpointe",
+        "region": "us-east-2"
+      },
+      "merchant_ids": {
+        "credit_card": "496354430886",
+        "ach_bluechex": "BCX101329844815"
+      },
+      "tool_count": 15,
+      "tools": [
+        { "name": "cardpointe_authorize",              "category": "transactions", "description": "Authorize a credit/debit card charge (hold funds, do not capture)" },
+        { "name": "cardpointe_capture",                "category": "transactions", "description": "Capture a previously authorized transaction" },
+        { "name": "cardpointe_void",                   "category": "transactions", "description": "Void an authorized or unsettled transaction" },
+        { "name": "cardpointe_refund",                 "category": "transactions", "description": "Refund a settled transaction (partial or full)" },
+        { "name": "cardpointe_inquire",                "category": "transactions", "description": "Inquire on a transaction by retref" },
+        { "name": "cardpointe_inquire_by_order",       "category": "transactions", "description": "Look up transaction by order ID" },
+        { "name": "cardpointe_offline_payment",        "category": "transactions", "description": "Record an offline/manual payment" },
+        { "name": "cardpointe_ach_payment",            "category": "ach",          "description": "Submit an ACH bank debit via BlueChex" },
+        { "name": "cardpointe_create_profile",         "category": "profiles",     "description": "Save a card or bank account to a stored profile (tokenize)" },
+        { "name": "cardpointe_get_profile",            "category": "profiles",     "description": "Retrieve a stored payment profile by profile ID" },
+        { "name": "cardpointe_delete_profile",         "category": "profiles",     "description": "Remove a stored payment profile" },
+        { "name": "cardpointe_search_profile_by_party_id","category":"profiles",  "description": "Find stored profiles by partyId (= Briostack customerId)" },
+        { "name": "cardpointe_account_status",         "category": "admin",        "description": "Check merchant account status and configuration" },
+        { "name": "cardpointe_get_deposit",            "category": "admin",        "description": "Get deposit/funding report for a date range" },
+        { "name": "cardpointe_settle_status",          "category": "admin",        "description": "Check settlement batch status" }
+      ]
+    },
+    {
+      "id": "agency-mcp",
+      "name": "Agency / GHL Operations MCP",
+      "description": "GoHighLevel (GHL) CRM & marketing operations. Contacts, conversations, calendars, pipelines, AI bots, voice agents, knowledge bases, social media, invoices, Stripe.",
+      "category": "crm-marketing",
+      "status": "local",
+      "transport": "stdio",
+      "endpoint": null,
+      "note": "Currently runs as a local stdio MCP. Remote hosting planned.",
+      "auth": {
+        "type": "api-key",
+        "note": "Credentials via AWS Secrets Manager key pestpro/integrations/ghl"
+      },
+      "credentials": {
+        "source": "AWS Secrets Manager",
+        "path": "pestpro/integrations/ghl",
+        "region": "us-east-2"
+      },
+      "tool_count": 57,
+      "tools": [
+        { "name": "search_agency_contacts",       "category": "contacts",    "description": "Search GHL contacts by name, phone, email, or tag" },
+        { "name": "create_contact",               "category": "contacts",    "description": "Create a new GHL contact" },
+        { "name": "update_contact",               "category": "contacts",    "description": "Update contact fields and custom properties" },
+        { "name": "create_contact_note",          "category": "contacts",    "description": "Add a note to a contact record" },
+        { "name": "update_contact_note",          "category": "contacts",    "description": "Edit an existing contact note" },
+        { "name": "delete_contact_note",          "category": "contacts",    "description": "Delete a contact note" },
+        { "name": "list_contact_notes",           "category": "contacts",    "description": "List all notes for a contact" },
+        { "name": "pin_contact_note",             "category": "contacts",    "description": "Pin a note to the top of a contact record" },
+        { "name": "get_conversation",             "category": "conversations","description": "Get a conversation thread by ID" },
+        { "name": "get_conversation_messages",    "category": "conversations","description": "List messages in a conversation" },
+        { "name": "list_conversations",           "category": "conversations","description": "List conversations with filters" },
+        { "name": "send_message",                 "category": "conversations","description": "Send SMS, email, or in-app message to a contact" },
+        { "name": "send_email_message",           "category": "conversations","description": "Send a formatted email through GHL" },
+        { "name": "send_whatsapp_message",        "category": "conversations","description": "Send a WhatsApp message via GHL" },
+        { "name": "list_calendars",               "category": "calendars",   "description": "List all GHL calendars" },
+        { "name": "list_calendar_events",         "category": "calendars",   "description": "List calendar events with date/calendar filters" },
+        { "name": "get_calendar_event",           "category": "calendars",   "description": "Get a single calendar event" },
+        { "name": "create_calendar_event",        "category": "calendars",   "description": "Create an appointment/event in GHL calendar" },
+        { "name": "get_pipelines",                "category": "pipelines",   "description": "List all sales/operations pipelines" },
+        { "name": "list_opportunities",           "category": "pipelines",   "description": "List pipeline opportunities with stage filters" },
+        { "name": "create_opportunity",           "category": "pipelines",   "description": "Create a new pipeline opportunity" },
+        { "name": "update_opportunity",           "category": "pipelines",   "description": "Update opportunity details" },
+        { "name": "update_opportunity_status",    "category": "pipelines",   "description": "Move opportunity to won/lost/open" },
+        { "name": "get_location",                 "category": "admin",       "description": "Get GHL location (sub-account) details" },
+        { "name": "get_custom_fields",            "category": "admin",       "description": "List all custom fields defined in the location" },
+        { "name": "create_custom_field",          "category": "admin",       "description": "Create a new custom field" },
+        { "name": "list_users",                   "category": "admin",       "description": "List all users in the location" },
+        { "name": "list_tags",                    "category": "admin",       "description": "List all contact tags" },
+        { "name": "create_tag",                   "category": "admin",       "description": "Create a new contact tag" },
+        { "name": "list_tasks",                   "category": "admin",       "description": "List tasks assigned within GHL" },
+        { "name": "create_task",                  "category": "admin",       "description": "Create a new task" },
+        { "name": "list_workflows",               "category": "automation",  "description": "List all GHL automation workflows" },
+        { "name": "list_campaigns",               "category": "marketing",   "description": "List all campaigns" },
+        { "name": "list_forms",                   "category": "marketing",   "description": "List all lead capture forms" },
+        { "name": "list_funnels",                 "category": "marketing",   "description": "List all funnels" },
+        { "name": "list_funnel_pages",            "category": "marketing",   "description": "List pages within a funnel" },
+        { "name": "list_surveys",                 "category": "marketing",   "description": "List all surveys" },
+        { "name": "list_social_media_posts",      "category": "social",      "description": "List scheduled and published social posts" },
+        { "name": "create_social_media_post",     "category": "social",      "description": "Schedule a social media post" },
+        { "name": "create_knowledge_base",        "category": "ai",          "description": "Create an AI knowledge base" },
+        { "name": "create_knowledge_base_faq",    "category": "ai",          "description": "Add an FAQ entry to a knowledge base" },
+        { "name": "query_knowledge_base",         "category": "ai",          "description": "Query a knowledge base for relevant answers" },
+        { "name": "crawl_knowledge_base_url",     "category": "ai",          "description": "Crawl a URL and ingest content into a knowledge base" },
+        { "name": "create_conversation_ai_bot",   "category": "ai",          "description": "Create a GHL AI conversation bot" },
+        { "name": "create_voice_agent",           "category": "ai",          "description": "Create a GHL voice AI agent" },
+        { "name": "list_voice_call_logs",         "category": "ai",          "description": "List voice agent call logs" },
+        { "name": "create_blog_post",             "category": "content",     "description": "Create a blog post in GHL" },
+        { "name": "list_products",                "category": "commerce",    "description": "List products/services in the store" },
+        { "name": "create_product",               "category": "commerce",    "description": "Create a new product" },
+        { "name": "list_invoices",                "category": "commerce",    "description": "List GHL invoices" },
+        { "name": "list_payment_transactions",    "category": "commerce",    "description": "List payment transactions" },
+        { "name": "process_stripe_refund",        "category": "commerce",    "description": "Process a Stripe refund through GHL" },
+        { "name": "access_pestpro_stripe_account","category": "commerce",    "description": "Access Pest Pro Stripe account (acct_1IJoWII8Ppq6GZQE)" },
+        { "name": "get_email_dns_health",         "category": "admin",       "description": "Check email sending domain DNS health (SPF, DKIM, DMARC)" },
+        { "name": "repair_ses_dns",               "category": "admin",       "description": "Auto-repair SES DNS records for a sending domain" },
+        { "name": "search_agency_locations",      "category": "admin",       "description": "Search GHL sub-accounts/locations" }
+      ]
+    }
+  ],
+  "connector": {
+    "protocol": "MCP 2025-03-26",
+    "transport_options": ["streamable-http", "stdio", "sse"],
+    "claude_desktop_key": "mcpServers",
+    "cursor_key": "mcpServers",
+    "quick_connect": {
+      "briostack": {
+        "command": null,
+        "url": "https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp",
+        "transport": "streamable-http"
+      }
+    }
+  }
+}

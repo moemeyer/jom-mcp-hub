@@ -1,0 +1,27 @@
+{
+  "mcp_hub": "https://mcp.jom.services",
+  "catalog": "https://mcp.jom.services/mcp-catalog.json",
+  "servers": [
+    {
+      "id": "briostack-mcp",
+      "name": "BrioStack Operations",
+      "url": "https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp",
+      "transport": "streamable-http",
+      "status": "production"
+    },
+    {
+      "id": "cardpointe-mcp",
+      "name": "CardPointe Payments",
+      "url": null,
+      "transport": "stdio",
+      "status": "local"
+    },
+    {
+      "id": "agency-mcp",
+      "name": "Agency / GHL Operations",
+      "url": null,
+      "transport": "stdio",
+      "status": "local"
+    }
+  ]
+}

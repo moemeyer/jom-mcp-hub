@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JOM MCP Hub — mcp.jom.services</title>
+  <meta name="description" content="Model Context Protocol server catalog for JOM Services / Pest Pro Rid All. BrioStack operations, CardPointe payments, and GHL CRM — all MCP-native." />
+  <!-- Machine-readable discovery -->
+  <link rel="alternate" type="application/json" href="/.well-known/mcp.json" title="MCP Discovery" />
+  <link rel="alternate" type="application/json" href="/mcp-catalog.json" title="MCP Server Catalog" />
+  <style>
+    :root {
+      --green:   #1a7a1a;
+      --green-d: #145214;
+      --green-l: #e8f5e8;
+      --accent:  #f59e0b;
+      --gray-1:  #111827;
+      --gray-2:  #374151;
+      --gray-3:  #6b7280;
+      --gray-4:  #d1d5db;
+      --gray-5:  #f9fafb;
+      --radius:  10px;
+      --shadow:  0 1px 3px rgba(0,0,0,.10), 0 1px 2px rgba(0,0,0,.06);
+      --shadow-md: 0 4px 6px rgba(0,0,0,.07), 0 2px 4px rgba(0,0,0,.06);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: var(--gray-1); background: #fff; line-height: 1.6; }
+
+    /* NAV */
+    nav { background: var(--green); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+    nav .logo { color: #fff; font-weight: 700; font-size: 1.05rem; letter-spacing: -.3px; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    nav .logo span { opacity: .6; font-weight: 400; }
+    nav .badge { background: rgba(255,255,255,.15); color: #fff; font-size: .7rem; padding: 2px 8px; border-radius: 20px; border: 1px solid rgba(255,255,255,.25); }
+
+    /* HERO */
+    .hero { background: linear-gradient(135deg, var(--green) 0%, var(--green-d) 100%); padding: 64px 24px 56px; text-align: center; color: #fff; }
+    .hero h1 { font-size: clamp(1.75rem, 5vw, 2.75rem); font-weight: 800; letter-spacing: -.5px; max-width: 680px; margin: 0 auto 16px; }
+    .hero p { font-size: 1.05rem; opacity: .82; max-width: 540px; margin: 0 auto 32px; }
+    .pill-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .pill { background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3); color: #fff; padding: 6px 14px; border-radius: 20px; font-size: .8rem; font-weight: 500; }
+    .pill.live { background: rgba(52,211,153,.25); border-color: rgba(52,211,153,.5); }
+
+    /* SECTIONS */
+    .section { max-width: 960px; margin: 0 auto; padding: 48px 24px; }
+    .section-title { font-size: 1.35rem; font-weight: 700; color: var(--gray-1); margin-bottom: 8px; }
+    .section-sub { color: var(--gray-3); font-size: .9rem; margin-bottom: 28px; }
+    hr.divider { border: none; border-top: 1px solid var(--gray-4); margin: 48px 0; }
+
+    /* SERVER CARDS */
+    .server-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .server-card { border: 1px solid var(--gray-4); border-radius: var(--radius); padding: 20px; background: #fff; box-shadow: var(--shadow); }
+    .server-card:hover { box-shadow: var(--shadow-md); border-color: var(--green); transition: all .15s; }
+    .server-card .sc-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+    .server-card .sc-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+    .sc-icon.green  { background: var(--green-l); }
+    .sc-icon.blue   { background: #eff6ff; }
+    .sc-icon.purple { background: #f5f3ff; }
+    .server-card h3 { font-size: .95rem; font-weight: 700; color: var(--gray-1); line-height: 1.3; }
+    .server-card .sc-meta { font-size: .75rem; color: var(--gray-3); margin-top: 2px; }
+    .server-card .sc-desc { font-size: .82rem; color: var(--gray-2); margin-bottom: 14px; }
+    .status-badge { display: inline-block; font-size: .68rem; font-weight: 600; padding: 2px 8px; border-radius: 12px; text-transform: uppercase; letter-spacing: .4px; }
+    .status-badge.production { background: #dcfce7; color: #166534; }
+    .status-badge.local      { background: #fef3c7; color: #92400e; }
+    .tool-count { display: inline-block; margin-left: 6px; font-size: .68rem; color: var(--gray-3); background: var(--gray-5); border: 1px solid var(--gray-4); padding: 2px 7px; border-radius: 10px; }
+    .sc-url { font-family: monospace; font-size: .72rem; background: var(--gray-5); border: 1px solid var(--gray-4); border-radius: 6px; padding: 5px 8px; word-break: break-all; color: var(--gray-2); margin-top: 8px; }
+    .copy-btn { cursor: pointer; font-size: .65rem; background: var(--green); color: #fff; border: none; padding: 2px 7px; border-radius: 4px; margin-left: 4px; vertical-align: middle; }
+
+    /* TOOL TABLE */
+    .tool-accordion { border: 1px solid var(--gray-4); border-radius: var(--radius); overflow: hidden; margin-bottom: 24px; }
+    .ta-header { background: var(--gray-5); padding: 12px 16px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-weight: 600; font-size: .9rem; user-select: none; }
+    .ta-header:hover { background: #f0f0f0; }
+    .ta-body { display: none; overflow-x: auto; }
+    .ta-body.open { display: block; }
+    table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+    th { background: var(--gray-5); padding: 8px 12px; text-align: left; font-weight: 600; color: var(--gray-2); border-bottom: 1px solid var(--gray-4); white-space: nowrap; }
+    td { padding: 8px 12px; border-bottom: 1px solid var(--gray-4); color: var(--gray-2); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--gray-5); }
+    .tool-name { font-family: monospace; font-size: .78rem; color: var(--green-d); font-weight: 600; }
+    .cat-badge { font-size: .65rem; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; padding: 1px 6px; border-radius: 8px; white-space: nowrap; }
+
+    /* CONNECTOR TABS */
+    .tab-row { display: flex; gap: 0; border-bottom: 2px solid var(--gray-4); margin-bottom: 20px; overflow-x: auto; }
+    .tab-btn { padding: 8px 16px; font-size: .82rem; font-weight: 600; color: var(--gray-3); background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; white-space: nowrap; }
+    .tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+    pre { background: #0f172a; color: #e2e8f0; border-radius: var(--radius); padding: 20px; overflow-x: auto; font-size: .78rem; line-height: 1.6; position: relative; }
+    pre .hl  { color: #86efac; }
+    pre .hlb { color: #67e8f9; }
+    pre .hlv { color: #fde68a; }
+    pre .hlc { color: #94a3b8; }
+    .copy-pre { position: absolute; top: 10px; right: 12px; background: rgba(255,255,255,.1); color: #e2e8f0; border: 1px solid rgba(255,255,255,.2); border-radius: 4px; padding: 3px 8px; font-size: .68rem; cursor: pointer; }
+    .copy-pre:hover { background: rgba(255,255,255,.2); }
+
+    /* STEPS */
+    .steps { counter-reset: step; display: flex; flex-direction: column; gap: 16px; }
+    .step { display: flex; gap: 14px; }
+    .step-num { width: 28px; height: 28px; background: var(--green); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .78rem; font-weight: 700; flex-shrink: 0; }
+    .step-body h4 { font-size: .88rem; font-weight: 700; color: var(--gray-1); margin-bottom: 4px; }
+    .step-body p { font-size: .82rem; color: var(--gray-2); }
+    code { background: var(--gray-5); border: 1px solid var(--gray-4); padding: 1px 5px; border-radius: 4px; font-size: .82em; font-family: monospace; }
+
+    /* INFO GRID */
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .info-card { border: 1px solid var(--gray-4); border-radius: var(--radius); padding: 16px; }
+    .info-card h4 { font-size: .8rem; font-weight: 700; color: var(--gray-3); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+    .info-card p { font-size: .88rem; color: var(--gray-1); font-weight: 500; }
+    .info-card .sub { font-size: .75rem; color: var(--gray-3); margin-top: 2px; }
+
+    /* FOOTER */
+    footer { background: var(--gray-1); color: rgba(255,255,255,.6); text-align: center; padding: 24px; font-size: .78rem; }
+    footer a { color: rgba(255,255,255,.8); text-decoration: none; }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .hero { padding: 40px 16px 36px; }
+      .section { padding: 32px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="https://mcp.jom.services">🐛 JOM <span>/ mcp.jom.services</span></a>
+  <span class="badge">MCP Hub v1</span>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Model Context Protocol Server Hub</h1>
+  <p>Production-grade MCP servers connecting AI agents to Pest Pro Rid All's full operational stack — field ops, payments, and CRM.</p>
+  <div class="pill-row">
+    <span class="pill live">🟢 briostack-mcp · Live</span>
+    <span class="pill">💳 cardpointe-mcp</span>
+    <span class="pill">📋 agency-mcp (GHL)</span>
+    <span class="pill">MCP 2025-03-26</span>
+  </div>
+</div>
+
+<!-- SERVERS OVERVIEW -->
+<div class="section">
+  <div class="section-title">Servers</div>
+  <div class="section-sub">Three MCP servers covering the full operational surface of the business.</div>
+  <div class="server-grid">
+
+    <div class="server-card">
+      <div class="sc-head">
+        <div class="sc-icon green">🗂️</div>
+        <div>
+          <h3>BrioStack Operations</h3>
+          <div class="sc-meta">Field ops · Scheduling · Billing · AR</div>
+        </div>
+      </div>
+      <div class="sc-desc">Full BrioStack pest-control platform. Customers, appointments, invoices, daily ops snapshot, employee roster, branches, leads, and raw API pass-through.</div>
+      <span class="status-badge production">Production</span>
+      <span class="tool-count">32 tools</span>
+      <div class="sc-url" id="brio-url">https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp
+        <button class="copy-btn" onclick="copyText('brio-url')">copy</button>
+      </div>
+    </div>
+
+    <div class="server-card">
+      <div class="sc-head">
+        <div class="sc-icon blue">💳</div>
+        <div>
+          <h3>CardPointe Payments</h3>
+          <div class="sc-meta">Authorize · Capture · ACH · Stored Profiles</div>
+        </div>
+      </div>
+      <div class="sc-desc">CardConnect/CardPointe payment processing. Credit card auth/capture/void/refund, ACH via BlueChex, stored profile tokenization, deposit reporting.</div>
+      <span class="status-badge local">Local stdio</span>
+      <span class="tool-count">15 tools</span>
+      <div class="sc-url">stdio — remote hosting pending</div>
+    </div>
+
+    <div class="server-card">
+      <div class="sc-head">
+        <div class="sc-icon purple">📋</div>
+        <div>
+          <h3>Agency / GHL Operations</h3>
+          <div class="sc-meta">CRM · Pipelines · AI Bots · Marketing</div>
+        </div>
+      </div>
+      <div class="sc-desc">GoHighLevel CRM operations. Contacts, conversations, calendars, pipelines, AI conversation bots, voice agents, knowledge bases, blogs, social media, and Stripe.</div>
+      <span class="status-badge local">Local stdio</span>
+      <span class="tool-count">57 tools</span>
+      <div class="sc-url">stdio — remote hosting pending</div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="divider" style="max-width:960px;margin:0 auto" />
+
+<!-- QUICK CONNECT -->
+<div class="section">
+  <div class="section-title">Quick Connect</div>
+  <div class="section-sub">Copy the config block for your AI client. The briostack-mcp server is live now at a public HTTPS endpoint.</div>
+
+  <div class="tab-row">
+    <button class="tab-btn active" onclick="showTab('claude')">Claude Desktop</button>
+    <button class="tab-btn" onclick="showTab('cursor')">Cursor / Windsurf</button>
+    <button class="tab-btn" onclick="showTab('zed')">Zed Editor</button>
+    <button class="tab-btn" onclick="showTab('generic')">Generic MCP Client</button>
+    <button class="tab-btn" onclick="showTab('local')">Local stdio (all 3)</button>
+  </div>
+
+  <div id="tab-claude" class="tab-pane active">
+    <p style="font-size:.82rem;color:#6b7280;margin-bottom:12px">Add to <code>~/Library/Application Support/Claude/claude_desktop_config.json</code></p>
+    <pre id="claude-pre"><button class="copy-pre" onclick="copyPre('claude-pre')">copy</button><span class="hlc">// ~/Library/Application Support/Claude/claude_desktop_config.json</span>
+{
+  <span class="hl">"mcpServers"</span>: {
+    <span class="hl">"briostack-mcp"</span>: {
+      <span class="hlb">"type"</span>: <span class="hlv">"streamable-http"</span>,
+      <span class="hlb">"url"</span>:  <span class="hlv">"https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp"</span>
+    }
+  }
+}</pre>
+  </div>
+
+  <div id="tab-cursor" class="tab-pane">
+    <p style="font-size:.82rem;color:#6b7280;margin-bottom:12px">Add to <code>.cursor/mcp.json</code> (project) or <code>~/.cursor/mcp.json</code> (global)</p>
+    <pre id="cursor-pre"><button class="copy-pre" onclick="copyPre('cursor-pre')">copy</button>{
+  <span class="hl">"mcpServers"</span>: {
+    <span class="hl">"briostack-mcp"</span>: {
+      <span class="hlb">"url"</span>: <span class="hlv">"https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp"</span>
+    }
+  }
+}</pre>
+  </div>
+
+  <div id="tab-zed" class="tab-pane">
+    <p style="font-size:.82rem;color:#6b7280;margin-bottom:12px">Add to <code>~/.config/zed/settings.json</code></p>
+    <pre id="zed-pre"><button class="copy-pre" onclick="copyPre('zed-pre')">copy</button>{
+  <span class="hl">"context_servers"</span>: {
+    <span class="hl">"briostack-mcp"</span>: {
+      <span class="hlb">"transport"</span>: <span class="hlv">"http"</span>,
+      <span class="hlb">"url"</span>:       <span class="hlv">"https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp"</span>
+    }
+  }
+}</pre>
+  </div>
+
+  <div id="tab-generic" class="tab-pane">
+    <p style="font-size:.82rem;color:#6b7280;margin-bottom:12px">Standard MCP 2025-03-26 streamable-http connection parameters.</p>
+    <pre id="generic-pre"><button class="copy-pre" onclick="copyPre('generic-pre')">copy</button>{
+  <span class="hlb">"transport"</span>:    <span class="hlv">"streamable-http"</span>,
+  <span class="hlb">"url"</span>:          <span class="hlv">"https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp"</span>,
+  <span class="hlb">"method"</span>:       <span class="hlv">"POST"</span>,
+  <span class="hlb">"content_type"</span>: <span class="hlv">"application/json"</span>,
+  <span class="hlb">"accept"</span>:       <span class="hlv">"text/event-stream, application/json"</span>,
+  <span class="hlb">"auth"</span>:         <span class="hlv">"none"</span>,
+  <span class="hlb">"note"</span>:         <span class="hlv">"IP-restricted. Contact admin for allowlisting."</span>
+}</pre>
+  </div>
+
+  <div id="tab-local" class="tab-pane">
+    <p style="font-size:.82rem;color:#6b7280;margin-bottom:12px">Full local config for all three servers via stdio. Requires Python 3.11+, <code>mcp</code>, <code>boto3</code>, and AWS credentials.</p>
+    <pre id="local-pre"><button class="copy-pre" onclick="copyPre('local-pre')">copy</button><span class="hlc">// claude_desktop_config.json — all three servers, local stdio</span>
+{
+  <span class="hl">"mcpServers"</span>: {
+    <span class="hl">"briostack-mcp"</span>: {
+      <span class="hlb">"command"</span>: <span class="hlv">"python3"</span>,
+      <span class="hlb">"args"</span>: [<span class="hlv">"/Users/moemeyer/briostack-mcp/server.py"</span>]
+    },
+    <span class="hl">"cardpointe-mcp"</span>: {
+      <span class="hlb">"command"</span>: <span class="hlv">"python3"</span>,
+      <span class="hlb">"args"</span>: [<span class="hlv">"/Users/moemeyer/cardpointe-mcp/server.py"</span>]
+    },
+    <span class="hl">"agency-mcp"</span>: {
+      <span class="hlb">"command"</span>: <span class="hlv">"python3"</span>,
+      <span class="hlb">"args"</span>: [<span class="hlv">"/Users/moemeyer/agency-mcp/server.py"</span>]
+    }
+  }
+}</pre>
+  </div>
+</div>
+
+<hr class="divider" style="max-width:960px;margin:0 auto" />
+
+<!-- TOOL REFERENCE -->
+<div class="section">
+  <div class="section-title">Tool Reference</div>
+  <div class="section-sub">All 104 tools across all three servers. Click a server to expand its full tool list.</div>
+
+  <!-- BrioStack tools -->
+  <div class="tool-accordion">
+    <div class="ta-header" onclick="toggleAccordion('brio-tools')">
+      🗂️ &nbsp;BrioStack Operations &nbsp;<span style="color:var(--gray-3);font-weight:400;font-size:.8rem">32 tools</span>
+      <span id="brio-tools-arrow">▶</span>
+    </div>
+    <div class="ta-body" id="brio-tools">
+      <table>
+        <thead><tr><th>Tool</th><th>Category</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td class="tool-name">search_customers</td><td><span class="cat-badge">customers</span></td><td>Search by name, phone, email, or address</td></tr>
+          <tr><td class="tool-name">get_customer_details</td><td><span class="cat-badge">customers</span></td><td>Full customer record by Briostack ID</td></tr>
+          <tr><td class="tool-name">get_customer_full_profile</td><td><span class="cat-badge">customers</span></td><td>Aggregate profile: account + services + appointments + invoices</td></tr>
+          <tr><td class="tool-name">get_customer_services</td><td><span class="cat-badge">customers</span></td><td>Active service plans for a customer</td></tr>
+          <tr><td class="tool-name">list_customer_contact_methods</td><td><span class="cat-badge">customers</span></td><td>Phone, email, contact preferences on file</td></tr>
+          <tr><td class="tool-name">list_appointments</td><td><span class="cat-badge">appointments</span></td><td>List with filters: date range, status, branch, tech</td></tr>
+          <tr><td class="tool-name">get_appointment</td><td><span class="cat-badge">appointments</span></td><td>Single appointment by ID</td></tr>
+          <tr><td class="tool-name">service_appointment</td><td><span class="cat-badge">appointments</span></td><td>Create a new service appointment</td></tr>
+          <tr><td class="tool-name">reschedule_appointment</td><td><span class="cat-badge">appointments</span></td><td>Reschedule to a new date/time</td></tr>
+          <tr><td class="tool-name">open_appointment</td><td><span class="cat-badge">appointments</span></td><td>Set status to open/active</td></tr>
+          <tr><td class="tool-name">close_appointment</td><td><span class="cat-badge">appointments</span></td><td>Mark as completed/closed</td></tr>
+          <tr><td class="tool-name">update_appointment_status</td><td><span class="cat-badge">appointments</span></td><td>Update appointment status field</td></tr>
+          <tr><td class="tool-name">get_invoices</td><td><span class="cat-badge">billing</span></td><td>Invoices with balance and line-item detail</td></tr>
+          <tr><td class="tool-name">get_service_invoices</td><td><span class="cat-badge">billing</span></td><td>Invoices linked to a service plan</td></tr>
+          <tr><td class="tool-name">get_invoice_schedules</td><td><span class="cat-badge">billing</span></td><td>Recurring invoice schedule</td></tr>
+          <tr><td class="tool-name">get_ar_snapshot</td><td><span class="cat-badge">billing</span></td><td>AR total outstanding, aging buckets</td></tr>
+          <tr><td class="tool-name">get_billing_intelligence_reference</td><td><span class="cat-badge">billing</span></td><td>Billing field meanings and computation rules</td></tr>
+          <tr><td class="tool-name">get_daily_ops_snapshot</td><td><span class="cat-badge">operations</span></td><td>Today's summary: appointments, revenue, open tasks</td></tr>
+          <tr><td class="tool-name">list_services</td><td><span class="cat-badge">operations</span></td><td>All service types offered</td></tr>
+          <tr><td class="tool-name">list_service_categories</td><td><span class="cat-badge">operations</span></td><td>Service category taxonomy</td></tr>
+          <tr><td class="tool-name">list_employees</td><td><span class="cat-badge">operations</span></td><td>Employee roster with roles and branches</td></tr>
+          <tr><td class="tool-name">list_branches</td><td><span class="cat-badge">operations</span></td><td>Branch/office locations</td></tr>
+          <tr><td class="tool-name">list_leads</td><td><span class="cat-badge">operations</span></td><td>Open leads pipeline</td></tr>
+          <tr><td class="tool-name">list_communications</td><td><span class="cat-badge">operations</span></td><td>Communication log (calls, texts, notes)</td></tr>
+          <tr><td class="tool-name">brio_raw_get</td><td><span class="cat-badge">raw-api</span></td><td>Pass-through GET to any BrioStack REST endpoint</td></tr>
+          <tr><td class="tool-name">brio_raw_post</td><td><span class="cat-badge">raw-api</span></td><td>Pass-through POST (creates records)</td></tr>
+          <tr><td class="tool-name">brio_raw_patch</td><td><span class="cat-badge">raw-api</span></td><td>Pass-through PATCH (partial updates — verified on /appointments)</td></tr>
+          <tr><td class="tool-name">brio_raw_put</td><td><span class="cat-badge">raw-api</span></td><td>Pass-through PUT (full replace)</td></tr>
+          <tr><td class="tool-name">brio_raw_delete</td><td><span class="cat-badge">raw-api</span></td><td>Pass-through DELETE</td></tr>
+          <tr><td class="tool-name">brio_raw_options</td><td><span class="cat-badge">raw-api</span></td><td>Discover supported methods on any endpoint</td></tr>
+          <tr><td class="tool-name">brio_get_openapi_spec</td><td><span class="cat-badge">raw-api</span></td><td>Fetch the full BrioStack OpenAPI specification</td></tr>
+          <tr><td class="tool-name">brio_rate_status</td><td><span class="cat-badge">raw-api</span></td><td>Current API rate limit usage (20 req / 60 s)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CardPointe tools -->
+  <div class="tool-accordion">
+    <div class="ta-header" onclick="toggleAccordion('cp-tools')">
+      💳 &nbsp;CardPointe Payments &nbsp;<span style="color:var(--gray-3);font-weight:400;font-size:.8rem">15 tools</span>
+      <span id="cp-tools-arrow">▶</span>
+    </div>
+    <div class="ta-body" id="cp-tools">
+      <table>
+        <thead><tr><th>Tool</th><th>Category</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td class="tool-name">cardpointe_authorize</td><td><span class="cat-badge">transactions</span></td><td>Authorize a charge (hold funds, don't capture)</td></tr>
+          <tr><td class="tool-name">cardpointe_capture</td><td><span class="cat-badge">transactions</span></td><td>Capture a previously authorized transaction</td></tr>
+          <tr><td class="tool-name">cardpointe_void</td><td><span class="cat-badge">transactions</span></td><td>Void an authorized or unsettled transaction</td></tr>
+          <tr><td class="tool-name">cardpointe_refund</td><td><span class="cat-badge">transactions</span></td><td>Refund a settled transaction (partial or full)</td></tr>
+          <tr><td class="tool-name">cardpointe_inquire</td><td><span class="cat-badge">transactions</span></td><td>Look up a transaction by retref</td></tr>
+          <tr><td class="tool-name">cardpointe_inquire_by_order</td><td><span class="cat-badge">transactions</span></td><td>Look up by order ID</td></tr>
+          <tr><td class="tool-name">cardpointe_offline_payment</td><td><span class="cat-badge">transactions</span></td><td>Record an offline/manual payment</td></tr>
+          <tr><td class="tool-name">cardpointe_ach_payment</td><td><span class="cat-badge">ach</span></td><td>ACH bank debit via BlueChex (MID BCX101329844815)</td></tr>
+          <tr><td class="tool-name">cardpointe_create_profile</td><td><span class="cat-badge">profiles</span></td><td>Save card/bank to stored profile (tokenize)</td></tr>
+          <tr><td class="tool-name">cardpointe_get_profile</td><td><span class="cat-badge">profiles</span></td><td>Retrieve stored profile by profile ID</td></tr>
+          <tr><td class="tool-name">cardpointe_delete_profile</td><td><span class="cat-badge">profiles</span></td><td>Remove a stored payment profile</td></tr>
+          <tr><td class="tool-name">cardpointe_search_profile_by_party_id</td><td><span class="cat-badge">profiles</span></td><td>Find profiles by partyId (= Briostack customerId)</td></tr>
+          <tr><td class="tool-name">cardpointe_account_status</td><td><span class="cat-badge">admin</span></td><td>Merchant account status and configuration</td></tr>
+          <tr><td class="tool-name">cardpointe_get_deposit</td><td><span class="cat-badge">admin</span></td><td>Deposit/funding report for a date range</td></tr>
+          <tr><td class="tool-name">cardpointe_settle_status</td><td><span class="cat-badge">admin</span></td><td>Settlement batch status</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Agency/GHL tools (abbreviated) -->
+  <div class="tool-accordion">
+    <div class="ta-header" onclick="toggleAccordion('ghl-tools')">
+      📋 &nbsp;Agency / GHL Operations &nbsp;<span style="color:var(--gray-3);font-weight:400;font-size:.8rem">57 tools</span>
+      <span id="ghl-tools-arrow">▶</span>
+    </div>
+    <div class="ta-body" id="ghl-tools">
+      <table>
+        <thead><tr><th>Tool</th><th>Category</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td class="tool-name">search_agency_contacts</td><td><span class="cat-badge">contacts</span></td><td>Search GHL contacts by name, phone, email, or tag</td></tr>
+          <tr><td class="tool-name">create_contact</td><td><span class="cat-badge">contacts</span></td><td>Create a new GHL contact</td></tr>
+          <tr><td class="tool-name">update_contact</td><td><span class="cat-badge">contacts</span></td><td>Update contact fields and custom properties</td></tr>
+          <tr><td class="tool-name">list_contact_notes</td><td><span class="cat-badge">contacts</span></td><td>List notes on a contact record</td></tr>
+          <tr><td class="tool-name">create_contact_note</td><td><span class="cat-badge">contacts</span></td><td>Add a note to a contact</td></tr>
+          <tr><td class="tool-name">pin_contact_note</td><td><span class="cat-badge">contacts</span></td><td>Pin a note to the top of a contact record</td></tr>
+          <tr><td class="tool-name">get_conversation</td><td><span class="cat-badge">conversations</span></td><td>Fetch a conversation thread by ID</td></tr>
+          <tr><td class="tool-name">get_conversation_messages</td><td><span class="cat-badge">conversations</span></td><td>List messages in a conversation</td></tr>
+          <tr><td class="tool-name">list_conversations</td><td><span class="cat-badge">conversations</span></td><td>List all conversations with filters</td></tr>
+          <tr><td class="tool-name">send_message</td><td><span class="cat-badge">conversations</span></td><td>Send SMS, email, or in-app message</td></tr>
+          <tr><td class="tool-name">send_email_message</td><td><span class="cat-badge">conversations</span></td><td>Send a formatted email through GHL</td></tr>
+          <tr><td class="tool-name">send_whatsapp_message</td><td><span class="cat-badge">conversations</span></td><td>Send a WhatsApp message via GHL</td></tr>
+          <tr><td class="tool-name">list_calendars</td><td><span class="cat-badge">calendars</span></td><td>List all GHL calendars</td></tr>
+          <tr><td class="tool-name">list_calendar_events</td><td><span class="cat-badge">calendars</span></td><td>Events with date/calendar filters</td></tr>
+          <tr><td class="tool-name">create_calendar_event</td><td><span class="cat-badge">calendars</span></td><td>Create an appointment in GHL calendar</td></tr>
+          <tr><td class="tool-name">get_pipelines</td><td><span class="cat-badge">pipelines</span></td><td>List all sales/operations pipelines</td></tr>
+          <tr><td class="tool-name">list_opportunities</td><td><span class="cat-badge">pipelines</span></td><td>Pipeline opportunities with stage filters</td></tr>
+          <tr><td class="tool-name">create_opportunity</td><td><span class="cat-badge">pipelines</span></td><td>Create a pipeline opportunity</td></tr>
+          <tr><td class="tool-name">update_opportunity_status</td><td><span class="cat-badge">pipelines</span></td><td>Move opportunity to won/lost/open</td></tr>
+          <tr><td class="tool-name">get_location</td><td><span class="cat-badge">admin</span></td><td>GHL location (sub-account) details</td></tr>
+          <tr><td class="tool-name">get_custom_fields</td><td><span class="cat-badge">admin</span></td><td>List all custom fields in the location</td></tr>
+          <tr><td class="tool-name">list_users</td><td><span class="cat-badge">admin</span></td><td>All users in the location</td></tr>
+          <tr><td class="tool-name">list_tags</td><td><span class="cat-badge">admin</span></td><td>All contact tags</td></tr>
+          <tr><td class="tool-name">list_tasks</td><td><span class="cat-badge">admin</span></td><td>Tasks assigned in GHL</td></tr>
+          <tr><td class="tool-name">list_workflows</td><td><span class="cat-badge">automation</span></td><td>All automation workflows</td></tr>
+          <tr><td class="tool-name">list_campaigns</td><td><span class="cat-badge">marketing</span></td><td>All campaigns</td></tr>
+          <tr><td class="tool-name">list_funnels</td><td><span class="cat-badge">marketing</span></td><td>All funnels and pages</td></tr>
+          <tr><td class="tool-name">list_surveys</td><td><span class="cat-badge">marketing</span></td><td>All surveys</td></tr>
+          <tr><td class="tool-name">create_social_media_post</td><td><span class="cat-badge">social</span></td><td>Schedule a social media post</td></tr>
+          <tr><td class="tool-name">create_knowledge_base</td><td><span class="cat-badge">ai</span></td><td>Create an AI knowledge base</td></tr>
+          <tr><td class="tool-name">query_knowledge_base</td><td><span class="cat-badge">ai</span></td><td>Query a knowledge base for answers</td></tr>
+          <tr><td class="tool-name">crawl_knowledge_base_url</td><td><span class="cat-badge">ai</span></td><td>Ingest URL content into a knowledge base</td></tr>
+          <tr><td class="tool-name">create_conversation_ai_bot</td><td><span class="cat-badge">ai</span></td><td>Create a GHL AI conversation bot</td></tr>
+          <tr><td class="tool-name">create_voice_agent</td><td><span class="cat-badge">ai</span></td><td>Create a GHL voice AI agent</td></tr>
+          <tr><td class="tool-name">list_voice_call_logs</td><td><span class="cat-badge">ai</span></td><td>Voice agent call history</td></tr>
+          <tr><td class="tool-name">list_products</td><td><span class="cat-badge">commerce</span></td><td>Products/services in the GHL store</td></tr>
+          <tr><td class="tool-name">list_invoices</td><td><span class="cat-badge">commerce</span></td><td>GHL invoices</td></tr>
+          <tr><td class="tool-name">list_payment_transactions</td><td><span class="cat-badge">commerce</span></td><td>Payment transactions</td></tr>
+          <tr><td class="tool-name">process_stripe_refund</td><td><span class="cat-badge">commerce</span></td><td>Process a Stripe refund through GHL</td></tr>
+          <tr><td class="tool-name">access_pestpro_stripe_account</td><td><span class="cat-badge">commerce</span></td><td>Pest Pro Stripe account (acct_1IJoWII8Ppq6GZQE)</td></tr>
+          <tr><td class="tool-name">get_email_dns_health</td><td><span class="cat-badge">admin</span></td><td>Check SPF, DKIM, DMARC for sending domain</td></tr>
+          <tr><td class="tool-name">repair_ses_dns</td><td><span class="cat-badge">admin</span></td><td>Auto-repair SES DNS records</td></tr>
+          <tr><td class="tool-name">search_agency_locations</td><td><span class="cat-badge">admin</span></td><td>Search GHL sub-accounts/locations</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" style="max-width:960px;margin:0 auto" />
+
+<!-- DEVELOPER GUIDE -->
+<div class="section">
+  <div class="section-title">Developer Guide</div>
+  <div class="section-sub">Everything you need to integrate, deploy, or extend these servers.</div>
+
+  <div class="info-grid" style="margin-bottom:32px">
+    <div class="info-card">
+      <h4>Protocol</h4>
+      <p>MCP 2025-03-26</p>
+      <p class="sub">Streamable-HTTP &amp; stdio transports</p>
+    </div>
+    <div class="info-card">
+      <h4>Runtime</h4>
+      <p>Python 3.12</p>
+      <p class="sub">mcp SDK 1.27+, FastMCP wrapper</p>
+    </div>
+    <div class="info-card">
+      <h4>Hosting</h4>
+      <p>AWS App Runner</p>
+      <p class="sub">us-east-2, linux/amd64, 0.25 vCPU / 0.5 GB</p>
+    </div>
+    <div class="info-card">
+      <h4>Image</h4>
+      <p>ECR Private</p>
+      <p class="sub">767397993913.dkr.ecr.us-east-2.amazonaws.com/pestpro/briostack-mcp</p>
+    </div>
+    <div class="info-card">
+      <h4>Credentials</h4>
+      <p>AWS Secrets Manager</p>
+      <p class="sub">Region us-east-2 · Prefix pestpro/integrations/</p>
+    </div>
+    <div class="info-card">
+      <h4>Auth (API)</h4>
+      <p>None (network-gated)</p>
+      <p class="sub">IP allowlist required for external access</p>
+    </div>
+  </div>
+
+  <h3 style="font-size:.95rem;font-weight:700;margin-bottom:16px">Deploy Your Own Instance</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>Prerequisites</h4>
+        <p>Python 3.11+, Docker (or Colima), AWS CLI v2, access to account <code>767397993913</code> (us-east-2). Colima users: <code>colima start</code> — no Docker Desktop needed.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>Clone &amp; install</h4>
+        <p><code>cd ~/briostack-mcp/hosted &amp;&amp; pip install -r requirements.txt</code> — installs <code>mcp&gt;=1.27</code>, <code>boto3</code>, <code>uvicorn</code>, <code>requests</code>.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>Secrets Manager</h4>
+        <p>Store credentials at <code>pestpro/integrations/briostack</code> in AWS Secrets Manager (us-east-2) with keys <code>api_key</code>, <code>base_url</code>, <code>instance</code>. The server loads these at runtime via IAM role — no env vars needed in production.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h4>Build &amp; push (amd64 required)</h4>
+        <p><code>docker build --platform linux/amd64 -t 767397993913.dkr.ecr.us-east-2.amazonaws.com/pestpro/briostack-mcp:latest .</code><br/>Then: <code>docker push ...</code>. The <code>--platform linux/amd64</code> flag is mandatory — App Runner runs x86_64, not ARM.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <h4>IAM roles</h4>
+        <p>Two roles required: <code>briostack-mcp-apprunner-ecr</code> (trust <code>build.apprunner.amazonaws.com</code>, policy <code>AWSAppRunnerServicePolicyForECRAccess</code>) and <code>briostack-mcp-apprunner-instance</code> (trust <code>tasks.apprunner.amazonaws.com</code>, inline policy for <code>secretsmanager:GetSecretValue</code> on <code>pestpro/*</code>).</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <h4>Create App Runner service</h4>
+        <p>Port <code>8001</code>, TCP health check (interval 20s, threshold 1), instance role attached. Auto-deploy on ECR push is enabled — just push a new image to redeploy.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">7</div>
+      <div class="step-body">
+        <h4>Verify</h4>
+        <p><code>curl https://&lt;apprunner-url&gt;/mcp</code> → expect <code>{"error":"Not Acceptable: Client must accept text/event-stream"}</code>. That response confirms the server is healthy and accepting MCP connections.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" style="max-width:960px;margin:0 auto" />
+
+<!-- DNS / HOSTING -->
+<div class="section">
+  <div class="section-title">Hosting This Page at mcp.jom.services</div>
+  <div class="section-sub">Steps to publish this hub at your custom subdomain via DNSimple + GitHub Pages.</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>Push to GitHub Pages</h4>
+        <p>Create repo <code>moemeyer/jom-mcp-hub</code>. Push all files from <code>~/jom-mcp-hub/</code>. In repo Settings → Pages → Source: <em>main branch, / (root)</em>. GitHub serves it at <code>moemeyer.github.io/jom-mcp-hub</code>.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>Add CNAME file</h4>
+        <p>Create a file named <code>CNAME</code> in the repo root containing exactly: <code>mcp.jom.services</code></p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>Add DNS record in DNSimple</h4>
+        <p>Log in to dnsimple.com → jom.services → DNS → Add Record:<br/>
+        Type: <code>CNAME</code> · Name: <code>mcp</code> · Content: <code>moemeyer.github.io</code> · TTL: 3600</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h4>Enable HTTPS in GitHub</h4>
+        <p>Back in GitHub Pages settings → set Custom domain to <code>mcp.jom.services</code> → tick <em>Enforce HTTPS</em>. GitHub provisions a Let's Encrypt cert automatically (may take 10–30 min).</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <h4>Optional: health monitor</h4>
+        <p>DNSimple has a <em>Health Check</em> feature (DNS → Health Checks). Point it at <code>https://vnf9mp2vik.us-east-2.awsapprunner.com/</code> with TCP check every 60s to get uptime alerts for the live MCP server.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" style="max-width:960px;margin:0 auto" />
+
+<!-- MACHINE-READABLE -->
+<div class="section">
+  <div class="section-title">Machine-Readable Endpoints</div>
+  <div class="section-sub">Structured data for automated discovery, custom connectors, and agent frameworks.</div>
+  <table style="font-size:.82rem;width:100%">
+    <thead><tr><th>URL</th><th>Format</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>https://mcp.jom.services/.well-known/mcp.json</code></td><td>JSON</td><td>Standard well-known MCP discovery endpoint. Server IDs, transports, live URLs.</td></tr>
+      <tr><td><code>https://mcp.jom.services/mcp-catalog.json</code></td><td>JSON</td><td>Full server catalog. All tools with names, categories, descriptions. Publisher metadata.</td></tr>
+      <tr><td><code>https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp</code></td><td>MCP/SSE</td><td>Live BrioStack MCP endpoint. POST with <code>Accept: text/event-stream</code>.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<footer>
+  <p>JOM Services · Pest Pro Rid All, LLC · Miami-Dade, Broward, Palm Beach, Volusia, Flagler</p>
+  <p style="margin-top:6px"><a href="https://mcp.jom.services/mcp-catalog.json">mcp-catalog.json</a> · <a href="https://mcp.jom.services/.well-known/mcp.json">.well-known/mcp.json</a> · MCP Protocol 2025-03-26</p>
+</footer>
+
+<script>
+  function showTab(id) {
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    event.target.classList.add('active');
+  }
+  function toggleAccordion(id) {
+    const body = document.getElementById(id);
+    const arrow = document.getElementById(id + '-arrow');
+    const open = body.classList.toggle('open');
+    arrow.textContent = open ? '▼' : '▶';
+  }
+  function copyText(id) {
+    const el = document.getElementById(id);
+    const text = el.innerText.replace('copy','').trim();
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = el.querySelector('.copy-btn');
+      if (btn) { btn.textContent = '✓'; setTimeout(() => btn.textContent = 'copy', 1500); }
+    });
+  }
+  function copyPre(id) {
+    const el = document.getElementById(id);
+    const text = el.innerText.replace(/^copy\n?/, '').trim();
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = el.querySelector('.copy-pre');
+      if (btn) { btn.textContent = '✓ copied'; setTimeout(() => btn.textContent = 'copy', 1500); }
+    });
+  }
+</script>
+</body>
+</html>
