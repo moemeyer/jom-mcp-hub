@@ -19,8 +19,10 @@
       "endpoint": "https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp",
       "healthcheck": "https://vnf9mp2vik.us-east-2.awsapprunner.com/",
       "auth": {
-        "type": "none",
-        "note": "Network-restricted. Access requires IP allowlisting or VPN. Contact publisher."
+        "type": "bearer",
+        "header": "Authorization",
+        "format": "Bearer <MCP_API_KEY>",
+        "note": "Contact publisher for API key. Key stored in pestpro/integrations/mcp-api-key (AWS SM us-east-1)."
       },
       "hosting": {
         "provider": "AWS App Runner",
@@ -75,18 +77,27 @@
       "name": "CardPointe Payments MCP",
       "description": "CardPointe / CardConnect payment processing. Authorize, capture, void, refund, ACH, stored profiles, deposit reporting.",
       "category": "payments",
-      "status": "local",
-      "transport": "stdio",
-      "endpoint": null,
-      "note": "Currently runs as a local stdio MCP. Remote hosting planned.",
+      "status": "production",
+      "transport": "streamable-http",
+      "endpoint": "https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp",
+      "healthcheck": "https://qwnm3rvm8m.us-east-2.awsapprunner.com/",
       "auth": {
-        "type": "api-key",
-        "note": "Credentials via AWS Secrets Manager key pestpro/integrations/cardpointe"
+        "type": "bearer",
+        "header": "Authorization",
+        "format": "Bearer <MCP_API_KEY>",
+        "note": "Contact publisher for API key. Key stored in pestpro/integrations/mcp-api-key (AWS SM us-east-1)."
+      },
+      "hosting": {
+        "provider": "AWS App Runner",
+        "region": "us-east-2",
+        "service_name": "cardpointe-mcp-prod",
+        "image": "767397993913.dkr.ecr.us-east-2.amazonaws.com/pestpro/cardpointe-mcp:latest",
+        "platform": "linux/amd64"
       },
       "credentials": {
         "source": "AWS Secrets Manager",
         "path": "pestpro/integrations/cardpointe",
-        "region": "us-east-2"
+        "region": "us-east-1"
       },
       "merchant_ids": {
         "credit_card": "496354430886",
