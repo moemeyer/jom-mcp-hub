@@ -200,7 +200,7 @@
 <!-- QUICK CONNECT -->
 <div class="section">
   <div class="section-title">Quick Connect</div>
-  <div class="section-sub">Copy the config block for your AI client. All three production MCP servers are live at HTTPS streamable-http endpoints.</div>
+  <div class="section-sub">Copy the config block for your AI client. All three production MCP servers are live at HTTPS streamable-http endpoints. Each requires <code>Authorization: Bearer &lt;MCP_API_KEY&gt;</code> — replace <code>&lt;MCP_API_KEY&gt;</code> with the shared API key; never commit it to a repo.</div>
 
   <div class="tab-row">
     <button class="tab-btn active" onclick="showTab('claude')">Claude Desktop</button>
@@ -217,15 +217,18 @@
   <span class="hl">"mcpServers"</span>: {
     <span class="hl">"briostack-mcp"</span>: {
       <span class="hlb">"type"</span>: <span class="hlv">"streamable-http"</span>,
-      <span class="hlb">"url"</span>:  <span class="hlv">"https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp"</span>
+      <span class="hlb">"url"</span>:  <span class="hlv">"https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp"</span>,
+      <span class="hlb">"headers"</span>: { <span class="hlb">"Authorization"</span>: <span class="hlv">"Bearer &lt;MCP_API_KEY&gt;"</span> }
     },
     <span class="hl">"cardpointe-mcp"</span>: {
       <span class="hlb">"type"</span>: <span class="hlv">"streamable-http"</span>,
-      <span class="hlb">"url"</span>:  <span class="hlv">"https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp"</span>
+      <span class="hlb">"url"</span>:  <span class="hlv">"https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp"</span>,
+      <span class="hlb">"headers"</span>: { <span class="hlb">"Authorization"</span>: <span class="hlv">"Bearer &lt;MCP_API_KEY&gt;"</span> }
     },
     <span class="hl">"agency-mcp"</span>: {
       <span class="hlb">"type"</span>: <span class="hlv">"streamable-http"</span>,
-      <span class="hlb">"url"</span>:  <span class="hlv">"https://gdip7vymuh.us-west-2.awsapprunner.com/mcp"</span>
+      <span class="hlb">"url"</span>:  <span class="hlv">"https://gdip7vymuh.us-west-2.awsapprunner.com/mcp"</span>,
+      <span class="hlb">"headers"</span>: { <span class="hlb">"Authorization"</span>: <span class="hlv">"Bearer &lt;MCP_API_KEY&gt;"</span> }
     }
   }
 }</pre>
@@ -236,13 +239,16 @@
     <pre id="cursor-pre"><button class="copy-pre" onclick="copyPre('cursor-pre')">copy</button>{
   <span class="hl">"mcpServers"</span>: {
     <span class="hl">"briostack-mcp"</span>: {
-      <span class="hlb">"url"</span>: <span class="hlv">"https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp"</span>
+      <span class="hlb">"url"</span>:     <span class="hlv">"https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp"</span>,
+      <span class="hlb">"headers"</span>: { <span class="hlb">"Authorization"</span>: <span class="hlv">"Bearer &lt;MCP_API_KEY&gt;"</span> }
     },
     <span class="hl">"cardpointe-mcp"</span>: {
-      <span class="hlb">"url"</span>: <span class="hlv">"https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp"</span>
+      <span class="hlb">"url"</span>:     <span class="hlv">"https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp"</span>,
+      <span class="hlb">"headers"</span>: { <span class="hlb">"Authorization"</span>: <span class="hlv">"Bearer &lt;MCP_API_KEY&gt;"</span> }
     },
     <span class="hl">"agency-mcp"</span>: {
-      <span class="hlb">"url"</span>: <span class="hlv">"https://gdip7vymuh.us-west-2.awsapprunner.com/mcp"</span>
+      <span class="hlb">"url"</span>:     <span class="hlv">"https://gdip7vymuh.us-west-2.awsapprunner.com/mcp"</span>,
+      <span class="hlb">"headers"</span>: { <span class="hlb">"Authorization"</span>: <span class="hlv">"Bearer &lt;MCP_API_KEY&gt;"</span> }
     }
   }
 }</pre>
@@ -254,15 +260,18 @@
   <span class="hl">"context_servers"</span>: {
     <span class="hl">"briostack-mcp"</span>: {
       <span class="hlb">"transport"</span>: <span class="hlv">"http"</span>,
-      <span class="hlb">"url"</span>:       <span class="hlv">"https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp"</span>
+      <span class="hlb">"url"</span>:       <span class="hlv">"https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp"</span>,
+      <span class="hlb">"headers"</span>:   { <span class="hlb">"Authorization"</span>: <span class="hlv">"Bearer &lt;MCP_API_KEY&gt;"</span> }
     },
     <span class="hl">"cardpointe-mcp"</span>: {
       <span class="hlb">"transport"</span>: <span class="hlv">"http"</span>,
-      <span class="hlb">"url"</span>:       <span class="hlv">"https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp"</span>
+      <span class="hlb">"url"</span>:       <span class="hlv">"https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp"</span>,
+      <span class="hlb">"headers"</span>:   { <span class="hlb">"Authorization"</span>: <span class="hlv">"Bearer &lt;MCP_API_KEY&gt;"</span> }
     },
     <span class="hl">"agency-mcp"</span>: {
       <span class="hlb">"transport"</span>: <span class="hlv">"http"</span>,
-      <span class="hlb">"url"</span>:       <span class="hlv">"https://gdip7vymuh.us-west-2.awsapprunner.com/mcp"</span>
+      <span class="hlb">"url"</span>:       <span class="hlv">"https://gdip7vymuh.us-west-2.awsapprunner.com/mcp"</span>,
+      <span class="hlb">"headers"</span>:   { <span class="hlb">"Authorization"</span>: <span class="hlv">"Bearer &lt;MCP_API_KEY&gt;"</span> }
     }
   }
 }</pre>

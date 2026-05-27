@@ -27,21 +27,24 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
   "mcpServers": {
     "briostack-ops": {
       "type": "streamable-http",
-      "url": "https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp"
+      "url": "https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp",
+      "headers": { "Authorization": "Bearer <MCP_API_KEY>" }
     },
     "cardpointe-mcp": {
       "type": "streamable-http",
-      "url": "https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp"
+      "url": "https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp",
+      "headers": { "Authorization": "Bearer <MCP_API_KEY>" }
     },
     "agency-mcp": {
       "type": "streamable-http",
-      "url": "https://gdip7vymuh.us-west-2.awsapprunner.com/mcp"
+      "url": "https://gdip7vymuh.us-west-2.awsapprunner.com/mcp",
+      "headers": { "Authorization": "Bearer <MCP_API_KEY>" }
     }
   }
 }
 ```
 
-Each server requires `Authorization: Bearer <MCP_API_KEY>`. Store the token in the client secret manager; do not commit it to repo files.
+> Replace `<MCP_API_KEY>` with the shared API key. `claude_desktop_config.json` is local to your machine — do not commit it to any repository.
 
 ### Cursor
 
@@ -51,20 +54,22 @@ Add to `.cursor/mcp.json` in your project root:
 {
   "mcpServers": {
     "briostack-ops": {
-      "type": "http",
-      "url": "https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp"
+      "url": "https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp",
+      "headers": { "Authorization": "Bearer <MCP_API_KEY>" }
     },
     "cardpointe-mcp": {
-      "type": "http",
-      "url": "https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp"
+      "url": "https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp",
+      "headers": { "Authorization": "Bearer <MCP_API_KEY>" }
     },
     "agency-mcp": {
-      "type": "http",
-      "url": "https://gdip7vymuh.us-west-2.awsapprunner.com/mcp"
+      "url": "https://gdip7vymuh.us-west-2.awsapprunner.com/mcp",
+      "headers": { "Authorization": "Bearer <MCP_API_KEY>" }
     }
   }
 }
 ```
+
+> Replace `<MCP_API_KEY>` with the shared API key. Do not commit this file if it contains the live token.
 
 ---
 
