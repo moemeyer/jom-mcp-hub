@@ -149,7 +149,8 @@
         "path": "pestpro/integrations/ghl",
         "region": "us-east-2"
       },
-      "tool_count": 57,
+      "tool_count": 98,
+      "tools_note": "Live MCP tools/list is authoritative. This catalog includes the main published tool set; the running Agency MCP currently exposes 98 tools.",
       "tools": [
         { "name": "search_agency_contacts",       "category": "contacts",    "description": "Search GHL contacts by name, phone, email, or tag" },
         { "name": "create_contact",               "category": "contacts",    "description": "Create a new GHL contact" },

@@ -2,7 +2,7 @@
 
 **Live:** [mcp.jom.services](https://mcp.jom.services)
 
-MCP (Model Context Protocol) server registry for JOM Services / Pest Pro Rid All. Three production/local servers spanning field operations, payments, and CRM.
+MCP (Model Context Protocol) server registry for JOM Services / Pest Pro Rid All. Three production streamable-http servers spanning field operations, payments, and CRM.
 
 ---
 
@@ -11,14 +11,14 @@ MCP (Model Context Protocol) server registry for JOM Services / Pest Pro Rid All
 | Server | Transport | Status | Tools |
 |--------|-----------|--------|-------|
 | BrioStack Operations | streamable-http | production | 32 |
-| CardPointe Payments | stdio (local) | local | 15 |
-| Agency / GHL Operations | stdio (local) | local | 57 |
+| CardPointe Payments | streamable-http | production | 15 |
+| Agency / GHL Operations | streamable-http | production | 98 |
 
 ---
 
 ## Quick Connect
 
-### Claude Desktop — BrioStack (remote)
+### Claude Desktop — Remote MCP servers
 
 Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
@@ -26,33 +26,22 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 {
   "mcpServers": {
     "briostack-ops": {
-      "type": "http",
-      "url": "https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp"
-    }
-  }
-}
-```
-
-### Claude Desktop — All 3 servers (local stdio)
-
-```json
-{
-  "mcpServers": {
-    "briostack-ops": {
-      "type": "http",
+      "type": "streamable-http",
       "url": "https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp"
     },
     "cardpointe-mcp": {
-      "command": "python3",
-      "args": ["/path/to/cardpointe-mcp/server.py"]
+      "type": "streamable-http",
+      "url": "https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp"
     },
     "agency-mcp": {
-      "command": "python3",
-      "args": ["/path/to/agency-mcp/server.py"]
+      "type": "streamable-http",
+      "url": "https://gdip7vymuh.us-west-2.awsapprunner.com/mcp"
     }
   }
 }
 ```
+
+Each server requires `Authorization: Bearer <MCP_API_KEY>`. Store the token in the client secret manager; do not commit it to repo files.
 
 ### Cursor
 
@@ -64,6 +53,14 @@ Add to `.cursor/mcp.json` in your project root:
     "briostack-ops": {
       "type": "http",
       "url": "https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp"
+    },
+    "cardpointe-mcp": {
+      "type": "http",
+      "url": "https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp"
+    },
+    "agency-mcp": {
+      "type": "http",
+      "url": "https://gdip7vymuh.us-west-2.awsapprunner.com/mcp"
     }
   }
 }
@@ -79,6 +76,8 @@ Add to `.cursor/mcp.json` in your project root:
 | `https://mcp.jom.services/mcp-catalog.json` | JSON | Full catalog with tools, hosting, credentials |
 | `https://vnf9mp2vik.us-east-2.awsapprunner.com/` | HTTP | BrioStack health check |
 | `https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp` | MCP/SSE | BrioStack MCP endpoint |
+| `https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp` | MCP/SSE | CardPointe MCP endpoint |
+| `https://gdip7vymuh.us-west-2.awsapprunner.com/mcp` | MCP/SSE | Agency MCP endpoint |
 
 ---
 

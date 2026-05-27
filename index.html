@@ -169,9 +169,11 @@
         </div>
       </div>
       <div class="sc-desc">CardConnect/CardPointe payment processing. Credit card auth/capture/void/refund, ACH via BlueChex, stored profile tokenization, deposit reporting.</div>
-      <span class="status-badge local">Local stdio</span>
+      <span class="status-badge production">Production</span>
       <span class="tool-count">15 tools</span>
-      <div class="sc-url">stdio — remote hosting pending</div>
+      <div class="sc-url" id="cardpointe-url">https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp
+        <button class="copy-btn" onclick="copyText('cardpointe-url')">copy</button>
+      </div>
     </div>
 
     <div class="server-card">
@@ -183,9 +185,11 @@
         </div>
       </div>
       <div class="sc-desc">GoHighLevel CRM operations. Contacts, conversations, calendars, pipelines, AI conversation bots, voice agents, knowledge bases, blogs, social media, and Stripe.</div>
-      <span class="status-badge local">Local stdio</span>
-      <span class="tool-count">57 tools</span>
-      <div class="sc-url">stdio — remote hosting pending</div>
+      <span class="status-badge production">Production</span>
+      <span class="tool-count">98 tools</span>
+      <div class="sc-url" id="agency-url">https://gdip7vymuh.us-west-2.awsapprunner.com/mcp
+        <button class="copy-btn" onclick="copyText('agency-url')">copy</button>
+      </div>
     </div>
 
   </div>
@@ -196,14 +200,14 @@
 <!-- QUICK CONNECT -->
 <div class="section">
   <div class="section-title">Quick Connect</div>
-  <div class="section-sub">Copy the config block for your AI client. The briostack-mcp server is live now at a public HTTPS endpoint.</div>
+  <div class="section-sub">Copy the config block for your AI client. All three production MCP servers are live at HTTPS streamable-http endpoints.</div>
 
   <div class="tab-row">
     <button class="tab-btn active" onclick="showTab('claude')">Claude Desktop</button>
     <button class="tab-btn" onclick="showTab('cursor')">Cursor / Windsurf</button>
     <button class="tab-btn" onclick="showTab('zed')">Zed Editor</button>
     <button class="tab-btn" onclick="showTab('generic')">Generic MCP Client</button>
-    <button class="tab-btn" onclick="showTab('local')">Local stdio (all 3)</button>
+    <button class="tab-btn" onclick="showTab('local')">Local stdio fallback</button>
   </div>
 
   <div id="tab-claude" class="tab-pane active">
@@ -214,6 +218,14 @@
     <span class="hl">"briostack-mcp"</span>: {
       <span class="hlb">"type"</span>: <span class="hlv">"streamable-http"</span>,
       <span class="hlb">"url"</span>:  <span class="hlv">"https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp"</span>
+    },
+    <span class="hl">"cardpointe-mcp"</span>: {
+      <span class="hlb">"type"</span>: <span class="hlv">"streamable-http"</span>,
+      <span class="hlb">"url"</span>:  <span class="hlv">"https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp"</span>
+    },
+    <span class="hl">"agency-mcp"</span>: {
+      <span class="hlb">"type"</span>: <span class="hlv">"streamable-http"</span>,
+      <span class="hlb">"url"</span>:  <span class="hlv">"https://gdip7vymuh.us-west-2.awsapprunner.com/mcp"</span>
     }
   }
 }</pre>
@@ -225,6 +237,12 @@
   <span class="hl">"mcpServers"</span>: {
     <span class="hl">"briostack-mcp"</span>: {
       <span class="hlb">"url"</span>: <span class="hlv">"https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp"</span>
+    },
+    <span class="hl">"cardpointe-mcp"</span>: {
+      <span class="hlb">"url"</span>: <span class="hlv">"https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp"</span>
+    },
+    <span class="hl">"agency-mcp"</span>: {
+      <span class="hlb">"url"</span>: <span class="hlv">"https://gdip7vymuh.us-west-2.awsapprunner.com/mcp"</span>
     }
   }
 }</pre>
@@ -237,6 +255,14 @@
     <span class="hl">"briostack-mcp"</span>: {
       <span class="hlb">"transport"</span>: <span class="hlv">"http"</span>,
       <span class="hlb">"url"</span>:       <span class="hlv">"https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp"</span>
+    },
+    <span class="hl">"cardpointe-mcp"</span>: {
+      <span class="hlb">"transport"</span>: <span class="hlv">"http"</span>,
+      <span class="hlb">"url"</span>:       <span class="hlv">"https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp"</span>
+    },
+    <span class="hl">"agency-mcp"</span>: {
+      <span class="hlb">"transport"</span>: <span class="hlv">"http"</span>,
+      <span class="hlb">"url"</span>:       <span class="hlv">"https://gdip7vymuh.us-west-2.awsapprunner.com/mcp"</span>
     }
   }
 }</pre>
@@ -250,8 +276,9 @@
   <span class="hlb">"method"</span>:       <span class="hlv">"POST"</span>,
   <span class="hlb">"content_type"</span>: <span class="hlv">"application/json"</span>,
   <span class="hlb">"accept"</span>:       <span class="hlv">"text/event-stream, application/json"</span>,
-  <span class="hlb">"auth"</span>:         <span class="hlv">"none"</span>,
-  <span class="hlb">"note"</span>:         <span class="hlv">"IP-restricted. Contact admin for allowlisting."</span>
+  <span class="hlb">"auth"</span>:         <span class="hlv">"bearer"</span>,
+  <span class="hlb">"header"</span>:       <span class="hlv">"Authorization: Bearer &lt;MCP_API_KEY&gt;"</span>,
+  <span class="hlb">"note"</span>:         <span class="hlv">"Store the token in the client secret manager. Do not commit it."</span>
 }</pre>
   </div>
 
@@ -282,7 +309,7 @@
 <!-- TOOL REFERENCE -->
 <div class="section">
   <div class="section-title">Tool Reference</div>
-  <div class="section-sub">All 104 tools across all three servers. Click a server to expand its full tool list.</div>
+  <div class="section-sub">145 live tools across all three servers. Click a server to expand the published tool highlights; use MCP tools/list for the authoritative live list.</div>
 
   <!-- BrioStack tools -->
   <div class="tool-accordion">
@@ -364,7 +391,7 @@
   <!-- Agency/GHL tools (abbreviated) -->
   <div class="tool-accordion">
     <div class="ta-header" onclick="toggleAccordion('ghl-tools')">
-      📋 &nbsp;Agency / GHL Operations &nbsp;<span style="color:var(--gray-3);font-weight:400;font-size:.8rem">57 tools</span>
+      📋 &nbsp;Agency / GHL Operations &nbsp;<span style="color:var(--gray-3);font-weight:400;font-size:.8rem">98 tools</span>
       <span id="ghl-tools-arrow">▶</span>
     </div>
     <div class="ta-body" id="ghl-tools">
@@ -572,6 +599,8 @@
       <tr><td><code>https://mcp.jom.services/.well-known/mcp.json</code></td><td>JSON</td><td>Standard well-known MCP discovery endpoint. Server IDs, transports, live URLs.</td></tr>
       <tr><td><code>https://mcp.jom.services/mcp-catalog.json</code></td><td>JSON</td><td>Full server catalog. All tools with names, categories, descriptions. Publisher metadata.</td></tr>
       <tr><td><code>https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp</code></td><td>MCP/SSE</td><td>Live BrioStack MCP endpoint. POST with <code>Accept: text/event-stream</code>.</td></tr>
+      <tr><td><code>https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp</code></td><td>MCP/SSE</td><td>Live CardPointe MCP endpoint. Requires bearer auth.</td></tr>
+      <tr><td><code>https://gdip7vymuh.us-west-2.awsapprunner.com/mcp</code></td><td>MCP/SSE</td><td>Live Agency MCP endpoint. Requires bearer auth.</td></tr>
     </tbody>
   </table>
 </div>

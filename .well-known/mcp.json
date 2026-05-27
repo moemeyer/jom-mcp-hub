@@ -12,16 +12,16 @@
     {
       "id": "cardpointe-mcp",
       "name": "CardPointe Payments",
-      "url": null,
-      "transport": "stdio",
-      "status": "local"
+      "url": "https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp",
+      "transport": "streamable-http",
+      "status": "production"
     },
     {
       "id": "agency-mcp",
       "name": "Agency / GHL Operations",
-      "url": null,
-      "transport": "stdio",
-      "status": "local"
+      "url": "https://gdip7vymuh.us-west-2.awsapprunner.com/mcp",
+      "transport": "streamable-http",
+      "status": "production"
     }
   ]
 }
