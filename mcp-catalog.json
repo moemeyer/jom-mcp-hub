@@ -127,13 +127,22 @@
       "name": "Agency / GHL Operations MCP",
       "description": "GoHighLevel (GHL) CRM & marketing operations. Contacts, conversations, calendars, pipelines, AI bots, voice agents, knowledge bases, social media, invoices, Stripe.",
       "category": "crm-marketing",
-      "status": "local",
-      "transport": "stdio",
-      "endpoint": null,
-      "note": "Currently runs as a local stdio MCP. Remote hosting planned.",
+      "status": "production",
+      "transport": "streamable-http",
+      "endpoint": "https://gdip7vymuh.us-west-2.awsapprunner.com/mcp",
+      "healthcheck": "https://gdip7vymuh.us-west-2.awsapprunner.com/",
       "auth": {
-        "type": "api-key",
-        "note": "Credentials via AWS Secrets Manager key pestpro/integrations/ghl"
+        "type": "bearer",
+        "header": "Authorization",
+        "format": "Bearer <MCP_API_KEY>",
+        "note": "Contact publisher for API key. Key stored in pestpro/integrations/mcp-api-key (AWS SM us-east-1)."
+      },
+      "hosting": {
+        "provider": "AWS App Runner",
+        "region": "us-west-2",
+        "service_name": "agency-mcp-prod",
+        "image": "767397993913.dkr.ecr.us-west-2.amazonaws.com/pestpro/agency-mcp:latest",
+        "platform": "linux/amd64"
       },
       "credentials": {
         "source": "AWS Secrets Manager",
