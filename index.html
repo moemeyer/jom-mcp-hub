@@ -186,7 +186,7 @@
       </div>
       <div class="sc-desc">GoHighLevel CRM operations. Contacts, conversations, calendars, pipelines, AI conversation bots, voice agents, knowledge bases, blogs, social media, and Stripe.</div>
       <span class="status-badge production">Production</span>
-      <span class="tool-count">153 tools</span>
+      <span class="tool-count">154 tools</span>
       <div class="sc-url" id="agency-url">https://gdip7vymuh.us-west-2.awsapprunner.com/mcp
         <button class="copy-btn" onclick="copyText('agency-url')">copy</button>
       </div>
@@ -318,7 +318,7 @@
 <!-- TOOL REFERENCE -->
 <div class="section">
   <div class="section-title">Tool Reference</div>
-  <div class="section-sub">200 documented tools across all three servers (32 BrioStack · 15 CardPointe · 153 Agency/GHL). Catalog updated Q2 2026 with Social Planner, Blog, Invoicing, Payments, Custom Objects, Voice AI v2, Conversation AI v3, and Agent Studio APIs. Use MCP tools/list for the authoritative live list.</div>
+  <div class="section-sub">201 documented tools across all three servers (32 BrioStack · 15 CardPointe · 154 Agency/GHL). Catalog updated Q2 2026 with Social Planner, Blog, Invoicing, Payments, Custom Objects, Voice AI v2, Conversation AI v3, and Agent Studio APIs. Use MCP tools/list for the authoritative live list.</div>
 
   <!-- BrioStack tools -->
   <div class="tool-accordion">
@@ -400,7 +400,7 @@
   <!-- Agency/GHL tools (abbreviated) -->
   <div class="tool-accordion">
     <div class="ta-header" onclick="toggleAccordion('ghl-tools')">
-      📋 &nbsp;Agency / GHL Operations &nbsp;<span style="color:var(--gray-3);font-weight:400;font-size:.8rem">153 tools</span>
+      📋 &nbsp;Agency / GHL Operations &nbsp;<span style="color:var(--gray-3);font-weight:400;font-size:.8rem">154 tools</span>
       <span id="ghl-tools-arrow">▶</span>
     </div>
     <div class="ta-body" id="ghl-tools">
@@ -420,6 +420,8 @@
           <tr><td class="tool-name">get_contact_appointments</td><td><span class="cat-badge">contacts</span></td><td>List all calendar appointments linked to a contact</td></tr>
           <tr><td class="tool-name">list_contact_notes</td><td><span class="cat-badge">contacts</span></td><td>List all notes for a contact</td></tr>
           <tr><td class="tool-name">create_contact_note</td><td><span class="cat-badge">contacts</span></td><td>Add a note to a contact</td></tr>
+          <tr><td class="tool-name">update_contact_note</td><td><span class="cat-badge">contacts</span></td><td>Edit an existing contact note</td></tr>
+          <tr><td class="tool-name">delete_contact_note</td><td><span class="cat-badge">contacts</span></td><td>Delete a contact note</td></tr>
           <tr><td class="tool-name">pin_contact_note</td><td><span class="cat-badge">contacts</span></td><td>Pin a note to the top of a contact record</td></tr>
           <tr><td class="tool-name">get_conversation</td><td><span class="cat-badge">conversations</span></td><td>Fetch a conversation thread by ID</td></tr>
           <tr><td class="tool-name">get_conversation_messages</td><td><span class="cat-badge">conversations</span></td><td>List messages in a conversation</td></tr>
@@ -441,6 +443,7 @@
           <tr><td class="tool-name">delete_calendar_event</td><td><span class="cat-badge">calendars</span></td><td>Delete a calendar event</td></tr>
           <tr><td class="tool-name">get_available_slots</td><td><span class="cat-badge">calendars</span></td><td>Get available booking time slots for a calendar</td></tr>
           <tr><td class="tool-name">create_block_slot</td><td><span class="cat-badge">calendars</span></td><td>Block time on a calendar to prevent bookings</td></tr>
+          <tr><td class="tool-name">delete_block_slot</td><td><span class="cat-badge">calendars</span></td><td>Remove a blocked time slot</td></tr>
           <tr><td class="tool-name">get_pipelines</td><td><span class="cat-badge">pipelines</span></td><td>List all sales/operations pipelines</td></tr>
           <tr><td class="tool-name">get_pipeline_stages</td><td><span class="cat-badge">pipelines</span></td><td>List stages for a specific pipeline</td></tr>
           <tr><td class="tool-name">list_opportunities</td><td><span class="cat-badge">pipelines</span></td><td>Pipeline opportunities with stage filters</td></tr>
@@ -462,6 +465,7 @@
           <tr><td class="tool-name">list_custom_values</td><td><span class="cat-badge">admin</span></td><td>List all custom values (location-level variables)</td></tr>
           <tr><td class="tool-name">create_custom_value</td><td><span class="cat-badge">admin</span></td><td>Create a custom value variable</td></tr>
           <tr><td class="tool-name">update_custom_value</td><td><span class="cat-badge">admin</span></td><td>Update a custom value</td></tr>
+          <tr><td class="tool-name">delete_custom_value</td><td><span class="cat-badge">admin</span></td><td>Delete a custom value</td></tr>
           <tr><td class="tool-name">list_users</td><td><span class="cat-badge">admin</span></td><td>All users in the location</td></tr>
           <tr><td class="tool-name">get_user</td><td><span class="cat-badge">admin</span></td><td>Get a user by ID</td></tr>
           <tr><td class="tool-name">create_user</td><td><span class="cat-badge">admin</span></td><td>Create a new user in the location</td></tr>
@@ -544,7 +548,7 @@
           <tr><td class="tool-name">create_coupon</td><td><span class="cat-badge">commerce</span></td><td>Create a percentage or fixed-amount discount coupon</td></tr>
           <tr><td class="tool-name">list_payment_transactions</td><td><span class="cat-badge">commerce</span></td><td>Payment transactions</td></tr>
           <tr><td class="tool-name">process_stripe_refund</td><td><span class="cat-badge">commerce</span></td><td>Process a Stripe refund through GHL</td></tr>
-          <tr><td class="tool-name">access_pestpro_stripe_account</td><td><span class="cat-badge">commerce</span></td><td>Pest Pro Stripe account (acct_1IJoWII8Ppq6GZQE)</td></tr>
+          <tr><td class="tool-name">access_pestpro_stripe_account</td><td><span class="cat-badge">commerce</span></td><td>Access the Pest Pro linked Stripe account for payouts and reporting</td></tr>
           <tr><td class="tool-name">list_reviews</td><td><span class="cat-badge">reviews</span></td><td>List Google and Facebook reviews for the location</td></tr>
           <tr><td class="tool-name">reply_to_review</td><td><span class="cat-badge">reviews</span></td><td>Post a public reply to a Google or Facebook review</td></tr>
           <tr><td class="tool-name">send_review_request</td><td><span class="cat-badge">reviews</span></td><td>Send a review request to a contact via SMS or email</td></tr>

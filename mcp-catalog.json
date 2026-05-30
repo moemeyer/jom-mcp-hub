@@ -149,7 +149,7 @@
         "path": "pestpro/integrations/ghl",
         "region": "us-east-2"
       },
-      "tool_count": 153,
+      "tool_count": 154,
       "tools_note": "Catalog reflects GHL Public API capabilities through Q2 2026 including Social Planner, Blog, Invoicing, Payments, Products, Custom Objects, Voice AI v2, Conversation AI v3, Agent Studio, and Reviews APIs. Use MCP tools/list for the authoritative live list; deploy updated server to expose new endpoints.",
       "tools": [
         { "name": "search_agency_contacts",          "category": "contacts",        "description": "Search GHL contacts by name, phone, email, or tag" },
@@ -207,6 +207,7 @@
         { "name": "list_custom_values",              "category": "admin",           "description": "List all custom values (location-level variables)" },
         { "name": "create_custom_value",             "category": "admin",           "description": "Create a custom value variable" },
         { "name": "update_custom_value",             "category": "admin",           "description": "Update a custom value" },
+        { "name": "delete_custom_value",             "category": "admin",           "description": "Delete a custom value" },
         { "name": "list_users",                      "category": "admin",           "description": "List all users in the location" },
         { "name": "get_user",                        "category": "admin",           "description": "Get a user by ID" },
         { "name": "create_user",                     "category": "admin",           "description": "Create a new user in the location" },
@@ -292,7 +293,7 @@
         { "name": "create_coupon",                   "category": "commerce",        "description": "Create a percentage or fixed-amount discount coupon" },
         { "name": "list_payment_transactions",       "category": "commerce",        "description": "List payment transactions" },
         { "name": "process_stripe_refund",           "category": "commerce",        "description": "Process a Stripe refund through GHL" },
-        { "name": "access_pestpro_stripe_account",   "category": "commerce",        "description": "Access Pest Pro Stripe account (acct_1IJoWII8Ppq6GZQE)" },
+        { "name": "access_pestpro_stripe_account",   "category": "commerce",        "description": "Access the Pest Pro linked Stripe account for payouts and reporting" },
         { "name": "list_reviews",                    "category": "reviews",         "description": "List Google and Facebook reviews for the location" },
         { "name": "reply_to_review",                 "category": "reviews",         "description": "Post a public reply to a Google or Facebook review" },
         { "name": "send_review_request",             "category": "reviews",         "description": "Send a review request to a contact via SMS or email" },
