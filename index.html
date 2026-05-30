@@ -186,7 +186,7 @@
       </div>
       <div class="sc-desc">GoHighLevel CRM operations. Contacts, conversations, calendars, pipelines, AI conversation bots, voice agents, knowledge bases, blogs, social media, and Stripe.</div>
       <span class="status-badge production">Production</span>
-      <span class="tool-count">98 tools</span>
+      <span class="tool-count">154 tools</span>
       <div class="sc-url" id="agency-url">https://gdip7vymuh.us-west-2.awsapprunner.com/mcp
         <button class="copy-btn" onclick="copyText('agency-url')">copy</button>
       </div>
@@ -318,7 +318,7 @@
 <!-- TOOL REFERENCE -->
 <div class="section">
   <div class="section-title">Tool Reference</div>
-  <div class="section-sub">145 live tools across all three servers. Click a server to expand the published tool highlights; use MCP tools/list for the authoritative live list.</div>
+  <div class="section-sub">201 documented tools across all three servers (32 BrioStack · 15 CardPointe · 154 Agency/GHL). Catalog updated Q2 2026 with Social Planner, Blog, Invoicing, Payments, Custom Objects, Voice AI v2, Conversation AI v3, and Agent Studio APIs. Use MCP tools/list for the authoritative live list.</div>
 
   <!-- BrioStack tools -->
   <div class="tool-accordion">
@@ -400,7 +400,7 @@
   <!-- Agency/GHL tools (abbreviated) -->
   <div class="tool-accordion">
     <div class="ta-header" onclick="toggleAccordion('ghl-tools')">
-      📋 &nbsp;Agency / GHL Operations &nbsp;<span style="color:var(--gray-3);font-weight:400;font-size:.8rem">98 tools</span>
+      📋 &nbsp;Agency / GHL Operations &nbsp;<span style="color:var(--gray-3);font-weight:400;font-size:.8rem">154 tools</span>
       <span id="ghl-tools-arrow">▶</span>
     </div>
     <div class="ta-body" id="ghl-tools">
@@ -408,48 +408,159 @@
         <thead><tr><th>Tool</th><th>Category</th><th>Description</th></tr></thead>
         <tbody>
           <tr><td class="tool-name">search_agency_contacts</td><td><span class="cat-badge">contacts</span></td><td>Search GHL contacts by name, phone, email, or tag</td></tr>
+          <tr><td class="tool-name">get_contact</td><td><span class="cat-badge">contacts</span></td><td>Fetch full contact record by GHL contact ID</td></tr>
           <tr><td class="tool-name">create_contact</td><td><span class="cat-badge">contacts</span></td><td>Create a new GHL contact</td></tr>
           <tr><td class="tool-name">update_contact</td><td><span class="cat-badge">contacts</span></td><td>Update contact fields and custom properties</td></tr>
-          <tr><td class="tool-name">list_contact_notes</td><td><span class="cat-badge">contacts</span></td><td>List notes on a contact record</td></tr>
+          <tr><td class="tool-name">delete_contact</td><td><span class="cat-badge">contacts</span></td><td>Delete a contact record permanently</td></tr>
+          <tr><td class="tool-name">bulk_update_contacts</td><td><span class="cat-badge">contacts</span></td><td>Update multiple contacts in a single call</td></tr>
+          <tr><td class="tool-name">add_contact_tag</td><td><span class="cat-badge">contacts</span></td><td>Add one or more tags to a contact</td></tr>
+          <tr><td class="tool-name">remove_contact_tag</td><td><span class="cat-badge">contacts</span></td><td>Remove one or more tags from a contact</td></tr>
+          <tr><td class="tool-name">add_contact_to_workflow</td><td><span class="cat-badge">contacts</span></td><td>Enroll a contact into a GHL workflow</td></tr>
+          <tr><td class="tool-name">remove_contact_from_workflow</td><td><span class="cat-badge">contacts</span></td><td>Remove a contact from a workflow</td></tr>
+          <tr><td class="tool-name">get_contact_appointments</td><td><span class="cat-badge">contacts</span></td><td>List all calendar appointments linked to a contact</td></tr>
+          <tr><td class="tool-name">list_contact_notes</td><td><span class="cat-badge">contacts</span></td><td>List all notes for a contact</td></tr>
           <tr><td class="tool-name">create_contact_note</td><td><span class="cat-badge">contacts</span></td><td>Add a note to a contact</td></tr>
+          <tr><td class="tool-name">update_contact_note</td><td><span class="cat-badge">contacts</span></td><td>Edit an existing contact note</td></tr>
+          <tr><td class="tool-name">delete_contact_note</td><td><span class="cat-badge">contacts</span></td><td>Delete a contact note</td></tr>
           <tr><td class="tool-name">pin_contact_note</td><td><span class="cat-badge">contacts</span></td><td>Pin a note to the top of a contact record</td></tr>
           <tr><td class="tool-name">get_conversation</td><td><span class="cat-badge">conversations</span></td><td>Fetch a conversation thread by ID</td></tr>
           <tr><td class="tool-name">get_conversation_messages</td><td><span class="cat-badge">conversations</span></td><td>List messages in a conversation</td></tr>
           <tr><td class="tool-name">list_conversations</td><td><span class="cat-badge">conversations</span></td><td>List all conversations with filters</td></tr>
+          <tr><td class="tool-name">create_conversation</td><td><span class="cat-badge">conversations</span></td><td>Create a new conversation thread for a contact</td></tr>
+          <tr><td class="tool-name">update_conversation</td><td><span class="cat-badge">conversations</span></td><td>Update conversation status, assignment, or label</td></tr>
           <tr><td class="tool-name">send_message</td><td><span class="cat-badge">conversations</span></td><td>Send SMS, email, or in-app message</td></tr>
           <tr><td class="tool-name">send_email_message</td><td><span class="cat-badge">conversations</span></td><td>Send a formatted email through GHL</td></tr>
           <tr><td class="tool-name">send_whatsapp_message</td><td><span class="cat-badge">conversations</span></td><td>Send a WhatsApp message via GHL</td></tr>
           <tr><td class="tool-name">list_calendars</td><td><span class="cat-badge">calendars</span></td><td>List all GHL calendars</td></tr>
+          <tr><td class="tool-name">get_calendar</td><td><span class="cat-badge">calendars</span></td><td>Get a single calendar by ID</td></tr>
+          <tr><td class="tool-name">create_calendar</td><td><span class="cat-badge">calendars</span></td><td>Create a new GHL calendar</td></tr>
+          <tr><td class="tool-name">update_calendar</td><td><span class="cat-badge">calendars</span></td><td>Update calendar settings and availability rules</td></tr>
+          <tr><td class="tool-name">delete_calendar</td><td><span class="cat-badge">calendars</span></td><td>Delete a calendar</td></tr>
           <tr><td class="tool-name">list_calendar_events</td><td><span class="cat-badge">calendars</span></td><td>Events with date/calendar filters</td></tr>
+          <tr><td class="tool-name">get_calendar_event</td><td><span class="cat-badge">calendars</span></td><td>Get a single calendar event</td></tr>
           <tr><td class="tool-name">create_calendar_event</td><td><span class="cat-badge">calendars</span></td><td>Create an appointment in GHL calendar</td></tr>
+          <tr><td class="tool-name">update_calendar_event</td><td><span class="cat-badge">calendars</span></td><td>Update an existing calendar event (reschedule, reassign)</td></tr>
+          <tr><td class="tool-name">delete_calendar_event</td><td><span class="cat-badge">calendars</span></td><td>Delete a calendar event</td></tr>
+          <tr><td class="tool-name">get_available_slots</td><td><span class="cat-badge">calendars</span></td><td>Get available booking time slots for a calendar</td></tr>
+          <tr><td class="tool-name">create_block_slot</td><td><span class="cat-badge">calendars</span></td><td>Block time on a calendar to prevent bookings</td></tr>
+          <tr><td class="tool-name">delete_block_slot</td><td><span class="cat-badge">calendars</span></td><td>Remove a blocked time slot</td></tr>
           <tr><td class="tool-name">get_pipelines</td><td><span class="cat-badge">pipelines</span></td><td>List all sales/operations pipelines</td></tr>
+          <tr><td class="tool-name">get_pipeline_stages</td><td><span class="cat-badge">pipelines</span></td><td>List stages for a specific pipeline</td></tr>
           <tr><td class="tool-name">list_opportunities</td><td><span class="cat-badge">pipelines</span></td><td>Pipeline opportunities with stage filters</td></tr>
+          <tr><td class="tool-name">get_opportunity</td><td><span class="cat-badge">pipelines</span></td><td>Get a single opportunity by ID</td></tr>
           <tr><td class="tool-name">create_opportunity</td><td><span class="cat-badge">pipelines</span></td><td>Create a pipeline opportunity</td></tr>
+          <tr><td class="tool-name">update_opportunity</td><td><span class="cat-badge">pipelines</span></td><td>Update opportunity details</td></tr>
           <tr><td class="tool-name">update_opportunity_status</td><td><span class="cat-badge">pipelines</span></td><td>Move opportunity to won/lost/open</td></tr>
+          <tr><td class="tool-name">delete_opportunity</td><td><span class="cat-badge">pipelines</span></td><td>Delete a pipeline opportunity</td></tr>
+          <tr><td class="tool-name">add_opportunity_follower</td><td><span class="cat-badge">pipelines</span></td><td>Add a team member as follower to an opportunity</td></tr>
+          <tr><td class="tool-name">list_workflows</td><td><span class="cat-badge">automation</span></td><td>List all automation workflows</td></tr>
+          <tr><td class="tool-name">get_workflow</td><td><span class="cat-badge">automation</span></td><td>Get workflow details, triggers, and steps by ID</td></tr>
+          <tr><td class="tool-name">trigger_workflow</td><td><span class="cat-badge">automation</span></td><td>Enroll a contact into a workflow by workflow ID</td></tr>
           <tr><td class="tool-name">get_location</td><td><span class="cat-badge">admin</span></td><td>GHL location (sub-account) details</td></tr>
+          <tr><td class="tool-name">update_location</td><td><span class="cat-badge">admin</span></td><td>Update sub-account settings and preferences</td></tr>
           <tr><td class="tool-name">get_custom_fields</td><td><span class="cat-badge">admin</span></td><td>List all custom fields in the location</td></tr>
+          <tr><td class="tool-name">create_custom_field</td><td><span class="cat-badge">admin</span></td><td>Create a new custom field</td></tr>
+          <tr><td class="tool-name">update_custom_field</td><td><span class="cat-badge">admin</span></td><td>Update a custom field definition</td></tr>
+          <tr><td class="tool-name">delete_custom_field</td><td><span class="cat-badge">admin</span></td><td>Delete a custom field</td></tr>
+          <tr><td class="tool-name">list_custom_values</td><td><span class="cat-badge">admin</span></td><td>List all custom values (location-level variables)</td></tr>
+          <tr><td class="tool-name">create_custom_value</td><td><span class="cat-badge">admin</span></td><td>Create a custom value variable</td></tr>
+          <tr><td class="tool-name">update_custom_value</td><td><span class="cat-badge">admin</span></td><td>Update a custom value</td></tr>
+          <tr><td class="tool-name">delete_custom_value</td><td><span class="cat-badge">admin</span></td><td>Delete a custom value</td></tr>
           <tr><td class="tool-name">list_users</td><td><span class="cat-badge">admin</span></td><td>All users in the location</td></tr>
+          <tr><td class="tool-name">get_user</td><td><span class="cat-badge">admin</span></td><td>Get a user by ID</td></tr>
+          <tr><td class="tool-name">create_user</td><td><span class="cat-badge">admin</span></td><td>Create a new user in the location</td></tr>
+          <tr><td class="tool-name">update_user</td><td><span class="cat-badge">admin</span></td><td>Update user profile and permissions</td></tr>
+          <tr><td class="tool-name">delete_user</td><td><span class="cat-badge">admin</span></td><td>Remove a user from the location</td></tr>
           <tr><td class="tool-name">list_tags</td><td><span class="cat-badge">admin</span></td><td>All contact tags</td></tr>
+          <tr><td class="tool-name">create_tag</td><td><span class="cat-badge">admin</span></td><td>Create a new contact tag</td></tr>
           <tr><td class="tool-name">list_tasks</td><td><span class="cat-badge">admin</span></td><td>Tasks assigned in GHL</td></tr>
-          <tr><td class="tool-name">list_workflows</td><td><span class="cat-badge">automation</span></td><td>All automation workflows</td></tr>
-          <tr><td class="tool-name">list_campaigns</td><td><span class="cat-badge">marketing</span></td><td>All campaigns</td></tr>
-          <tr><td class="tool-name">list_funnels</td><td><span class="cat-badge">marketing</span></td><td>All funnels and pages</td></tr>
-          <tr><td class="tool-name">list_surveys</td><td><span class="cat-badge">marketing</span></td><td>All surveys</td></tr>
-          <tr><td class="tool-name">create_social_media_post</td><td><span class="cat-badge">social</span></td><td>Schedule a social media post</td></tr>
-          <tr><td class="tool-name">create_knowledge_base</td><td><span class="cat-badge">ai</span></td><td>Create an AI knowledge base</td></tr>
-          <tr><td class="tool-name">query_knowledge_base</td><td><span class="cat-badge">ai</span></td><td>Query a knowledge base for answers</td></tr>
-          <tr><td class="tool-name">crawl_knowledge_base_url</td><td><span class="cat-badge">ai</span></td><td>Ingest URL content into a knowledge base</td></tr>
-          <tr><td class="tool-name">create_conversation_ai_bot</td><td><span class="cat-badge">ai</span></td><td>Create a GHL AI conversation bot</td></tr>
-          <tr><td class="tool-name">create_voice_agent</td><td><span class="cat-badge">ai</span></td><td>Create a GHL voice AI agent</td></tr>
-          <tr><td class="tool-name">list_voice_call_logs</td><td><span class="cat-badge">ai</span></td><td>Voice agent call history</td></tr>
-          <tr><td class="tool-name">list_products</td><td><span class="cat-badge">commerce</span></td><td>Products/services in the GHL store</td></tr>
-          <tr><td class="tool-name">list_invoices</td><td><span class="cat-badge">commerce</span></td><td>GHL invoices</td></tr>
-          <tr><td class="tool-name">list_payment_transactions</td><td><span class="cat-badge">commerce</span></td><td>Payment transactions</td></tr>
-          <tr><td class="tool-name">process_stripe_refund</td><td><span class="cat-badge">commerce</span></td><td>Process a Stripe refund through GHL</td></tr>
-          <tr><td class="tool-name">access_pestpro_stripe_account</td><td><span class="cat-badge">commerce</span></td><td>Pest Pro Stripe account (acct_1IJoWII8Ppq6GZQE)</td></tr>
+          <tr><td class="tool-name">create_task</td><td><span class="cat-badge">admin</span></td><td>Create a new task</td></tr>
+          <tr><td class="tool-name">update_task</td><td><span class="cat-badge">admin</span></td><td>Update task details, due date, or assignment</td></tr>
+          <tr><td class="tool-name">complete_task</td><td><span class="cat-badge">admin</span></td><td>Mark a task as completed</td></tr>
+          <tr><td class="tool-name">delete_task</td><td><span class="cat-badge">admin</span></td><td>Delete a task</td></tr>
           <tr><td class="tool-name">get_email_dns_health</td><td><span class="cat-badge">admin</span></td><td>Check SPF, DKIM, DMARC for sending domain</td></tr>
           <tr><td class="tool-name">repair_ses_dns</td><td><span class="cat-badge">admin</span></td><td>Auto-repair SES DNS records</td></tr>
           <tr><td class="tool-name">search_agency_locations</td><td><span class="cat-badge">admin</span></td><td>Search GHL sub-accounts/locations</td></tr>
+          <tr><td class="tool-name">list_campaigns</td><td><span class="cat-badge">marketing</span></td><td>All campaigns</td></tr>
+          <tr><td class="tool-name">list_forms</td><td><span class="cat-badge">marketing</span></td><td>All lead capture forms</td></tr>
+          <tr><td class="tool-name">get_form_submissions</td><td><span class="cat-badge">marketing</span></td><td>Get submissions for a specific form</td></tr>
+          <tr><td class="tool-name">list_funnels</td><td><span class="cat-badge">marketing</span></td><td>All funnels and pages</td></tr>
+          <tr><td class="tool-name">list_funnel_pages</td><td><span class="cat-badge">marketing</span></td><td>Pages within a funnel</td></tr>
+          <tr><td class="tool-name">list_surveys</td><td><span class="cat-badge">marketing</span></td><td>All surveys</td></tr>
+          <tr><td class="tool-name">get_survey_submissions</td><td><span class="cat-badge">marketing</span></td><td>Get submissions for a specific survey</td></tr>
+          <tr><td class="tool-name">list_social_media_posts</td><td><span class="cat-badge">social</span></td><td>List scheduled and published social posts</td></tr>
+          <tr><td class="tool-name">get_social_planner_post</td><td><span class="cat-badge">social</span></td><td>Get a single social planner post by ID</td></tr>
+          <tr><td class="tool-name">create_social_media_post</td><td><span class="cat-badge">social</span></td><td>Schedule a social media post</td></tr>
+          <tr><td class="tool-name">update_social_media_post</td><td><span class="cat-badge">social</span></td><td>Edit a scheduled social media post</td></tr>
+          <tr><td class="tool-name">delete_social_media_post</td><td><span class="cat-badge">social</span></td><td>Delete a scheduled social media post</td></tr>
+          <tr><td class="tool-name">list_social_planner_accounts</td><td><span class="cat-badge">social</span></td><td>List connected social accounts and OAuth status</td></tr>
+          <tr><td class="tool-name">get_social_planner_stats</td><td><span class="cat-badge">social</span></td><td>Post analytics and engagement statistics</td></tr>
+          <tr><td class="tool-name">list_knowledge_bases</td><td><span class="cat-badge">ai</span></td><td>List all AI knowledge bases</td></tr>
+          <tr><td class="tool-name">create_knowledge_base</td><td><span class="cat-badge">ai</span></td><td>Create an AI knowledge base</td></tr>
+          <tr><td class="tool-name">get_knowledge_base</td><td><span class="cat-badge">ai</span></td><td>Get knowledge base details by ID</td></tr>
+          <tr><td class="tool-name">update_knowledge_base</td><td><span class="cat-badge">ai</span></td><td>Update knowledge base settings and name</td></tr>
+          <tr><td class="tool-name">delete_knowledge_base</td><td><span class="cat-badge">ai</span></td><td>Delete a knowledge base</td></tr>
+          <tr><td class="tool-name">create_knowledge_base_faq</td><td><span class="cat-badge">ai</span></td><td>Add an FAQ entry to a knowledge base</td></tr>
+          <tr><td class="tool-name">query_knowledge_base</td><td><span class="cat-badge">ai</span></td><td>Query a knowledge base for answers</td></tr>
+          <tr><td class="tool-name">crawl_knowledge_base_url</td><td><span class="cat-badge">ai</span></td><td>Ingest URL content into a knowledge base</td></tr>
+          <tr><td class="tool-name">list_conversation_ai_bots</td><td><span class="cat-badge">ai</span></td><td>List all Conversation AI bots</td></tr>
+          <tr><td class="tool-name">create_conversation_ai_bot</td><td><span class="cat-badge">ai</span></td><td>Create a GHL AI conversation bot</td></tr>
+          <tr><td class="tool-name">get_conversation_ai_bot</td><td><span class="cat-badge">ai</span></td><td>Get Conversation AI bot config and prompt by ID</td></tr>
+          <tr><td class="tool-name">update_conversation_ai_bot</td><td><span class="cat-badge">ai</span></td><td>Update bot settings, prompt, and KB links</td></tr>
+          <tr><td class="tool-name">delete_conversation_ai_bot</td><td><span class="cat-badge">ai</span></td><td>Delete a Conversation AI bot</td></tr>
+          <tr><td class="tool-name">list_voice_agents</td><td><span class="cat-badge">ai</span></td><td>List all Voice AI agents</td></tr>
+          <tr><td class="tool-name">create_voice_agent</td><td><span class="cat-badge">ai</span></td><td>Create a GHL Voice AI agent</td></tr>
+          <tr><td class="tool-name">get_voice_agent</td><td><span class="cat-badge">ai</span></td><td>Get Voice AI agent config and voice settings by ID</td></tr>
+          <tr><td class="tool-name">update_voice_agent</td><td><span class="cat-badge">ai</span></td><td>Update voice agent persona, script, calendar booking, and language</td></tr>
+          <tr><td class="tool-name">delete_voice_agent</td><td><span class="cat-badge">ai</span></td><td>Delete a Voice AI agent</td></tr>
+          <tr><td class="tool-name">list_voice_call_logs</td><td><span class="cat-badge">ai</span></td><td>Voice agent call history</td></tr>
+          <tr><td class="tool-name">get_voice_call_transcript</td><td><span class="cat-badge">ai</span></td><td>Get full transcript and AI summary for a Voice AI call</td></tr>
+          <tr><td class="tool-name">list_ai_agents</td><td><span class="cat-badge">ai</span></td><td>List all Agent Studio AI agents</td></tr>
+          <tr><td class="tool-name">create_ai_agent</td><td><span class="cat-badge">ai</span></td><td>Create an Agent Studio agent with tools, KB, and routing</td></tr>
+          <tr><td class="tool-name">get_ai_agent</td><td><span class="cat-badge">ai</span></td><td>Get Agent Studio agent config and MCP tool connections</td></tr>
+          <tr><td class="tool-name">list_blog_posts</td><td><span class="cat-badge">content</span></td><td>List all blog posts (filter by status, date, author)</td></tr>
+          <tr><td class="tool-name">get_blog_post</td><td><span class="cat-badge">content</span></td><td>Get a single blog post by ID</td></tr>
+          <tr><td class="tool-name">create_blog_post</td><td><span class="cat-badge">content</span></td><td>Create a blog post in GHL</td></tr>
+          <tr><td class="tool-name">update_blog_post</td><td><span class="cat-badge">content</span></td><td>Update an existing blog post content, SEO, or status</td></tr>
+          <tr><td class="tool-name">delete_blog_post</td><td><span class="cat-badge">content</span></td><td>Delete a blog post</td></tr>
+          <tr><td class="tool-name">list_blog_categories</td><td><span class="cat-badge">content</span></td><td>List blog categories</td></tr>
+          <tr><td class="tool-name">list_blog_authors</td><td><span class="cat-badge">content</span></td><td>List blog authors/contributors</td></tr>
+          <tr><td class="tool-name">list_products</td><td><span class="cat-badge">commerce</span></td><td>Products/services in the GHL store</td></tr>
+          <tr><td class="tool-name">get_product</td><td><span class="cat-badge">commerce</span></td><td>Get a single product by ID</td></tr>
+          <tr><td class="tool-name">create_product</td><td><span class="cat-badge">commerce</span></td><td>Create a new product</td></tr>
+          <tr><td class="tool-name">update_product</td><td><span class="cat-badge">commerce</span></td><td>Update product details, description, and images</td></tr>
+          <tr><td class="tool-name">delete_product</td><td><span class="cat-badge">commerce</span></td><td>Delete a product</td></tr>
+          <tr><td class="tool-name">list_prices</td><td><span class="cat-badge">commerce</span></td><td>List price variants for a product</td></tr>
+          <tr><td class="tool-name">create_price</td><td><span class="cat-badge">commerce</span></td><td>Create a price variant (one-time or recurring) for a product</td></tr>
+          <tr><td class="tool-name">list_invoices</td><td><span class="cat-badge">commerce</span></td><td>GHL invoices with status filters</td></tr>
+          <tr><td class="tool-name">get_invoice</td><td><span class="cat-badge">commerce</span></td><td>Get invoice details, line items, and payment status</td></tr>
+          <tr><td class="tool-name">create_invoice</td><td><span class="cat-badge">commerce</span></td><td>Create a new one-time or recurring invoice</td></tr>
+          <tr><td class="tool-name">update_invoice</td><td><span class="cat-badge">commerce</span></td><td>Update invoice line items, due date, or notes</td></tr>
+          <tr><td class="tool-name">send_invoice</td><td><span class="cat-badge">commerce</span></td><td>Send invoice to contact via email</td></tr>
+          <tr><td class="tool-name">void_invoice</td><td><span class="cat-badge">commerce</span></td><td>Void an invoice</td></tr>
+          <tr><td class="tool-name">create_invoice_template</td><td><span class="cat-badge">commerce</span></td><td>Create a recurring invoice template for workflow automation</td></tr>
+          <tr><td class="tool-name">list_orders</td><td><span class="cat-badge">commerce</span></td><td>List ecommerce orders with status and date filters</td></tr>
+          <tr><td class="tool-name">get_order</td><td><span class="cat-badge">commerce</span></td><td>Get order details including line items and fulfillment</td></tr>
+          <tr><td class="tool-name">list_subscriptions</td><td><span class="cat-badge">commerce</span></td><td>List active and cancelled subscriptions</td></tr>
+          <tr><td class="tool-name">get_subscription</td><td><span class="cat-badge">commerce</span></td><td>Get subscription details and billing history</td></tr>
+          <tr><td class="tool-name">cancel_subscription</td><td><span class="cat-badge">commerce</span></td><td>Cancel a contact's active subscription</td></tr>
+          <tr><td class="tool-name">list_coupons</td><td><span class="cat-badge">commerce</span></td><td>List discount coupons</td></tr>
+          <tr><td class="tool-name">create_coupon</td><td><span class="cat-badge">commerce</span></td><td>Create a percentage or fixed-amount discount coupon</td></tr>
+          <tr><td class="tool-name">list_payment_transactions</td><td><span class="cat-badge">commerce</span></td><td>Payment transactions</td></tr>
+          <tr><td class="tool-name">process_stripe_refund</td><td><span class="cat-badge">commerce</span></td><td>Process a Stripe refund through GHL</td></tr>
+          <tr><td class="tool-name">access_pestpro_stripe_account</td><td><span class="cat-badge">commerce</span></td><td>Access the Pest Pro linked Stripe account for payouts and reporting</td></tr>
+          <tr><td class="tool-name">list_reviews</td><td><span class="cat-badge">reviews</span></td><td>List Google and Facebook reviews for the location</td></tr>
+          <tr><td class="tool-name">reply_to_review</td><td><span class="cat-badge">reviews</span></td><td>Post a public reply to a Google or Facebook review</td></tr>
+          <tr><td class="tool-name">send_review_request</td><td><span class="cat-badge">reviews</span></td><td>Send a review request to a contact via SMS or email</td></tr>
+          <tr><td class="tool-name">list_custom_object_schemas</td><td><span class="cat-badge">custom-objects</span></td><td>List all custom object definitions in the location</td></tr>
+          <tr><td class="tool-name">create_custom_object_record</td><td><span class="cat-badge">custom-objects</span></td><td>Create a new record for a custom object type</td></tr>
+          <tr><td class="tool-name">update_custom_object_record</td><td><span class="cat-badge">custom-objects</span></td><td>Update fields on a custom object record</td></tr>
+          <tr><td class="tool-name">delete_custom_object_record</td><td><span class="cat-badge">custom-objects</span></td><td>Delete a custom object record</td></tr>
+          <tr><td class="tool-name">list_custom_object_records</td><td><span class="cat-badge">custom-objects</span></td><td>Query and list records for a custom object type</td></tr>
+          <tr><td class="tool-name">list_documents</td><td><span class="cat-badge">documents</span></td><td>List documents and contracts</td></tr>
+          <tr><td class="tool-name">get_document</td><td><span class="cat-badge">documents</span></td><td>Get document details and e-signature status</td></tr>
+          <tr><td class="tool-name">create_document</td><td><span class="cat-badge">documents</span></td><td>Create a document or contract from a template</td></tr>
+          <tr><td class="tool-name">send_document_for_signature</td><td><span class="cat-badge">documents</span></td><td>Send a document for e-signature to a contact</td></tr>
         </tbody>
       </table>
     </div>
