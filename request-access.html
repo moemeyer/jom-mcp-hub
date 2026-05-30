@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Request Access — JOM MCP Hub</title>
+  <meta name="description" content="Request access to JOM MCP production servers. Endpoint URLs and API keys provided upon approval." />
+  <style>
+    :root {
+      --green:   #1a7a1a;
+      --green-d: #145214;
+      --green-l: #e8f5e8;
+      --accent:  #f59e0b;
+      --gray-1:  #111827;
+      --gray-2:  #374151;
+      --gray-3:  #6b7280;
+      --gray-4:  #d1d5db;
+      --gray-5:  #f9fafb;
+      --radius:  10px;
+      --shadow:  0 1px 3px rgba(0,0,0,.10), 0 1px 2px rgba(0,0,0,.06);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: var(--gray-1); background: #fff; line-height: 1.6; }
+
+    nav { background: var(--green); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+    nav .logo { color: #fff; font-weight: 700; font-size: 1.05rem; letter-spacing: -.3px; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    nav .logo span { opacity: .6; font-weight: 400; }
+    nav .back { color: rgba(255,255,255,.8); font-size: .82rem; text-decoration: none; }
+    nav .back:hover { color: #fff; }
+
+    .hero { background: linear-gradient(135deg, var(--green) 0%, var(--green-d) 100%); padding: 48px 24px 40px; text-align: center; color: #fff; }
+    .hero h1 { font-size: clamp(1.5rem, 4vw, 2.2rem); font-weight: 800; letter-spacing: -.5px; margin-bottom: 12px; }
+    .hero p { font-size: .95rem; opacity: .82; max-width: 520px; margin: 0 auto; }
+
+    .main { max-width: 860px; margin: 0 auto; padding: 48px 24px; }
+
+    .tracks { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 40px; }
+    .track-card { border: 2px solid var(--gray-4); border-radius: var(--radius); padding: 24px; cursor: pointer; transition: border-color .15s, box-shadow .15s; }
+    .track-card:hover { border-color: var(--green); box-shadow: var(--shadow); }
+    .track-card.selected { border-color: var(--green); background: var(--green-l); }
+    .track-card .track-icon { font-size: 1.8rem; margin-bottom: 10px; }
+    .track-card h2 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+    .track-card p { font-size: .82rem; color: var(--gray-2); }
+
+    .form-section { display: none; }
+    .form-section.active { display: block; }
+
+    .form-header { font-size: 1.05rem; font-weight: 700; color: var(--gray-1); margin-bottom: 20px; border-bottom: 1px solid var(--gray-4); padding-bottom: 12px; }
+
+    .field { margin-bottom: 18px; }
+    label { display: block; font-size: .83rem; font-weight: 600; color: var(--gray-2); margin-bottom: 5px; }
+    label .req { color: #dc2626; }
+    input, textarea, select { width: 100%; padding: 9px 12px; border: 1px solid var(--gray-4); border-radius: 6px; font-size: .88rem; color: var(--gray-1); background: #fff; outline: none; transition: border-color .12s; }
+    input:focus, textarea:focus, select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(26,122,26,.1); }
+    textarea { resize: vertical; min-height: 90px; }
+    .field-hint { font-size: .75rem; color: var(--gray-3); margin-top: 4px; }
+
+    .fields-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .submit-btn { background: var(--green); color: #fff; border: none; padding: 11px 28px; border-radius: 6px; font-size: .92rem; font-weight: 700; cursor: pointer; width: 100%; transition: background .12s; }
+    .submit-btn:hover { background: var(--green-d); }
+    .submit-btn:disabled { background: var(--gray-4); cursor: not-allowed; }
+
+    .notice { background: #fef3c7; border: 1px solid #fde68a; border-radius: 6px; padding: 14px 16px; font-size: .82rem; color: #92400e; margin-bottom: 28px; }
+    .notice strong { display: block; margin-bottom: 4px; }
+
+    .success-msg { display: none; text-align: center; padding: 40px 24px; }
+    .success-msg .success-icon { font-size: 3rem; margin-bottom: 16px; }
+    .success-msg h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+    .success-msg p { font-size: .88rem; color: var(--gray-2); max-width: 420px; margin: 0 auto; }
+
+    .back-link { display: inline-block; color: var(--green-d); font-size: .82rem; font-weight: 600; text-decoration: none; margin-top: 24px; }
+    .back-link:hover { text-decoration: underline; }
+
+    footer { background: var(--gray-1); color: rgba(255,255,255,.6); text-align: center; padding: 20px; font-size: .78rem; margin-top: 48px; }
+
+    @media (max-width: 600px) {
+      .fields-row { grid-template-columns: 1fr; }
+      .main { padding: 32px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">🐛 JOM <span>/ mcp.jom.services</span></a>
+  <a class="back" href="index.html">← Back to hub</a>
+</nav>
+
+<div class="hero">
+  <h1>🔐 Request MCP Access</h1>
+  <p>Production endpoints and API keys are provided upon approval. Select your access track below.</p>
+</div>
+
+<div class="main">
+
+  <!-- Track selector -->
+  <div class="tracks" id="track-selector">
+    <div class="track-card" id="track-sub" onclick="selectTrack('subaccount')">
+      <div class="track-icon">🏢</div>
+      <h2>GHL Sub-Account</h2>
+      <p>You are a current client or existing GHL sub-account under the JOM Services agency. Access is provisioned for your specific sub-account.</p>
+    </div>
+    <div class="track-card" id="track-dev" onclick="selectTrack('developer')">
+      <div class="track-icon">🛠️</div>
+      <h2>External Developer</h2>
+      <p>You are building a third-party integration, custom AI agent, or automation that needs to connect to these MCP servers. Manual review required.</p>
+    </div>
+  </div>
+
+  <!-- Sub-account form -->
+  <div class="form-section" id="form-subaccount">
+    <div class="notice">
+      <strong>Sub-Account Auto-Provisioning</strong>
+      Keys for GHL sub-accounts are generated automatically when the account is created. If you're a current client and haven't received your credentials, submit this form and we'll re-trigger provisioning within one business day.
+    </div>
+    <div class="form-header">GHL Sub-Account Access Request</div>
+    <form id="sub-form" onsubmit="submitForm(event, 'subaccount')">
+      <div class="fields-row">
+        <div class="field">
+          <label>First name <span class="req">*</span></label>
+          <input type="text" name="first_name" required placeholder="Jane" />
+        </div>
+        <div class="field">
+          <label>Last name <span class="req">*</span></label>
+          <input type="text" name="last_name" required placeholder="Smith" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Email address <span class="req">*</span></label>
+        <input type="email" name="email" required placeholder="jane@company.com" />
+        <div class="field-hint">Credentials will be sent to this address.</div>
+      </div>
+      <div class="field">
+        <label>GHL Sub-Account name / Business name <span class="req">*</span></label>
+        <input type="text" name="subaccount_name" required placeholder="Acme Pest Control" />
+      </div>
+      <div class="field">
+        <label>GHL Location ID (if known)</label>
+        <input type="text" name="location_id" placeholder="abc123xyz" />
+        <div class="field-hint">Found in GHL → Settings → Business Info → Location ID. Leave blank if unknown.</div>
+      </div>
+      <div class="field">
+        <label>Which servers do you need access to? <span class="req">*</span></label>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px">
+          <label style="font-weight:400;display:flex;align-items:center;gap:8px"><input type="checkbox" name="servers" value="agency-mcp" checked /> Agency / GHL Operations (recommended for all sub-accounts)</label>
+          <label style="font-weight:400;display:flex;align-items:center;gap:8px"><input type="checkbox" name="servers" value="briostack-mcp" /> BrioStack Operations</label>
+          <label style="font-weight:400;display:flex;align-items:center;gap:8px"><input type="checkbox" name="servers" value="cardpointe-mcp" /> CardPointe Payments</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Additional notes</label>
+        <textarea name="notes" placeholder="Any context about your use case or urgency..."></textarea>
+      </div>
+      <button type="submit" class="submit-btn">Submit Sub-Account Request</button>
+    </form>
+  </div>
+
+  <!-- Developer form -->
+  <div class="form-section" id="form-developer">
+    <div class="notice">
+      <strong>External Developer Review</strong>
+      Access for external developers requires manual review. Approved integrations receive a scoped API key, endpoint URLs, and a personalized quick-start guide. Review typically takes 1–2 business days.
+    </div>
+    <div class="form-header">External Developer Access Request</div>
+    <form id="dev-form" onsubmit="submitForm(event, 'developer')">
+      <div class="fields-row">
+        <div class="field">
+          <label>First name <span class="req">*</span></label>
+          <input type="text" name="first_name" required placeholder="John" />
+        </div>
+        <div class="field">
+          <label>Last name <span class="req">*</span></label>
+          <input type="text" name="last_name" required placeholder="Doe" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Email address <span class="req">*</span></label>
+        <input type="email" name="email" required placeholder="john@yourcompany.com" />
+        <div class="field-hint">Credentials will be sent to this address if approved.</div>
+      </div>
+      <div class="field">
+        <label>Organization / Company <span class="req">*</span></label>
+        <input type="text" name="organization" required placeholder="Your Company LLC" />
+      </div>
+      <div class="field">
+        <label>Website or GitHub profile</label>
+        <input type="url" name="website" placeholder="https://yourcompany.com" />
+      </div>
+      <div class="field">
+        <label>Which servers do you need access to? <span class="req">*</span></label>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px">
+          <label style="font-weight:400;display:flex;align-items:center;gap:8px"><input type="checkbox" name="servers" value="agency-mcp" /> Agency / GHL Operations</label>
+          <label style="font-weight:400;display:flex;align-items:center;gap:8px"><input type="checkbox" name="servers" value="briostack-mcp" /> BrioStack Operations</label>
+          <label style="font-weight:400;display:flex;align-items:center;gap:8px"><input type="checkbox" name="servers" value="cardpointe-mcp" /> CardPointe Payments</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Use case description <span class="req">*</span></label>
+        <textarea name="use_case" required placeholder="Describe what you're building, how you'll use the MCP tools, and why you need access to these specific servers. Include the AI client or framework (Claude, Cursor, custom agent, etc.)." style="min-height:120px"></textarea>
+      </div>
+      <div class="field">
+        <label>Have you read the tool catalog?</label>
+        <select name="catalog_reviewed">
+          <option value="yes">Yes — reviewed mcp-catalog.json</option>
+          <option value="partial">Partially — reviewed the hub page</option>
+          <option value="no">Not yet</option>
+        </select>
+        <div class="field-hint">Catalog: <a href="mcp-catalog.json" style="color:var(--green-d)">mcp-catalog.json</a></div>
+      </div>
+      <button type="submit" class="submit-btn">Submit Developer Request</button>
+    </form>
+  </div>
+
+  <!-- Success message -->
+  <div class="success-msg" id="success-msg">
+    <div class="success-icon">✅</div>
+    <h2>Request submitted</h2>
+    <p>We received your access request and will follow up at the email address you provided. Sub-account requests are typically processed same-day; external developer requests within 1–2 business days.</p>
+    <a class="back-link" href="index.html">← Back to MCP Hub</a>
+  </div>
+
+  <a class="back-link" href="index.html" id="back-link">← Back to MCP Hub</a>
+
+</div>
+
+<footer>
+  JOM Services · Pest Pro Rid All, LLC · <a href="mailto:moemeyer@gmail.com" style="color:rgba(255,255,255,.7)">moemeyer@gmail.com</a>
+</footer>
+
+<script>
+  // Pre-select track from URL param (?track=subaccount or ?track=developer)
+  (function () {
+    const params = new URLSearchParams(window.location.search);
+    const t = params.get('track');
+    if (t === 'subaccount' || t === 'developer') selectTrack(t);
+  })();
+
+  function selectTrack(track) {
+    document.querySelectorAll('.track-card').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.form-section').forEach(f => f.classList.remove('active'));
+    document.getElementById('track-' + (track === 'subaccount' ? 'sub' : 'dev')).classList.add('selected');
+    document.getElementById('form-' + track).classList.add('active');
+    document.getElementById('success-msg').style.display = 'none';
+    document.getElementById('back-link').style.display = '';
+    // Smooth scroll to form
+    setTimeout(() => document.getElementById('form-' + track).scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  }
+
+  function submitForm(e, track) {
+    e.preventDefault();
+    const form = e.target;
+    const btn = form.querySelector('.submit-btn');
+
+    // Collect form data
+    const data = {};
+    new FormData(form).forEach((v, k) => {
+      if (data[k]) {
+        data[k] = [].concat(data[k], v);
+      } else {
+        data[k] = v;
+      }
+    });
+    data.track = track;
+    data.submitted_at = new Date().toISOString();
+
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+
+    // Send to Formspree (replace endpoint with your own if needed)
+    fetch('https://formspree.io/f/moemeyer', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    .then(r => {
+      if (r.ok) {
+        showSuccess();
+      } else {
+        return r.json().then(err => { throw new Error(err.error || 'Submission failed'); });
+      }
+    })
+    .catch(() => {
+      // Fallback: open mailto with pre-filled subject
+      const subject = encodeURIComponent('[MCP Access Request] ' + (data.organization || data.subaccount_name || data.email));
+      const body = encodeURIComponent(JSON.stringify(data, null, 2));
+      window.location.href = `mailto:moemeyer@gmail.com?subject=${subject}&body=${body}`;
+      showSuccess();
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.textContent = track === 'subaccount' ? 'Submit Sub-Account Request' : 'Submit Developer Request';
+    });
+  }
+
+  function showSuccess() {
+    document.querySelectorAll('.form-section').forEach(f => f.classList.remove('active'));
+    document.getElementById('success-msg').style.display = 'block';
+    document.getElementById('back-link').style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

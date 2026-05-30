@@ -112,6 +112,25 @@
     footer { background: var(--gray-1); color: rgba(255,255,255,.6); text-align: center; padding: 24px; font-size: .78rem; }
     footer a { color: rgba(255,255,255,.8); text-decoration: none; }
 
+    /* ACCESS CONTROL — server card locked state */
+    .sc-access { font-size: .78rem; background: #fef3c7; border: 1px solid #fde68a; border-radius: 6px; padding: 7px 10px; color: #92400e; margin-top: 8px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .sc-access-link { color: var(--green-d); font-weight: 600; text-decoration: none; white-space: nowrap; }
+    .sc-access-link:hover { text-decoration: underline; }
+
+    /* GET ACCESS SECTION */
+    .access-banner { background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 100%); border: 1px solid #bbf7d0; border-radius: var(--radius); padding: 32px 28px; }
+    .access-banner h2 { font-size: 1.1rem; font-weight: 700; color: var(--gray-1); margin-bottom: 8px; }
+    .access-banner .access-sub { font-size: .88rem; color: var(--gray-2); margin-bottom: 24px; max-width: 640px; }
+    .access-tracks { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .access-track { background: #fff; border: 1px solid var(--gray-4); border-radius: var(--radius); padding: 20px; }
+    .access-track .track-icon { font-size: 1.4rem; margin-bottom: 10px; }
+    .access-track h3 { font-size: .88rem; font-weight: 700; color: var(--gray-1); margin-bottom: 6px; }
+    .access-track p { font-size: .8rem; color: var(--gray-2); margin-bottom: 14px; line-height: 1.5; }
+    .access-btn { display: inline-block; background: var(--green); color: #fff; padding: 7px 16px; border-radius: 6px; font-size: .8rem; font-weight: 600; text-decoration: none; }
+    .access-btn:hover { background: var(--green-d); }
+    .access-btn.outline { background: #fff; color: var(--green-d); border: 1.5px solid var(--green); }
+    .access-btn.outline:hover { background: var(--green-l); }
+
     /* RESPONSIVE */
     @media (max-width: 600px) {
       .hero { padding: 40px 16px 36px; }
@@ -155,9 +174,7 @@
       <div class="sc-desc">Full BrioStack pest-control platform. Customers, appointments, invoices, daily ops snapshot, employee roster, branches, leads, and raw API pass-through.</div>
       <span class="status-badge production">Production</span>
       <span class="tool-count">32 tools</span>
-      <div class="sc-url" id="brio-url">https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp
-        <button class="copy-btn" onclick="copyText('brio-url')">copy</button>
-      </div>
+      <div class="sc-access">🔒 Endpoint provided upon access approval — <a class="sc-access-link" href="request-access.html">Request access →</a></div>
     </div>
 
     <div class="server-card">
@@ -171,9 +188,7 @@
       <div class="sc-desc">CardConnect/CardPointe payment processing. Credit card auth/capture/void/refund, ACH via BlueChex, stored profile tokenization, deposit reporting.</div>
       <span class="status-badge production">Production</span>
       <span class="tool-count">15 tools</span>
-      <div class="sc-url" id="cardpointe-url">https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp
-        <button class="copy-btn" onclick="copyText('cardpointe-url')">copy</button>
-      </div>
+      <div class="sc-access">🔒 Endpoint provided upon access approval — <a class="sc-access-link" href="request-access.html">Request access →</a></div>
     </div>
 
     <div class="server-card">
@@ -187,11 +202,36 @@
       <div class="sc-desc">GoHighLevel CRM operations. Contacts, conversations, calendars, pipelines, AI conversation bots, voice agents, knowledge bases, blogs, social media, and Stripe.</div>
       <span class="status-badge production">Production</span>
       <span class="tool-count">154 tools</span>
-      <div class="sc-url" id="agency-url">https://gdip7vymuh.us-west-2.awsapprunner.com/mcp
-        <button class="copy-btn" onclick="copyText('agency-url')">copy</button>
-      </div>
+      <div class="sc-access">🔒 Endpoint provided upon access approval — <a class="sc-access-link" href="request-access.html">Request access →</a></div>
     </div>
 
+  </div>
+</div>
+
+<hr class="divider" style="max-width:960px;margin:0 auto" />
+
+<!-- GET ACCESS -->
+<div class="section">
+  <div class="access-banner">
+    <h2>🔐 Get Access</h2>
+    <p class="access-sub">These are private production servers. Endpoint URLs and API keys are not public. Choose a track below to request access — approved connections receive a personalized quick-start with your endpoint URL, API key, and config blocks pre-filled.</p>
+    <div class="access-tracks">
+
+      <div class="access-track">
+        <div class="track-icon">🏢</div>
+        <h3>GHL Sub-Account</h3>
+        <p>Already a client or GHL sub-account under the JOM agency? Access is provisioned automatically when your sub-account is created. If you're a current client and haven't received credentials, contact us to trigger key generation.</p>
+        <a class="access-btn" href="request-access.html?track=subaccount">Get Sub-Account Access →</a>
+      </div>
+
+      <div class="access-track">
+        <div class="track-icon">🛠️</div>
+        <h3>External Developer</h3>
+        <p>Building a third-party integration or custom AI agent that connects to these servers? Submit a request with your use case and organization. Manual review typically takes 1–2 business days.</p>
+        <a class="access-btn outline" href="request-access.html?track=developer">Request Developer Access →</a>
+      </div>
+
+    </div>
   </div>
 </div>
 
@@ -200,7 +240,7 @@
 <!-- QUICK CONNECT -->
 <div class="section">
   <div class="section-title">Quick Connect</div>
-  <div class="section-sub">Copy the config block for your AI client. All three production MCP servers are live at HTTPS streamable-http endpoints. Each requires <code>Authorization: Bearer &lt;MCP_API_KEY&gt;</code> — replace <code>&lt;MCP_API_KEY&gt;</code> with the shared API key; never commit it to a repo.</div>
+  <div class="section-sub">Copy the config block for your AI client. Endpoint URLs and API keys are provided upon access approval — <a href="request-access.html" style="color:var(--green-d);font-weight:600">request access here</a>. Replace <code>&lt;YOUR_ENDPOINT&gt;</code> and <code>&lt;MCP_API_KEY&gt;</code> with the values from your approval email; never commit them to a repo.</div>
 
   <div class="tab-row">
     <button class="tab-btn active" onclick="showTab('claude')">Claude Desktop</button>
@@ -217,17 +257,17 @@
   <span class="hl">"mcpServers"</span>: {
     <span class="hl">"briostack-mcp"</span>: {
       <span class="hlb">"type"</span>: <span class="hlv">"streamable-http"</span>,
-      <span class="hlb">"url"</span>:  <span class="hlv">"https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp"</span>,
+      <span class="hlb">"url"</span>:  <span class="hlv">"&lt;YOUR_BRIOSTACK_ENDPOINT&gt;"</span>,
       <span class="hlb">"headers"</span>: { <span class="hlb">"Authorization"</span>: <span class="hlv">"Bearer &lt;MCP_API_KEY&gt;"</span> }
     },
     <span class="hl">"cardpointe-mcp"</span>: {
       <span class="hlb">"type"</span>: <span class="hlv">"streamable-http"</span>,
-      <span class="hlb">"url"</span>:  <span class="hlv">"https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp"</span>,
+      <span class="hlb">"url"</span>:  <span class="hlv">"&lt;YOUR_CARDPOINTE_ENDPOINT&gt;"</span>,
       <span class="hlb">"headers"</span>: { <span class="hlb">"Authorization"</span>: <span class="hlv">"Bearer &lt;MCP_API_KEY&gt;"</span> }
     },
     <span class="hl">"agency-mcp"</span>: {
       <span class="hlb">"type"</span>: <span class="hlv">"streamable-http"</span>,
-      <span class="hlb">"url"</span>:  <span class="hlv">"https://gdip7vymuh.us-west-2.awsapprunner.com/mcp"</span>,
+      <span class="hlb">"url"</span>:  <span class="hlv">"&lt;YOUR_AGENCY_ENDPOINT&gt;"</span>,
       <span class="hlb">"headers"</span>: { <span class="hlb">"Authorization"</span>: <span class="hlv">"Bearer &lt;MCP_API_KEY&gt;"</span> }
     }
   }
@@ -239,15 +279,15 @@
     <pre id="cursor-pre"><button class="copy-pre" onclick="copyPre('cursor-pre')">copy</button>{
   <span class="hl">"mcpServers"</span>: {
     <span class="hl">"briostack-mcp"</span>: {
-      <span class="hlb">"url"</span>:     <span class="hlv">"https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp"</span>,
+      <span class="hlb">"url"</span>:     <span class="hlv">"&lt;YOUR_BRIOSTACK_ENDPOINT&gt;"</span>,
       <span class="hlb">"headers"</span>: { <span class="hlb">"Authorization"</span>: <span class="hlv">"Bearer &lt;MCP_API_KEY&gt;"</span> }
     },
     <span class="hl">"cardpointe-mcp"</span>: {
-      <span class="hlb">"url"</span>:     <span class="hlv">"https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp"</span>,
+      <span class="hlb">"url"</span>:     <span class="hlv">"&lt;YOUR_CARDPOINTE_ENDPOINT&gt;"</span>,
       <span class="hlb">"headers"</span>: { <span class="hlb">"Authorization"</span>: <span class="hlv">"Bearer &lt;MCP_API_KEY&gt;"</span> }
     },
     <span class="hl">"agency-mcp"</span>: {
-      <span class="hlb">"url"</span>:     <span class="hlv">"https://gdip7vymuh.us-west-2.awsapprunner.com/mcp"</span>,
+      <span class="hlb">"url"</span>:     <span class="hlv">"&lt;YOUR_AGENCY_ENDPOINT&gt;"</span>,
       <span class="hlb">"headers"</span>: { <span class="hlb">"Authorization"</span>: <span class="hlv">"Bearer &lt;MCP_API_KEY&gt;"</span> }
     }
   }
@@ -260,17 +300,17 @@
   <span class="hl">"context_servers"</span>: {
     <span class="hl">"briostack-mcp"</span>: {
       <span class="hlb">"transport"</span>: <span class="hlv">"http"</span>,
-      <span class="hlb">"url"</span>:       <span class="hlv">"https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp"</span>,
+      <span class="hlb">"url"</span>:       <span class="hlv">"&lt;YOUR_BRIOSTACK_ENDPOINT&gt;"</span>,
       <span class="hlb">"headers"</span>:   { <span class="hlb">"Authorization"</span>: <span class="hlv">"Bearer &lt;MCP_API_KEY&gt;"</span> }
     },
     <span class="hl">"cardpointe-mcp"</span>: {
       <span class="hlb">"transport"</span>: <span class="hlv">"http"</span>,
-      <span class="hlb">"url"</span>:       <span class="hlv">"https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp"</span>,
+      <span class="hlb">"url"</span>:       <span class="hlv">"&lt;YOUR_CARDPOINTE_ENDPOINT&gt;"</span>,
       <span class="hlb">"headers"</span>:   { <span class="hlb">"Authorization"</span>: <span class="hlv">"Bearer &lt;MCP_API_KEY&gt;"</span> }
     },
     <span class="hl">"agency-mcp"</span>: {
       <span class="hlb">"transport"</span>: <span class="hlv">"http"</span>,
-      <span class="hlb">"url"</span>:       <span class="hlv">"https://gdip7vymuh.us-west-2.awsapprunner.com/mcp"</span>,
+      <span class="hlb">"url"</span>:       <span class="hlv">"&lt;YOUR_AGENCY_ENDPOINT&gt;"</span>,
       <span class="hlb">"headers"</span>:   { <span class="hlb">"Authorization"</span>: <span class="hlv">"Bearer &lt;MCP_API_KEY&gt;"</span> }
     }
   }
@@ -281,7 +321,7 @@
     <p style="font-size:.82rem;color:#6b7280;margin-bottom:12px">Standard MCP 2025-03-26 streamable-http connection parameters.</p>
     <pre id="generic-pre"><button class="copy-pre" onclick="copyPre('generic-pre')">copy</button>{
   <span class="hlb">"transport"</span>:    <span class="hlv">"streamable-http"</span>,
-  <span class="hlb">"url"</span>:          <span class="hlv">"https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp"</span>,
+  <span class="hlb">"url"</span>:          <span class="hlv">"&lt;YOUR_BRIOSTACK_ENDPOINT&gt;"</span>,
   <span class="hlb">"method"</span>:       <span class="hlv">"POST"</span>,
   <span class="hlb">"content_type"</span>: <span class="hlv">"application/json"</span>,
   <span class="hlb">"accept"</span>:       <span class="hlv">"text/event-stream, application/json"</span>,
@@ -701,7 +741,7 @@
       <div class="step-num">5</div>
       <div class="step-body">
         <h4>Optional: health monitor</h4>
-        <p>DNSimple has a <em>Health Check</em> feature (DNS → Health Checks). Point it at <code>https://vnf9mp2vik.us-east-2.awsapprunner.com/</code> with TCP check every 60s to get uptime alerts for the live MCP server.</p>
+        <p>DNSimple has a <em>Health Check</em> feature (DNS → Health Checks). Point it at <code>https://&lt;your-apprunner-url&gt;/</code> with TCP check every 60s to get uptime alerts for the live MCP server.</p>
       </div>
     </div>
   </div>
@@ -716,11 +756,12 @@
   <table style="font-size:.82rem;width:100%">
     <thead><tr><th>URL</th><th>Format</th><th>Purpose</th></tr></thead>
     <tbody>
-      <tr><td><code>https://mcp.jom.services/.well-known/mcp.json</code></td><td>JSON</td><td>Standard well-known MCP discovery endpoint. Server IDs, transports, live URLs.</td></tr>
+      <tr><td><code>https://mcp.jom.services/.well-known/mcp.json</code></td><td>JSON</td><td>Standard well-known MCP discovery endpoint. Server IDs, transports, auth requirements.</td></tr>
       <tr><td><code>https://mcp.jom.services/mcp-catalog.json</code></td><td>JSON</td><td>Full server catalog. All tools with names, categories, descriptions. Publisher metadata.</td></tr>
-      <tr><td><code>https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp</code></td><td>MCP/SSE</td><td>Live BrioStack MCP endpoint. POST with <code>Accept: text/event-stream</code>.</td></tr>
-      <tr><td><code>https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp</code></td><td>MCP/SSE</td><td>Live CardPointe MCP endpoint. Requires bearer auth.</td></tr>
-      <tr><td><code>https://gdip7vymuh.us-west-2.awsapprunner.com/mcp</code></td><td>MCP/SSE</td><td>Live Agency MCP endpoint. Requires bearer auth.</td></tr>
+      <tr><td><code>https://mcp.jom.services/request-access.html</code></td><td>HTML</td><td>Access request page. Submit here to receive endpoint URLs and API key via email.</td></tr>
+      <tr><td><em>BrioStack MCP endpoint</em></td><td>MCP/SSE</td><td>🔒 Provided upon access approval. Streamable-http, requires bearer auth.</td></tr>
+      <tr><td><em>CardPointe MCP endpoint</em></td><td>MCP/SSE</td><td>🔒 Provided upon access approval. Streamable-http, requires bearer auth.</td></tr>
+      <tr><td><em>Agency / GHL MCP endpoint</em></td><td>MCP/SSE</td><td>🔒 Provided upon access approval. Streamable-http, requires bearer auth.</td></tr>
     </tbody>
   </table>
 </div>
