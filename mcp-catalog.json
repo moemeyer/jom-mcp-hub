@@ -16,13 +16,13 @@
       "category": "field-operations",
       "status": "production",
       "transport": "streamable-http",
-      "endpoint": "https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp",
-      "healthcheck": "https://vnf9mp2vik.us-east-2.awsapprunner.com/",
+      "endpoint": "https://mcp.jom.services/request-access",
+      "endpoint_note": "Actual endpoint provided upon access approval. Request at https://mcp.jom.services/request-access",
       "auth": {
         "type": "bearer",
         "header": "Authorization",
         "format": "Bearer <MCP_API_KEY>",
-        "note": "Contact publisher for API key. Key stored in pestpro/integrations/mcp-api-key (AWS SM us-east-1)."
+        "note": "API key provided upon access approval. Request at https://mcp.jom.services/request-access"
       },
       "hosting": {
         "provider": "AWS App Runner",
@@ -79,13 +79,13 @@
       "category": "payments",
       "status": "production",
       "transport": "streamable-http",
-      "endpoint": "https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp",
-      "healthcheck": "https://qwnm3rvm8m.us-east-2.awsapprunner.com/",
+      "endpoint": "https://mcp.jom.services/request-access",
+      "endpoint_note": "Actual endpoint provided upon access approval. Request at https://mcp.jom.services/request-access",
       "auth": {
         "type": "bearer",
         "header": "Authorization",
         "format": "Bearer <MCP_API_KEY>",
-        "note": "Contact publisher for API key. Key stored in pestpro/integrations/mcp-api-key (AWS SM us-east-1)."
+        "note": "API key provided upon access approval. Request at https://mcp.jom.services/request-access"
       },
       "hosting": {
         "provider": "AWS App Runner",
@@ -129,13 +129,13 @@
       "category": "crm-marketing",
       "status": "production",
       "transport": "streamable-http",
-      "endpoint": "https://gdip7vymuh.us-west-2.awsapprunner.com/mcp",
-      "healthcheck": "https://gdip7vymuh.us-west-2.awsapprunner.com/",
+      "endpoint": "https://mcp.jom.services/request-access",
+      "endpoint_note": "Actual endpoint provided upon access approval. Request at https://mcp.jom.services/request-access",
       "auth": {
         "type": "bearer",
         "header": "Authorization",
         "format": "Bearer <MCP_API_KEY>",
-        "note": "Contact publisher for API key. Key stored in pestpro/integrations/mcp-api-key (AWS SM us-east-1)."
+        "note": "API key provided upon access approval. Request at https://mcp.jom.services/request-access"
       },
       "hosting": {
         "provider": "AWS App Runner",
@@ -317,7 +317,7 @@
     "quick_connect": {
       "briostack": {
         "command": null,
-        "url": "https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp",
+        "url": "https://mcp.jom.services/request-access",
         "transport": "streamable-http"
       }
     }
