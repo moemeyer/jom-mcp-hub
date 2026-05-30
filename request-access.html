@@ -225,10 +225,29 @@
 </div>
 
 <footer>
-  JOM Services · Pest Pro Rid All, LLC · <a href="mailto:moemeyer@gmail.com" style="color:rgba(255,255,255,.7)">moemeyer@gmail.com</a>
+  JOM Services · Pest Pro Rid All, LLC · <span id="footer-contact"></span>
 </footer>
 
 <script>
+  // Configure your Formspree endpoint. Leave empty to route directly to mailto fallback.
+  // Example: 'https://formspree.io/f/xabcdefg' (get a real ID from formspree.io)
+  const FORM_ENDPOINT = '';
+
+  // Contact — split to reduce exposure to automated scrapers
+  const CONTACT = ['moemeyer', 'gmail.com'].join('@');
+
+  // Render footer contact link via JS (not in raw HTML)
+  (function () {
+    const el = document.getElementById('footer-contact');
+    if (el) {
+      const a = document.createElement('a');
+      a.href = 'mailto:' + CONTACT;
+      a.textContent = CONTACT;
+      a.style.color = 'rgba(255,255,255,.7)';
+      el.appendChild(a);
+    }
+  })();
+
   // Pre-select track from URL param (?track=subaccount or ?track=developer)
   (function () {
     const params = new URLSearchParams(window.location.search);
@@ -267,8 +286,19 @@
     btn.disabled = true;
     btn.textContent = 'Submitting…';
 
-    // Send to Formspree (replace endpoint with your own if needed)
-    fetch('https://formspree.io/f/moemeyer', {
+    const subject = encodeURIComponent('[MCP Access Request] ' + (data.organization || data.subaccount_name || data.email));
+
+    if (!FORM_ENDPOINT) {
+      // No form endpoint configured — go straight to mailto
+      const body = encodeURIComponent(JSON.stringify(data, null, 2));
+      window.location.href = 'mailto:' + CONTACT + '?subject=' + subject + '&body=' + body;
+      showSuccess();
+      btn.disabled = false;
+      btn.textContent = track === 'subaccount' ? 'Submit Sub-Account Request' : 'Submit Developer Request';
+      return;
+    }
+
+    fetch(FORM_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(data)
@@ -282,9 +312,8 @@
     })
     .catch(() => {
       // Fallback: open mailto with pre-filled subject
-      const subject = encodeURIComponent('[MCP Access Request] ' + (data.organization || data.subaccount_name || data.email));
       const body = encodeURIComponent(JSON.stringify(data, null, 2));
-      window.location.href = `mailto:moemeyer@gmail.com?subject=${subject}&body=${body}`;
+      window.location.href = 'mailto:' + CONTACT + '?subject=' + subject + '&body=' + body;
       showSuccess();
     })
     .finally(() => {
