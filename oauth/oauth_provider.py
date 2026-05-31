@@ -388,17 +388,26 @@ class OAuthProvider:
             headers={"Cache-Control": "no-store"},
         )
 
-    async def handle_authorize(self, request: Request) -> Response:
-        if request.method == "GET":
-            return self._render_form(params=dict(request.query_params))
-        return await self._handle_authorize_post(request)
-
-    async def _handle_authorize_post(self, request: Request) -> Response:
-        form = await request.form()
+async def _handle_authorize_post(self, request: Request) -> Response:
+    form = await request.form()
+    p = {k: form.get(k, "") for k in (
+        "response_type", "client_id", "redirect_uri",
+        "code_challenge", "code_challenge_method", "state",
+    )}
+    api_key = (form.get("api_key") or "").strip()
         p = {k: form.get(k, "") for k in (
-            "response_type", "client_id", "redirect_uri",
-            "code_challenge", "code_challenge_method", "state",
+    if p["response_type"] != "code":
+        return JSONResponse(
+            {
+                "error": "unsupported_response_type",
+                "error_description": "Only response_type=code is supported",
+            },
+            status_code=400,
+        )
         )}
+    if not api_key:
+        return self._render_form(params=p, error="Please enter your API key.")
+
         api_key = (form.get("api_key") or "").strip()
 
         if not api_key:
