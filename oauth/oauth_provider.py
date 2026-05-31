@@ -342,10 +342,11 @@ resp = await loop.run_in_executor(
             return self._codes.pop(code, None)
 
     async def _dynamo_put(self, table_name: str, code: str, record: dict) -> None:
-        client = boto3.client("dynamodb", region_name=self.region)
-        await asyncio.get_event_loop().run_in_executor(
-            None,
-            lambda: client.put_item(
+client = boto3.client("dynamodb", region_name=self.region)
+loop = asyncio.get_running_loop()
+await loop.run_in_executor(
+    None,
+    lambda: client.put_item(
                 TableName=table_name,
                 Item={
                     "code":                  {"S": code},
