@@ -1,27 +1,32 @@
 {
   "mcp_hub": "https://mcp.jom.services",
   "catalog": "https://mcp.jom.services/mcp-catalog.json",
+  "access": "https://mcp.jom.services/request-access.html",
+  "access_note": "Endpoint URLs are provided upon access approval. Request access at the access URL above.",
   "servers": [
     {
       "id": "briostack-mcp",
       "name": "BrioStack Operations",
-      "url": "https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp",
       "transport": "streamable-http",
-      "status": "production"
+      "status": "production",
+      "access_required": true,
+      "access_url": "https://mcp.jom.services/request-access.html"
     },
     {
       "id": "cardpointe-mcp",
       "name": "CardPointe Payments",
-      "url": "https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp",
       "transport": "streamable-http",
-      "status": "production"
+      "status": "production",
+      "access_required": true,
+      "access_url": "https://mcp.jom.services/request-access.html"
     },
     {
       "id": "agency-mcp",
       "name": "Agency / GHL Operations",
-      "url": "https://gdip7vymuh.us-west-2.awsapprunner.com/mcp",
       "transport": "streamable-http",
-      "status": "production"
+      "status": "production",
+      "access_required": true,
+      "access_url": "https://mcp.jom.services/request-access.html"
     }
   ]
 }
