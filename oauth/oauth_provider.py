@@ -72,6 +72,7 @@ DEPENDENCIES
 import asyncio
 import base64
 import hashlib
+import html as html_mod
 import json
 import logging
 import os
@@ -285,18 +286,22 @@ class OAuthProvider:
         return secrets.compare_digest(computed, challenge)
 
     def _render_form(self, *, params: dict, error: str = "") -> HTMLResponse:
-        error_html = f'<div class="err">⚠ {error}</div>' if error else ""
-        html = _FORM_HTML.format(
-            server_label=self.server_label,
+        # All values interpolated into the template must be HTML-escaped to prevent
+        # XSS — an attacker-controlled client_id or state in the authorize URL would
+        # otherwise execute scripts on the MCP origin and steal the API key.
+        e = html_mod.escape
+        error_html = f'<div class="err">⚠ {e(error)}</div>' if error else ""
+        content = _FORM_HTML.format(
+            server_label=e(self.server_label),
             error_html=error_html,
-            response_type=params.get("response_type", "code"),
-            client_id=params.get("client_id", "claude.ai"),
-            redirect_uri=params.get("redirect_uri", ""),
-            code_challenge=params.get("code_challenge", ""),
-            code_challenge_method=params.get("code_challenge_method", "S256"),
-            state=params.get("state", ""),
+            response_type=e(params.get("response_type", "code")),
+            client_id=e(params.get("client_id", "claude.ai")),
+            redirect_uri=e(params.get("redirect_uri", "")),
+            code_challenge=e(params.get("code_challenge", "")),
+            code_challenge_method=e(params.get("code_challenge_method", "S256")),
+            state=e(params.get("state", "")),
         )
-        return HTMLResponse(html)
+        return HTMLResponse(content)
 
     # ------------------------------------------------------------------
     # Code storage — DynamoDB if configured, else in-memory
