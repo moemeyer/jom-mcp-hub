@@ -19,7 +19,7 @@
       "endpoint": "https://mcp.jom.services/request-access",
       "endpoint_note": "Actual endpoint provided upon access approval. Request at https://mcp.jom.services/request-access",
       "auth": {
-        "type": ["bearer", "oauth2_pkce"],
+        "type": "bearer",
         "header": "Authorization",
         "format": "Bearer <MCP_API_KEY>",
         "oauth2_pkce": true,
@@ -84,7 +84,7 @@
       "endpoint": "https://mcp.jom.services/request-access",
       "endpoint_note": "Actual endpoint provided upon access approval. Request at https://mcp.jom.services/request-access",
       "auth": {
-        "type": ["bearer", "oauth2_pkce"],
+        "type": "bearer",
         "header": "Authorization",
         "format": "Bearer <MCP_API_KEY>",
         "oauth2_pkce": true,
@@ -136,7 +136,7 @@
       "endpoint": "https://mcp.jom.services/request-access",
       "endpoint_note": "Actual endpoint provided upon access approval. Request at https://mcp.jom.services/request-access",
       "auth": {
-        "type": ["bearer", "oauth2_pkce"],
+        "type": "bearer",
         "header": "Authorization",
         "format": "Bearer <MCP_API_KEY>",
         "oauth2_pkce": true,
