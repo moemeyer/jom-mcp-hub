@@ -363,6 +363,7 @@ await loop.run_in_executor(
 
     async def _dynamo_pop(self, table_name: str, code: str) -> Optional[dict]:
         client = boto3.client("dynamodb", region_name=self.region)
+        loop = asyncio.get_running_loop()
 
         def _delete_and_return() -> Optional[dict]:
             resp = client.delete_item(
@@ -381,7 +382,7 @@ await loop.run_in_executor(
                 "expires":               float(attrs["expires"]["N"]),
             }
 
-        return await asyncio.get_event_loop().run_in_executor(None, _delete_and_return)
+        return await loop.run_in_executor(None, _delete_and_return)
 
     # ------------------------------------------------------------------
     # Endpoint handlers
