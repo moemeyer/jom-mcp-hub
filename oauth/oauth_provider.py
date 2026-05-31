@@ -119,11 +119,23 @@ def _validate_redirect_uri(uri: str) -> bool:
         parsed = urlparse(uri)
     except Exception:
         return False
+
+    # Require absolute URLs.
+    if not parsed.scheme or not parsed.netloc:
+        return False
+
     host = (parsed.hostname or "").lower()
     if not host:
         return False
+
+    # Local development can use http.
     if host in _LOCAL_HOSTS:
-        return True
+        return parsed.scheme in ("http", "https")
+
+    # Public callbacks must use TLS.
+    if parsed.scheme != "https":
+        return False
+
     allowed = _CLAUDE_HOSTS | _EXTRA_ALLOWED_HOSTS
     return any(host == h or host.endswith(f".{h}") for h in allowed)
 
