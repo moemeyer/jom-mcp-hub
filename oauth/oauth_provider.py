@@ -147,6 +147,9 @@ def _validate_redirect_uri(uri: str) -> bool:
 _BASE64URL_RE = re.compile(r'^[A-Za-z0-9_\-]+$')
 _MIN_CHALLENGE_LEN = 43
 
+# RFC 7636 §4.1 — code_verifier: 43–128 unreserved chars [A-Za-z0-9\-._~]
+_VERIFIER_RE = re.compile(r'^[A-Za-z0-9\-._~]{43,128}$')
+
 
 def _validate_code_challenge(challenge: str, method: str) -> bool:
     """Return True if code_challenge meets minimum security requirements."""
@@ -279,12 +282,11 @@ class OAuthProvider:
         now = time.monotonic()
         if self._cached_key and now < self._cache_expires:
             return self._cached_key
-client = boto3.client("secretsmanager", region_name=self.region)
-loop = asyncio.get_running_loop()
-resp = await loop.run_in_executor(
-    None,
-    lambda: client.get_secret_value(SecretId=self.secret_name),
-)
+        client = boto3.client("secretsmanager", region_name=self.region)
+        resp = await asyncio.get_running_loop().run_in_executor(
+            None,
+            lambda: client.get_secret_value(SecretId=self.secret_name),
+        )
         payload = json.loads(resp["SecretString"])
         self._cached_key = payload[self.secret_key]
         self._cache_expires = now + 300
@@ -293,6 +295,10 @@ resp = await loop.run_in_executor(
     @staticmethod
     def _verify_pkce(verifier: str, challenge: str, method: str) -> bool:
         if method != "S256":
+            return False
+        # Validate RFC 7636 §4.1 format before encode("ascii") — rejects
+        # non-ASCII and out-of-range lengths, preventing UnicodeEncodeError.
+        if not _VERIFIER_RE.match(verifier):
             return False
         digest = hashlib.sha256(verifier.encode("ascii")).digest()
         computed = base64.urlsafe_b64encode(digest).rstrip(b"=").decode()
@@ -342,11 +348,10 @@ resp = await loop.run_in_executor(
             return self._codes.pop(code, None)
 
     async def _dynamo_put(self, table_name: str, code: str, record: dict) -> None:
-client = boto3.client("dynamodb", region_name=self.region)
-loop = asyncio.get_running_loop()
-await loop.run_in_executor(
-    None,
-    lambda: client.put_item(
+        client = boto3.client("dynamodb", region_name=self.region)
+        await asyncio.get_running_loop().run_in_executor(
+            None,
+            lambda: client.put_item(
                 TableName=table_name,
                 Item={
                     "code":                  {"S": code},
@@ -363,7 +368,6 @@ await loop.run_in_executor(
 
     async def _dynamo_pop(self, table_name: str, code: str) -> Optional[dict]:
         client = boto3.client("dynamodb", region_name=self.region)
-        loop = asyncio.get_running_loop()
 
         def _delete_and_return() -> Optional[dict]:
             resp = client.delete_item(
@@ -382,7 +386,7 @@ await loop.run_in_executor(
                 "expires":               float(attrs["expires"]["N"]),
             }
 
-        return await loop.run_in_executor(None, _delete_and_return)
+        return await asyncio.get_running_loop().run_in_executor(None, _delete_and_return)
 
     # ------------------------------------------------------------------
     # Endpoint handlers
