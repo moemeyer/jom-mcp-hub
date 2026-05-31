@@ -244,6 +244,7 @@
 
   <div class="tab-row">
     <button class="tab-btn active" onclick="showTab('claude')">Claude Desktop</button>
+    <button class="tab-btn" onclick="showTab('claudeweb')">Claude.ai Web</button>
     <button class="tab-btn" onclick="showTab('cursor')">Cursor / Windsurf</button>
     <button class="tab-btn" onclick="showTab('zed')">Zed Editor</button>
     <button class="tab-btn" onclick="showTab('generic')">Generic MCP Client</button>
@@ -272,6 +273,70 @@
     }
   }
 }</pre>
+  </div>
+
+  <div id="tab-claudeweb" class="tab-pane">
+    <p style="font-size:.82rem;color:#6b7280;margin-bottom:16px">
+      Claude.ai web uses <strong>OAuth 2.0 PKCE</strong> — no JSON config needed.
+      Each server has a built-in sign-in page served at its endpoint. Your endpoint URL is provided in the access approval email.
+    </p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-bottom:20px">
+      <div class="info-card" style="border-left:3px solid var(--green)">
+        <h4>BrioStack Operations</h4>
+        <p style="font-size:.8rem;color:var(--gray-2);margin-top:4px">Field ops · Scheduling · Billing</p>
+        <p class="sub">Endpoint provided upon access approval</p>
+      </div>
+      <div class="info-card" style="border-left:3px solid #3b82f6">
+        <h4>CardPointe Payments</h4>
+        <p style="font-size:.8rem;color:var(--gray-2);margin-top:4px">Auth · Capture · ACH · Profiles</p>
+        <p class="sub">Endpoint provided upon access approval</p>
+      </div>
+      <div class="info-card" style="border-left:3px solid #8b5cf6">
+        <h4>Agency / GHL Operations</h4>
+        <p style="font-size:.8rem;color:var(--gray-2);margin-top:4px">CRM · AI Bots · Marketing</p>
+        <p class="sub">Endpoint provided upon access approval</p>
+      </div>
+    </div>
+    <div class="steps" style="max-width:600px">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Get access</h4>
+          <p>Submit a request at <a href="request-access.html" style="color:var(--green-d);font-weight:600">request-access.html</a>. You'll receive your endpoint URL and MCP API key via email after approval (1–2 business days for external requests).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Open Claude.ai → Settings → Connectors</h4>
+          <p>In your Claude.ai account, navigate to <strong>Settings → Connectors</strong> and click <strong>Add custom connector</strong>.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Enter the endpoint URL</h4>
+          <p>Type a name (e.g., <code>BrioStack Operations</code>) and paste the server endpoint URL from your approval email. Click <strong>Connect</strong>.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h4>Complete the OAuth sign-in</h4>
+          <p>Claude.ai redirects you to the server's sign-in page. Enter your MCP API key and click <strong>Authorize Access</strong>. You'll be redirected back to Claude.ai automatically.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h4>Repeat for each server</h4>
+          <p>Each server (BrioStack, CardPointe, Agency/GHL) is added as a separate connector. All three use the same API key.</p>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:.78rem;color:var(--gray-3);margin-top:20px;padding:12px;background:var(--gray-5);border-radius:8px;border:1px solid var(--gray-4)">
+      💡 <strong>How it works:</strong> Each server implements OAuth 2.0 PKCE at <code>/authorize</code> and <code>/token</code>. Claude.ai auto-discovers the auth endpoints via <code>/.well-known/oauth-authorization-server</code>. Your API key is never stored by Claude.ai — the OAuth flow converts it to a session token on the fly.
+    </p>
   </div>
 
   <div id="tab-cursor" class="tab-pane">

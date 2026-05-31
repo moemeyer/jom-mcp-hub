@@ -3,6 +3,7 @@
   "catalog": "https://mcp.jom.services/mcp-catalog.json",
   "access": "https://mcp.jom.services/request-access.html",
   "access_note": "Endpoint URLs are provided upon access approval. Request access at the access URL above.",
+  "auth_note": "All servers support Bearer token auth (Claude Desktop / Cursor / Zed) and OAuth 2.0 PKCE (Claude.ai web). The OAuth authorization_server is discovered at /.well-known/oauth-authorization-server on each server endpoint.",
   "servers": [
     {
       "id": "briostack-mcp",
@@ -10,7 +11,10 @@
       "transport": "streamable-http",
       "status": "production",
       "access_required": true,
-      "access_url": "https://mcp.jom.services/request-access.html"
+      "access_url": "https://mcp.jom.services/request-access.html",
+      "auth": ["bearer", "oauth2_pkce"],
+      "oauth2_pkce": true,
+      "authorization_server_note": "Discovered at <endpoint>/.well-known/oauth-authorization-server after access approval"
     },
     {
       "id": "cardpointe-mcp",
@@ -18,7 +22,10 @@
       "transport": "streamable-http",
       "status": "production",
       "access_required": true,
-      "access_url": "https://mcp.jom.services/request-access.html"
+      "access_url": "https://mcp.jom.services/request-access.html",
+      "auth": ["bearer", "oauth2_pkce"],
+      "oauth2_pkce": true,
+      "authorization_server_note": "Discovered at <endpoint>/.well-known/oauth-authorization-server after access approval"
     },
     {
       "id": "agency-mcp",
@@ -26,7 +33,10 @@
       "transport": "streamable-http",
       "status": "production",
       "access_required": true,
-      "access_url": "https://mcp.jom.services/request-access.html"
+      "access_url": "https://mcp.jom.services/request-access.html",
+      "auth": ["bearer", "oauth2_pkce"],
+      "oauth2_pkce": true,
+      "authorization_server_note": "Discovered at <endpoint>/.well-known/oauth-authorization-server after access approval"
     }
   ]
 }

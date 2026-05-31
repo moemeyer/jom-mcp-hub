@@ -19,9 +19,11 @@
       "endpoint": "https://mcp.jom.services/request-access",
       "endpoint_note": "Actual endpoint provided upon access approval. Request at https://mcp.jom.services/request-access",
       "auth": {
-        "type": "bearer",
+        "type": ["bearer", "oauth2_pkce"],
         "header": "Authorization",
         "format": "Bearer <MCP_API_KEY>",
+        "oauth2_pkce": true,
+        "oauth2_note": "OAuth 2.0 PKCE supported for Claude.ai web. Authorization server discovered at <endpoint>/.well-known/oauth-authorization-server.",
         "note": "API key provided upon access approval. Request at https://mcp.jom.services/request-access"
       },
       "hosting": {
@@ -82,9 +84,11 @@
       "endpoint": "https://mcp.jom.services/request-access",
       "endpoint_note": "Actual endpoint provided upon access approval. Request at https://mcp.jom.services/request-access",
       "auth": {
-        "type": "bearer",
+        "type": ["bearer", "oauth2_pkce"],
         "header": "Authorization",
         "format": "Bearer <MCP_API_KEY>",
+        "oauth2_pkce": true,
+        "oauth2_note": "OAuth 2.0 PKCE supported for Claude.ai web. Authorization server discovered at <endpoint>/.well-known/oauth-authorization-server.",
         "note": "API key provided upon access approval. Request at https://mcp.jom.services/request-access"
       },
       "hosting": {
@@ -132,9 +136,11 @@
       "endpoint": "https://mcp.jom.services/request-access",
       "endpoint_note": "Actual endpoint provided upon access approval. Request at https://mcp.jom.services/request-access",
       "auth": {
-        "type": "bearer",
+        "type": ["bearer", "oauth2_pkce"],
         "header": "Authorization",
         "format": "Bearer <MCP_API_KEY>",
+        "oauth2_pkce": true,
+        "oauth2_note": "OAuth 2.0 PKCE supported for Claude.ai web. Authorization server discovered at <endpoint>/.well-known/oauth-authorization-server.",
         "note": "API key provided upon access approval. Request at https://mcp.jom.services/request-access"
       },
       "hosting": {
@@ -312,8 +318,14 @@
   "connector": {
     "protocol": "MCP 2025-03-26",
     "transport_options": ["streamable-http", "stdio", "sse"],
+    "auth_options": ["bearer", "oauth2_pkce"],
     "claude_desktop_key": "mcpServers",
     "cursor_key": "mcpServers",
+    "claude_web": {
+      "method": "oauth2_pkce",
+      "flow": "custom_connector",
+      "note": "Open Claude.ai → Settings → Connectors → Add custom connector. Enter your endpoint URL. OAuth sign-in is handled automatically — enter your MCP API key when prompted."
+    },
     "quick_connect": {
       "briostack": {
         "command": null,
