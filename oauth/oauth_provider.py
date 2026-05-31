@@ -15,7 +15,7 @@ ENDPOINTS ADDED
   GET  /.well-known/oauth-authorization-server  — RFC 8414 metadata (auto-discovered)
   GET  /authorize                                — HTML key-entry form shown to user
   POST /authorize                                — validate key → redirect with auth code
-  POST /token                                    — PKCE verify → return access_token
+  POST /token                                    — PKCE S256 verify → return access_token
 
 INTEGRATION
 -----------
@@ -37,6 +37,7 @@ Then in server.py, after you build the Starlette app, add the OAuth routes:
         secret_name="pestpro/integrations/mcp-api-key",
         secret_key="api_key",
         region="us-east-2",
+        server_label="BrioStack Operations",   # shown in the HTML sign-in form
     )
     app = Starlette(routes=oauth.routes() + [Mount("/", app=mcp_app)])
 
@@ -44,11 +45,24 @@ Then in server.py, after you build the Starlette app, add the OAuth routes:
         import uvicorn
         uvicorn.run(app, host="0.0.0.0", port=8001)
 
-ENVIRONMENT VARIABLE (optional)
---------------------------------
-  MCP_SERVER_BASE_URL=https://your-apprunner-url.awsapprunner.com
-  If set, used for the issuer/endpoint URLs in the discovery metadata.
-  If not set, derived from the incoming request (works in most cases).
+ENVIRONMENT VARIABLES
+---------------------
+  MCP_SERVER_BASE_URL
+      Full public URL of this server (e.g. https://abc123.awsapprunner.com).
+      Used in OAuth discovery metadata. Derived from the request if not set.
+
+  OAUTH_DYNAMODB_TABLE
+      DynamoDB table name for distributed auth code storage across App Runner
+      instances (recommended for multi-instance deployments). When unset, codes
+      are stored in-memory — safe for single-instance deployments only.
+      Table must have a String primary key named "code" and a TTL attribute
+      named "expires" (Number, Unix epoch seconds).
+      Example: OAUTH_DYNAMODB_TABLE=mcp-oauth-codes
+
+  OAUTH_ALLOWED_REDIRECT_ORIGINS
+      Comma-separated additional hostnames allowed as redirect_uri targets,
+      beyond the built-in Claude.ai allowlist. Useful for staging environments.
+      Example: OAUTH_ALLOWED_REDIRECT_ORIGINS=staging.claude.ai,internal.example.com
 
 DEPENDENCIES
 ------------
@@ -59,11 +73,14 @@ import asyncio
 import base64
 import hashlib
 import json
+import logging
 import os
+import re
 import secrets
 import time
 import urllib.parse
 from typing import Optional
+from urllib.parse import urlparse
 
 import boto3
 from botocore.exceptions import ClientError
@@ -71,10 +88,63 @@ from starlette.requests import Request
 from starlette.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 from starlette.routing import Route
 
+_LOG = logging.getLogger(__name__)
 
-# ---------------------------------------------------------------------------
-# HTML authorize form — served to the user by Claude.ai's OAuth redirect
-# ---------------------------------------------------------------------------
+# ------------------------------------------------------------------
+# redirect_uri validation
+# ------------------------------------------------------------------
+# Claude.ai domains that are valid OAuth callback targets.
+_CLAUDE_HOSTS: frozenset[str] = frozenset({"claude.ai", "app.claude.ai"})
+
+# Additional allowed hosts from the environment (comma-separated).
+_EXTRA_ALLOWED_HOSTS: frozenset[str] = frozenset(
+    h.strip()
+    for h in os.environ.get("OAUTH_ALLOWED_REDIRECT_ORIGINS", "").split(",")
+    if h.strip()
+)
+
+# Hosts allowed without TLS (local development only).
+_LOCAL_HOSTS: frozenset[str] = frozenset({"localhost", "127.0.0.1"})
+
+
+def _validate_redirect_uri(uri: str) -> bool:
+    """
+    Return True if the redirect_uri host is on the Claude.ai allowlist or
+    is a configured extra host. Rejects empty, unparseable, or unknown hosts.
+    """
+    if not uri:
+        return False
+    try:
+        parsed = urlparse(uri)
+    except Exception:
+        return False
+    host = (parsed.hostname or "").lower()
+    if not host:
+        return False
+    if host in _LOCAL_HOSTS:
+        return True
+    allowed = _CLAUDE_HOSTS | _EXTRA_ALLOWED_HOSTS
+    return any(host == h or host.endswith(f".{h}") for h in allowed)
+
+
+# ------------------------------------------------------------------
+# PKCE challenge validation
+# ------------------------------------------------------------------
+# S256: SHA-256 digest → Base64URL (no padding) = ceil(256/6) = 43 chars minimum.
+_BASE64URL_RE = re.compile(r'^[A-Za-z0-9_\-]+$')
+_MIN_CHALLENGE_LEN = 43
+
+
+def _validate_code_challenge(challenge: str, method: str) -> bool:
+    """Return True if code_challenge meets minimum security requirements."""
+    if method != "S256":
+        return False
+    return bool(challenge) and len(challenge) >= _MIN_CHALLENGE_LEN and bool(_BASE64URL_RE.match(challenge))
+
+
+# ------------------------------------------------------------------
+# HTML authorize form
+# ------------------------------------------------------------------
 _FORM_HTML = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -151,6 +221,13 @@ class OAuthProvider:
     Validates the entered API key against AWS Secrets Manager.
     The access_token returned from /token equals the actual MCP API key,
     so the existing Bearer token middleware requires no changes.
+
+    Code storage:
+    - Single-instance (default): codes stored in-memory; safe when App Runner
+      is configured to run exactly one instance.
+    - Multi-instance: set OAUTH_DYNAMODB_TABLE to a DynamoDB table name.
+      The table must have a String partition key "code" and a TTL attribute
+      "expires" (Number). Enable DynamoDB TTL on the "expires" attribute.
     """
 
     def __init__(
@@ -161,21 +238,17 @@ class OAuthProvider:
         server_label: str = "JOM MCP Server",
         code_ttl: int = 300,
     ):
-        """
-        secret_name  — AWS Secrets Manager secret containing the API key.
-        secret_key   — JSON key within the secret (default: "api_key").
-        region       — AWS region for Secrets Manager.
-        server_label — Displayed in the HTML authorize form (e.g. "BrioStack Operations").
-        code_ttl     — Auth code lifetime in seconds (default: 5 min).
-        """
         self.secret_name = secret_name
         self.secret_key = secret_key
         self.region = region
         self.server_label = server_label
         self.code_ttl = code_ttl
 
+        # In-memory fallback (single-instance only)
         self._codes: dict[str, dict] = {}
         self._lock = asyncio.Lock()
+
+        # Secrets Manager cache
         self._cached_key: Optional[str] = None
         self._cache_expires: float = 0.0
 
@@ -211,10 +284,6 @@ class OAuthProvider:
         computed = base64.urlsafe_b64encode(digest).rstrip(b"=").decode()
         return secrets.compare_digest(computed, challenge)
 
-    def _purge_expired(self) -> None:
-        now = time.time()
-        self._codes = {k: v for k, v in self._codes.items() if v["expires"] > now}
-
     def _render_form(self, *, params: dict, error: str = "") -> HTMLResponse:
         error_html = f'<div class="err">⚠ {error}</div>' if error else ""
         html = _FORM_HTML.format(
@@ -228,6 +297,72 @@ class OAuthProvider:
             state=params.get("state", ""),
         )
         return HTMLResponse(html)
+
+    # ------------------------------------------------------------------
+    # Code storage — DynamoDB if configured, else in-memory
+    # ------------------------------------------------------------------
+
+    def _purge_expired(self) -> None:
+        now = time.time()
+        self._codes = {k: v for k, v in self._codes.items() if v["expires"] > now}
+
+    async def _store_code(self, code: str, record: dict) -> None:
+        table_name = os.environ.get("OAUTH_DYNAMODB_TABLE", "")
+        if table_name:
+            await self._dynamo_put(table_name, code, record)
+        else:
+            async with self._lock:
+                self._purge_expired()
+                self._codes[code] = record
+
+    async def _pop_code(self, code: str) -> Optional[dict]:
+        table_name = os.environ.get("OAUTH_DYNAMODB_TABLE", "")
+        if table_name:
+            return await self._dynamo_pop(table_name, code)
+        async with self._lock:
+            self._purge_expired()
+            return self._codes.pop(code, None)
+
+    async def _dynamo_put(self, table_name: str, code: str, record: dict) -> None:
+        client = boto3.client("dynamodb", region_name=self.region)
+        await asyncio.get_event_loop().run_in_executor(
+            None,
+            lambda: client.put_item(
+                TableName=table_name,
+                Item={
+                    "code":                  {"S": code},
+                    "code_challenge":        {"S": record["code_challenge"]},
+                    "code_challenge_method": {"S": record["code_challenge_method"]},
+                    "redirect_uri":          {"S": record["redirect_uri"]},
+                    "api_key":               {"S": record["api_key"]},
+                    "expires":               {"N": str(int(record["expires"]))},
+                },
+                ConditionExpression="attribute_not_exists(#c)",
+                ExpressionAttributeNames={"#c": "code"},
+            ),
+        )
+
+    async def _dynamo_pop(self, table_name: str, code: str) -> Optional[dict]:
+        client = boto3.client("dynamodb", region_name=self.region)
+
+        def _delete_and_return() -> Optional[dict]:
+            resp = client.delete_item(
+                TableName=table_name,
+                Key={"code": {"S": code}},
+                ReturnValues="ALL_OLD",
+            )
+            attrs = resp.get("Attributes")
+            if not attrs:
+                return None
+            return {
+                "code_challenge":        attrs["code_challenge"]["S"],
+                "code_challenge_method": attrs["code_challenge_method"]["S"],
+                "redirect_uri":          attrs["redirect_uri"]["S"],
+                "api_key":               attrs["api_key"]["S"],
+                "expires":               float(attrs["expires"]["N"]),
+            }
+
+        return await asyncio.get_event_loop().run_in_executor(None, _delete_and_return)
 
     # ------------------------------------------------------------------
     # Endpoint handlers
@@ -250,10 +385,10 @@ class OAuthProvider:
 
     async def handle_authorize(self, request: Request) -> Response:
         if request.method == "GET":
-            p = dict(request.query_params)
-            return self._render_form(params=p)
+            return self._render_form(params=dict(request.query_params))
+        return await self._handle_authorize_post(request)
 
-        # POST — process the submitted form
+    async def _handle_authorize_post(self, request: Request) -> Response:
         form = await request.form()
         p = {k: form.get(k, "") for k in (
             "response_type", "client_id", "redirect_uri",
@@ -264,21 +399,42 @@ class OAuthProvider:
         if not api_key:
             return self._render_form(params=p, error="Please enter your API key.")
 
-        if not p["redirect_uri"]:
+        # Validate redirect_uri against Claude.ai allowlist (prevents open-redirect)
+        if not _validate_redirect_uri(p["redirect_uri"]):
             return JSONResponse(
-                {"error": "invalid_request", "error_description": "redirect_uri is required"},
+                {
+                    "error": "invalid_request",
+                    "error_description": "redirect_uri host is not on the allowed list",
+                },
                 status_code=400,
             )
 
         if p["code_challenge_method"] not in ("S256",):
             return JSONResponse(
-                {"error": "invalid_request", "error_description": "Only S256 code_challenge_method is supported"},
+                {
+                    "error": "invalid_request",
+                    "error_description": "Only S256 code_challenge_method is supported",
+                },
+                status_code=400,
+            )
+
+        # Validate code_challenge format and minimum length (Base64URL, ≥43 chars for S256)
+        if not _validate_code_challenge(p["code_challenge"], p["code_challenge_method"]):
+            return JSONResponse(
+                {
+                    "error": "invalid_request",
+                    "error_description": (
+                        "code_challenge must be a Base64URL string of at least "
+                        f"{_MIN_CHALLENGE_LEN} characters for S256"
+                    ),
+                },
                 status_code=400,
             )
 
         try:
             valid_key = await self._get_api_key()
-        except (ClientError, KeyError, json.JSONDecodeError, Exception):
+        except (ClientError, KeyError, json.JSONDecodeError):
+            _LOG.exception("Failed to retrieve MCP API key from Secrets Manager")
             return self._render_form(
                 params=p,
                 error="Server configuration error. Contact the hub administrator.",
@@ -288,17 +444,16 @@ class OAuthProvider:
             return self._render_form(params=p, error="Invalid API key. Check your approval email and try again.")
 
         code = secrets.token_urlsafe(32)
-        async with self._lock:
-            self._purge_expired()
-            self._codes[code] = {
-                "code_challenge": p["code_challenge"],
-                "code_challenge_method": p["code_challenge_method"],
-                "redirect_uri": p["redirect_uri"],
-                "api_key": valid_key,
-                "expires": time.time() + self.code_ttl,
-            }
+        record = {
+            "code_challenge":        p["code_challenge"],
+            "code_challenge_method": p["code_challenge_method"],
+            "redirect_uri":          p["redirect_uri"],
+            "api_key":               valid_key,
+            "expires":               time.time() + self.code_ttl,
+        }
+        await self._store_code(code, record)
 
-        qs_params = {"code": code}
+        qs_params: dict[str, str] = {"code": code}
         if p["state"]:
             qs_params["state"] = p["state"]
         sep = "&" if "?" in p["redirect_uri"] else "?"
@@ -312,7 +467,6 @@ class OAuthProvider:
             grant_type    = form.get("grant_type", "")
             code          = form.get("code", "")
             code_verifier = form.get("code_verifier", "")
-            redirect_uri  = form.get("redirect_uri", "")
         else:
             try:
                 body = await request.json()
@@ -321,7 +475,6 @@ class OAuthProvider:
             grant_type    = body.get("grant_type", "")
             code          = body.get("code", "")
             code_verifier = body.get("code_verifier", "")
-            redirect_uri  = body.get("redirect_uri", "")
 
         if grant_type != "authorization_code":
             return JSONResponse({"error": "unsupported_grant_type"}, status_code=400)
@@ -332,13 +485,17 @@ class OAuthProvider:
                 status_code=400,
             )
 
-        async with self._lock:
-            self._purge_expired()
-            record = self._codes.pop(code, None)
+        record = await self._pop_code(code)
 
         if not record:
             return JSONResponse(
                 {"error": "invalid_grant", "error_description": "Authorization code not found or expired"},
+                status_code=400,
+            )
+
+        if time.time() > record["expires"]:
+            return JSONResponse(
+                {"error": "invalid_grant", "error_description": "Authorization code expired"},
                 status_code=400,
             )
 
@@ -348,11 +505,13 @@ class OAuthProvider:
                 status_code=400,
             )
 
+        # expires_in reflects the API key lifetime (non-expiring keys → 30 days).
+        # No refresh_token is issued; Claude.ai re-runs the OAuth flow when needed.
         return JSONResponse(
             {
                 "access_token": record["api_key"],
-                "token_type": "Bearer",
-                "expires_in": 3600,
+                "token_type":   "Bearer",
+                "expires_in":   2592000,
             },
             headers={"Cache-Control": "no-store", "Pragma": "no-cache"},
         )
