@@ -279,11 +279,12 @@ class OAuthProvider:
         now = time.monotonic()
         if self._cached_key and now < self._cache_expires:
             return self._cached_key
-        client = boto3.client("secretsmanager", region_name=self.region)
-        resp = await asyncio.get_event_loop().run_in_executor(
-            None,
-            lambda: client.get_secret_value(SecretId=self.secret_name),
-        )
+client = boto3.client("secretsmanager", region_name=self.region)
+loop = asyncio.get_running_loop()
+resp = await loop.run_in_executor(
+    None,
+    lambda: client.get_secret_value(SecretId=self.secret_name),
+)
         payload = json.loads(resp["SecretString"])
         self._cached_key = payload[self.secret_key]
         self._cache_expires = now + 300
