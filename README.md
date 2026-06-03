@@ -92,8 +92,8 @@ Add to `.cursor/mcp.json` in your project root:
 
 - AWS CLI configured (`us-east-2`)
 - Docker with `--platform linux/amd64` support
-- ECR repo: `767397993913.dkr.ecr.us-east-2.amazonaws.com/pestpro/briostack-mcp`
-- AWS Secrets Manager: `pestpro/integrations/briostack`
+- ECR repo: `us-central1-docker.pkg.dev/ghlpest-controlv2/openclaw-mcp-repo/briostack-mcp`
+- GCP Secret Manager: `pestpro/integrations/briostack`
 
 ### Build & Push
 
@@ -105,11 +105,11 @@ aws ecr get-login-password --region us-east-2 | \
 
 # Build for amd64 (REQUIRED — App Runner is x86_64)
 docker build --platform linux/amd64 \
-  -t 767397993913.dkr.ecr.us-east-2.amazonaws.com/pestpro/briostack-mcp:latest \
+  -t us-central1-docker.pkg.dev/ghlpest-controlv2/openclaw-mcp-repo/briostack-mcp:latest \
   hosted/
 
 # Push
-docker push 767397993913.dkr.ecr.us-east-2.amazonaws.com/pestpro/briostack-mcp:latest
+docker push us-central1-docker.pkg.dev/ghlpest-controlv2/openclaw-mcp-repo/briostack-mcp:latest
 ```
 
 ### App Runner Service
@@ -187,7 +187,7 @@ The `CNAME` file in this repo root tells GitHub Pages which domain to serve.
 
 ## Credentials
 
-All credentials are stored in AWS Secrets Manager (`us-east-2`):
+All credentials are stored in GCP Secret Manager (`us-east-2`):
 
 | Server | Secret Path |
 |--------|------------|

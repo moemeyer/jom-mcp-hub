@@ -27,14 +27,14 @@
         "note": "API key provided upon access approval. Request at https://mcp.jom.services/request-access"
       },
       "hosting": {
-        "provider": "AWS App Runner",
+        "provider": "Google Cloud Run",
         "region": "us-east-2",
         "arn": "arn:aws:apprunner:us-east-2:767397993913:service/briostack-mcp-prod/4eda73f27c634148ba4bb7505971926e",
-        "image": "767397993913.dkr.ecr.us-east-2.amazonaws.com/pestpro/briostack-mcp:latest",
+        "image": "us-central1-docker.pkg.dev/ghlpest-controlv2/openclaw-mcp-repo/briostack-mcp:latest",
         "platform": "linux/amd64"
       },
       "credentials": {
-        "source": "AWS Secrets Manager",
+        "source": "GCP Secret Manager",
         "path": "pestpro/integrations/briostack",
         "region": "us-east-2"
       },
@@ -92,14 +92,14 @@
         "note": "API key provided upon access approval. Request at https://mcp.jom.services/request-access"
       },
       "hosting": {
-        "provider": "AWS App Runner",
+        "provider": "Google Cloud Run",
         "region": "us-east-2",
         "service_name": "cardpointe-mcp-prod",
-        "image": "767397993913.dkr.ecr.us-east-2.amazonaws.com/pestpro/cardpointe-mcp:latest",
+        "image": "us-central1-docker.pkg.dev/ghlpest-controlv2/openclaw-mcp-repo/cardpointe-mcp:latest",
         "platform": "linux/amd64"
       },
       "credentials": {
-        "source": "AWS Secrets Manager",
+        "source": "GCP Secret Manager",
         "path": "pestpro/integrations/cardpointe",
         "region": "us-east-1"
       },
@@ -144,14 +144,14 @@
         "note": "API key provided upon access approval. Request at https://mcp.jom.services/request-access"
       },
       "hosting": {
-        "provider": "AWS App Runner",
+        "provider": "Google Cloud Run",
         "region": "us-west-2",
         "service_name": "agency-mcp-prod",
-        "image": "767397993913.dkr.ecr.us-west-2.amazonaws.com/pestpro/agency-mcp:latest",
+        "image": "us-central1-docker.pkg.dev/ghlpest-controlv2/openclaw-mcp-repo/agency-mcp:latest",
         "platform": "linux/amd64"
       },
       "credentials": {
-        "source": "AWS Secrets Manager",
+        "source": "GCP Secret Manager",
         "path": "pestpro/integrations/ghl",
         "region": "us-east-2"
       },

@@ -692,17 +692,17 @@
     </div>
     <div class="info-card">
       <h4>Hosting</h4>
-      <p>AWS App Runner</p>
+      <p>Google Cloud Run</p>
       <p class="sub">us-east-2, linux/amd64, 0.25 vCPU / 0.5 GB</p>
     </div>
     <div class="info-card">
       <h4>Image</h4>
       <p>ECR Private</p>
-      <p class="sub">767397993913.dkr.ecr.us-east-2.amazonaws.com/pestpro/briostack-mcp</p>
+      <p class="sub">us-central1-docker.pkg.dev/ghlpest-controlv2/openclaw-mcp-repo/briostack-mcp</p>
     </div>
     <div class="info-card">
       <h4>Credentials</h4>
-      <p>AWS Secrets Manager</p>
+      <p>GCP Secret Manager</p>
       <p class="sub">Region us-east-2 · Prefix pestpro/integrations/</p>
     </div>
     <div class="info-card">
@@ -732,14 +732,14 @@
       <div class="step-num">3</div>
       <div class="step-body">
         <h4>Secrets Manager</h4>
-        <p>Store credentials at <code>pestpro/integrations/briostack</code> in AWS Secrets Manager (us-east-2) with keys <code>api_key</code>, <code>base_url</code>, <code>instance</code>. The server loads these at runtime via IAM role — no env vars needed in production.</p>
+        <p>Store credentials at <code>pestpro/integrations/briostack</code> in GCP Secret Manager (us-east-2) with keys <code>api_key</code>, <code>base_url</code>, <code>instance</code>. The server loads these at runtime via IAM role — no env vars needed in production.</p>
       </div>
     </div>
     <div class="step">
       <div class="step-num">4</div>
       <div class="step-body">
         <h4>Build &amp; push (amd64 required)</h4>
-        <p><code>docker build --platform linux/amd64 -t 767397993913.dkr.ecr.us-east-2.amazonaws.com/pestpro/briostack-mcp:latest .</code><br/>Then: <code>docker push ...</code>. The <code>--platform linux/amd64</code> flag is mandatory — App Runner runs x86_64, not ARM.</p>
+        <p><code>docker build --platform linux/amd64 -t us-central1-docker.pkg.dev/ghlpest-controlv2/openclaw-mcp-repo/briostack-mcp:latest .</code><br/>Then: <code>docker push ...</code>. The <code>--platform linux/amd64</code> flag is mandatory — App Runner runs x86_64, not ARM.</p>
       </div>
     </div>
     <div class="step">
