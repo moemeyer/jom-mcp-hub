@@ -407,27 +407,34 @@ class OAuthProvider:
             headers={"Cache-Control": "no-store"},
         )
 
-async def _handle_authorize_post(self, request: Request) -> Response:
-    form = await request.form()
-    p = {k: form.get(k, "") for k in (
-        "response_type", "client_id", "redirect_uri",
-        "code_challenge", "code_challenge_method", "state",
-    )}
-    api_key = (form.get("api_key") or "").strip()
-        p = {k: form.get(k, "") for k in (
-    if p["response_type"] != "code":
-        return JSONResponse(
-            {
-                "error": "unsupported_response_type",
-                "error_description": "Only response_type=code is supported",
-            },
-            status_code=400,
-        )
-        )}
-    if not api_key:
-        return self._render_form(params=p, error="Please enter your API key.")
+    async def handle_authorize(self, request: Request) -> Response:
+        """
+        Handle OAuth authorization endpoint (GET shows form, POST validates key).
+        """
+        if request.method == "GET":
+            # Show the authorization form
+            p = {k: request.query_params.get(k, "") for k in (
+                "response_type", "client_id", "redirect_uri",
+                "code_challenge", "code_challenge_method", "state",
+            )}
+            return self._render_form(params=p)
 
+        # POST: process the authorization form submission
+        form = await request.form()
+        p = {k: form.get(k, "") for k in (
+            "response_type", "client_id", "redirect_uri",
+            "code_challenge", "code_challenge_method", "state",
+        )}
         api_key = (form.get("api_key") or "").strip()
+
+        if p["response_type"] != "code":
+            return JSONResponse(
+                {
+                    "error": "unsupported_response_type",
+                    "error_description": "Only response_type=code is supported",
+                },
+                status_code=400,
+            )
 
         if not api_key:
             return self._render_form(params=p, error="Please enter your API key.")
