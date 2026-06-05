@@ -1,0 +1,75 @@
+# Cloud Build Configuration for MCP Server Deployment
+#
+# This config builds and deploys Python-based MCP servers to Google Cloud Run.
+# Supports multi-service deployments from a single repo.
+#
+# Substitution variables:
+#   _SERVICE_NAME: Cloud Run service name (e.g., 'norivo-agency-mcp-prod')
+#   _REGION: GCP region (default: 'us-central1')
+#   _AGENCY_ID: Agency identifier (e.g., 'norivo', 'exlyar', 'jom')
+#   _IMAGE_TAG: Docker image tag (default: 'latest')
+
+substitutions:
+  _REGION: 'us-central1'
+  _IMAGE_TAG: 'latest'
+
+steps:
+  # Step 1: Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-image'
+    args:
+      - 'build'
+      - '--platform=linux/amd64'
+      - '--build-arg=AGENCY_ID=${_AGENCY_ID}'
+      - '--tag=us-central1-docker.pkg.dev/${PROJECT_ID}/openclaw-mcp-repo/agency-mcp:${_SERVICE_NAME}-${_IMAGE_TAG}'
+      - '--tag=us-central1-docker.pkg.dev/${PROJECT_ID}/openclaw-mcp-repo/agency-mcp:${_SERVICE_NAME}-${SHORT_SHA}'
+      - '--file=Dockerfile.template'
+      - '.'
+    env:
+      - 'DOCKER_BUILDKIT=1'
+
+  # Step 2: Push image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'push-image'
+    args:
+      - 'push'
+      - '--all-tags'
+      - 'us-central1-docker.pkg.dev/${PROJECT_ID}/openclaw-mcp-repo/agency-mcp'
+    waitFor: ['build-image']
+
+  # Step 3: Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-service'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'services'
+      - 'update'
+      - '${_SERVICE_NAME}'
+      - '--image=us-central1-docker.pkg.dev/${PROJECT_ID}/openclaw-mcp-repo/agency-mcp:${_SERVICE_NAME}-${_IMAGE_TAG}'
+      - '--region=${_REGION}'
+      - '--platform=managed'
+      - '--quiet'
+    waitFor: ['push-image']
+
+# Build artifacts stored for 7 days
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: 'N1_HIGHCPU_8'
+  substitutionOption: 'ALLOW_LOOSE'
+  dynamic_substitutions: true
+
+# Total timeout for entire build process
+timeout: '1200s'
+
+# Images to preserve in Artifact Registry
+images:
+  - 'us-central1-docker.pkg.dev/${PROJECT_ID}/openclaw-mcp-repo/agency-mcp:${_SERVICE_NAME}-${_IMAGE_TAG}'
+  - 'us-central1-docker.pkg.dev/${PROJECT_ID}/openclaw-mcp-repo/agency-mcp:${_SERVICE_NAME}-${SHORT_SHA}'
+
+# Tags for build tracking
+tags:
+  - 'mcp-server'
+  - 'cloud-run'
+  - '${_SERVICE_NAME}'
+  - '${_AGENCY_ID}'
