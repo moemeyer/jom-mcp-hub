@@ -55,7 +55,7 @@ steps:
 # Build artifacts stored for 7 days
 options:
   logging: CLOUD_LOGGING_ONLY
-  machineType: 'N1_HIGHCPU_8'
+  machineType: 'E2_HIGHCPU_8'
   substitutionOption: 'ALLOW_LOOSE'
   dynamic_substitutions: true
 
