@@ -23,8 +23,8 @@ import os
 import sys
 from typing import Any
 
-import boto3
-from botocore.exceptions import ClientError
+from google.cloud import secretmanager
+from google.api_core.exceptions import GoogleAPIError
 from fastmcp import FastMCP
 from starlette.applications import Starlette
 from starlette.routing import Mount
@@ -44,9 +44,9 @@ _LOG = logging.getLogger(__name__)
 # ------------------------------------------------------------------
 
 AGENCY_ID = os.environ.get("AGENCY_ID", "jom")
-SECRET_PATH = os.environ.get("SECRET_PATH", f"pestpro/integrations/{AGENCY_ID}-agency")
+SECRET_PATH = os.environ.get("SECRET_PATH", f"pestpro-integrations-{AGENCY_ID}-agency")
 AGENCY_LABEL = os.environ.get("AGENCY_LABEL", f"{AGENCY_ID.upper()} Agency")
-SECRET_REGION = os.environ.get("SECRET_REGION", "us-east-2")
+GCP_PROJECT = os.environ.get("GOOGLE_CLOUD_PROJECT", "ghlpest-controlv2")
 
 _LOG.info(f"Starting MCP server for agency: {AGENCY_LABEL} (ID: {AGENCY_ID})")
 _LOG.info(f"Credentials path: {SECRET_PATH}")
@@ -82,12 +82,17 @@ async def get_agency_credentials() -> dict[str, Any]:
         return _CREDENTIALS_CACHE
 
     try:
-        client = boto3.client("secretsmanager", region_name=SECRET_REGION)
+        client = secretmanager.SecretManagerServiceClient()
+        
+        secret_name = SECRET_PATH
+        if "/" not in secret_name:
+            secret_name = f"projects/{GCP_PROJECT}/secrets/{secret_name}/versions/latest"
+
         resp = await asyncio.get_running_loop().run_in_executor(
             None,
-            lambda: client.get_secret_value(SecretId=SECRET_PATH),
+            lambda: client.access_secret_version(request={"name": secret_name}),
         )
-        credentials = json.loads(resp["SecretString"])
+        credentials = json.loads(resp.payload.data.decode("UTF-8"))
 
         _CREDENTIALS_CACHE = credentials
         _CACHE_EXPIRES = now + 300  # 5 min cache
@@ -97,7 +102,7 @@ async def get_agency_credentials() -> dict[str, Any]:
 
         return credentials
 
-    except (ClientError, json.JSONDecodeError, KeyError) as e:
+    except (GoogleAPIError, json.JSONDecodeError, KeyError) as e:
         _LOG.error(f"Failed to load credentials from {SECRET_PATH}: {e}")
         raise RuntimeError(f"Cannot start server without valid credentials at {SECRET_PATH}") from e
 

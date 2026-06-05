@@ -85,6 +85,8 @@ from urllib.parse import urlparse
 
 import boto3
 from botocore.exceptions import ClientError
+from google.cloud import secretmanager
+from google.api_core.exceptions import GoogleAPIError
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 from starlette.routing import Route
@@ -248,17 +250,19 @@ class OAuthProvider:
 
     def __init__(
         self,
-        secret_name: str = "pestpro/integrations/mcp-api-key",
+        secret_name: str = "pestpro-integrations-mcp-api-key",
         secret_key: str = "api_key",
         region: str = "us-east-2",
         server_label: str = "JOM MCP Server",
         code_ttl: int = 300,
+        gcp_project: str = "ghlpest-controlv2",
     ):
         self.secret_name = secret_name
         self.secret_key = secret_key
         self.region = region
         self.server_label = server_label
         self.code_ttl = code_ttl
+        self.gcp_project = gcp_project
 
         # In-memory fallback (single-instance only)
         self._codes: dict[str, dict] = {}
@@ -282,12 +286,17 @@ class OAuthProvider:
         now = time.monotonic()
         if self._cached_key and now < self._cache_expires:
             return self._cached_key
-        client = boto3.client("secretsmanager", region_name=self.region)
+            
+        client = secretmanager.SecretManagerServiceClient()
+        secret_path = self.secret_name
+        if "/" not in secret_path:
+            secret_path = f"projects/{self.gcp_project}/secrets/{secret_path}/versions/latest"
+            
         resp = await asyncio.get_running_loop().run_in_executor(
             None,
-            lambda: client.get_secret_value(SecretId=self.secret_name),
+            lambda: client.access_secret_version(request={"name": secret_path}),
         )
-        payload = json.loads(resp["SecretString"])
+        payload = json.loads(resp.payload.data.decode("UTF-8"))
         self._cached_key = payload[self.secret_key]
         self._cache_expires = now + 300
         return self._cached_key
@@ -473,7 +482,7 @@ class OAuthProvider:
 
         try:
             valid_key = await self._get_api_key()
-        except (ClientError, KeyError, json.JSONDecodeError):
+        except (GoogleAPIError, KeyError, json.JSONDecodeError):
             _LOG.exception("Failed to retrieve MCP API key from Secrets Manager")
             return self._render_form(
                 params=p,
