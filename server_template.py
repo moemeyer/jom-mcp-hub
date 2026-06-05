@@ -279,7 +279,7 @@ async def list_calendars(location_id: str | None = None) -> dict:
 
 def build_app() -> Starlette:
     """Build the Starlette app with MCP + OAuth routes."""
-    mcp_app = mcp.get_asgi_app()
+    mcp_app = mcp.http_app()
 
     if OAuthProvider is None:
         _LOG.warning("OAuth provider not available - running MCP-only mode")
