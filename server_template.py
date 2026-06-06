@@ -285,12 +285,11 @@ def build_app() -> Starlette:
         _LOG.warning("OAuth provider not available - running MCP-only mode")
         return mcp_app
 
-    # Each agency has its own MCP API key in the secret
     oauth = OAuthProvider(
         secret_name=SECRET_PATH,
         secret_key="mcp_api_key",
-        region=SECRET_REGION,
         server_label=AGENCY_LABEL,
+        gcp_project=GCP_PROJECT,
     )
 
     # Combine OAuth routes + MCP routes
