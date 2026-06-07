@@ -97,8 +97,8 @@ According to `mcp-catalog.json`, you have **3 production MCP servers**:
 - **Endpoint:** Requires MCP_API_KEY
 - **Secrets:** `pestpro/integrations/cardpointe` (GCP Secret Manager)
 - **Merchant IDs:**
-  - Credit: `496354430886`
-  - ACH: `BCX101329844815`
+  - Credit: `<merchant_id_credit>`
+  - ACH: `<merchant_id_ach>`
 
 ### 3. Agency / GHL Operations MCP
 - **Status:** 🟢 Production
@@ -446,7 +446,7 @@ AGENCY_MCP_KEY=<api_key>
 - `mcp-catalog.json` - Full tool catalog
 
 ### Contact
-- **Owner:** Moe Meyer (moemeyer@gmail.com)
+- **Owner:** Moe Meyer (<contact_email>)
 - **Organization:** JOM Services / Pest Pro Rid All
 - **Domain:** jom.services
 
