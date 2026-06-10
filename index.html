@@ -137,11 +137,23 @@
       .section { padding: 32px 16px; }
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'neutral',
+      securityLevel: 'loose',
+      flowchart: { useMaxWidth: true, htmlLabels: true }
+    });
+  </script>
 </head>
 <body>
 
 <nav>
-  <a class="logo" href="https://mcp.jom.services">🐛 JOM <span>/ mcp.jom.services</span></a>
+  <div style="display:flex;align-items:center;gap:24px;">
+    <a class="logo" href="https://mcp.jom.services">🐛 JOM <span>/ mcp.jom.services</span></a>
+    <a href="#agent-flow" style="color:#fff;text-decoration:none;font-size:0.82rem;font-weight:600;opacity:0.85;letter-spacing:0.2px;">Agent Flow</a>
+  </div>
   <span class="badge">MCP Hub v1</span>
 </nav>
 
@@ -157,10 +169,9 @@
   </div>
 </div>
 
-<!-- SERVERS OVERVIEW -->
 <div class="section">
-  <div class="section-title">Servers</div>
-  <div class="section-sub">Three MCP servers covering the full operational surface of the business.</div>
+  <div class="section-title">Servers & Applications</div>
+  <div class="section-sub">Production-grade MCP servers and orchestration layers covering JOM operations.</div>
   <div class="server-grid">
 
     <div class="server-card">
@@ -202,6 +213,48 @@
       <div class="sc-desc">GoHighLevel CRM operations. Contacts, conversations, calendars, pipelines, AI conversation bots, voice agents, knowledge bases, blogs, social media, and Stripe.</div>
       <span class="status-badge production">Production</span>
       <span class="tool-count">154 tools</span>
+      <div class="sc-access">🔒 Endpoint provided upon access approval — <a class="sc-access-link" href="request-access.html">Request access →</a></div>
+    </div>
+
+    <div class="server-card">
+      <div class="sc-head">
+        <div class="sc-icon blue">🌐</div>
+        <div>
+          <h3>Open-Signal Meta Gateway</h3>
+          <div class="sc-meta">Meta Graph · Webhooks · Manifests</div>
+        </div>
+      </div>
+      <div class="sc-desc">White-label webhook manager and manifest manager for Meta platforms (WhatsApp, Messenger, Facebook, Instagram). Handles verification challenges and payload routing.</div>
+      <span class="status-badge production">Production</span>
+      <span class="tool-count">1 tool</span>
+      <div class="sc-access">🔒 Endpoint provided upon access approval — <a class="sc-access-link" href="request-access.html">Request access →</a></div>
+    </div>
+
+    <div class="server-card">
+      <div class="sc-head">
+        <div class="sc-icon green">💬</div>
+        <div>
+          <h3>Open-Signal Messaging Connector</h3>
+          <div class="sc-meta">WhatsApp · GHL · Multi-Tenant</div>
+        </div>
+      </div>
+      <div class="sc-desc">Multi-tenant communication connector interfacing with GHL and WhatsApp Business APIs. Sends messages, search contacts, lists conversations, and logs histories.</div>
+      <span class="status-badge production">Production</span>
+      <span class="tool-count">5 tools</span>
+      <div class="sc-access">🔒 Endpoint provided upon access approval — <a class="sc-access-link" href="request-access.html">Request access →</a></div>
+    </div>
+
+    <div class="server-card">
+      <div class="sc-head">
+        <div class="sc-icon purple">🤖</div>
+        <div>
+          <h3>jomAI Agent App</h3>
+          <div class="sc-meta">Orchestrator · Bolt CLI · Webhooks</div>
+        </div>
+      </div>
+      <div class="sc-desc">Primary client-facing orchestration engine running inside Slack. Resolves AI drafts, manages operator interactive controls, and coordinates gateways. Ready for white-label client replication.</div>
+      <span class="status-badge production">Production</span>
+      <span class="tool-count">Orchestrator</span>
       <div class="sc-access">🔒 Endpoint provided upon access approval — <a class="sc-access-link" href="request-access.html">Request access →</a></div>
     </div>
 
@@ -668,6 +721,143 @@
           <tr><td class="tool-name">send_document_for_signature</td><td><span class="cat-badge">documents</span></td><td>Send a document for e-signature to a contact</td></tr>
         </tbody>
       </table>
+    </div>
+  </div>
+
+  <!-- Open-Signal Meta Gateway -->
+  <div class="tool-accordion">
+    <div class="ta-header" onclick="toggleAccordion('meta-tools')">
+      🌐 &nbsp;Open-Signal Meta Gateway &nbsp;<span style="color:var(--gray-3);font-weight:400;font-size:.8rem">1 tool</span>
+      <span id="meta-tools-arrow">▶</span>
+    </div>
+    <div class="ta-body" id="meta-tools">
+      <table>
+        <thead><tr><th>Tool</th><th>Category</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td class="tool-name">get_meta_webhook_info</td><td><span class="cat-badge">webhooks</span></td><td>Securely retrieves the Meta webhook integration manifest from AWS Secrets Manager including endpoints and AWS component metadata.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Open-Signal Messaging Connector -->
+  <div class="tool-accordion">
+    <div class="ta-header" onclick="toggleAccordion('whatsapp-tools')">
+      💬 &nbsp;Open-Signal Messaging Connector &nbsp;<span style="color:var(--gray-3);font-weight:400;font-size:.8rem">5 tools</span>
+      <span id="whatsapp-tools-arrow">▶</span>
+    </div>
+    <div class="ta-body" id="whatsapp-tools">
+      <table>
+        <thead><tr><th>Tool</th><th>Category</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td class="tool-name">send_whatsapp_message</td><td><span class="cat-badge">messages</span></td><td>Send a WhatsApp message to a contact through GHL.</td></tr>
+          <tr><td class="tool-name">get_whatsapp_conversations</td><td><span class="cat-badge">conversations</span></td><td>Retrieve recent WhatsApp conversations from GHL.</td></tr>
+          <tr><td class="tool-name">get_whatsapp_messages</td><td><span class="cat-badge">messages</span></td><td>Retrieve WhatsApp messages from a specific contact or conversation.</td></tr>
+          <tr><td class="tool-name">search_whatsapp_contacts</td><td><span class="cat-badge">contacts</span></td><td>Search for contacts who have WhatsApp conversations.</td></tr>
+          <tr><td class="tool-name">get_whatsapp_account_status</td><td><span class="cat-badge">admin</span></td><td>Check WhatsApp Business account status and integration health.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<hr class="divider" style="max-width:960px;margin:0 auto" />
+
+<!-- AGENT FLOW SECTION -->
+<div id="agent-flow" class="section">
+  <div class="section-title">jomAI Agent &amp; Open-Signal Flow</div>
+  <div class="section-sub">Authoritative sequence of operations and topology for the JOM interactive approval ecosystem.</div>
+  
+  <div class="info-card" style="margin-bottom: 24px; border-left: 4px solid var(--green);">
+    <p style="font-weight: 600; margin-bottom: 4px;">🔄 White-Label Replication Ready</p>
+    <p style="font-size: .82rem; color: var(--gray-2); line-height: 1.4;">
+      The <strong>jomAI Agent App</strong> and <strong>Open-Signal Gateway</strong> are built as decoupled, provider-agnostic engines. 
+      This architecture allows deploying the interactive "notify-and-approve" communications flow for any client or channel (SMS, Messenger, Telegram, WhatsApp) with minimal modification.
+    </p>
+  </div>
+
+  <div class="mermaid" style="background: var(--gray-5); padding: 20px; border-radius: var(--radius); border: 1px solid var(--gray-4); margin-bottom: 24px;">
+    graph TD
+        %% Inbound Channels
+        subgraph Inbound Channels
+            PW["Owner Personal WA<br/>+19545526244"] -->|Baileys Recv| OGW["Local OpenClaw Gateway<br/>Port 18899 on Mac"]
+            BW["Business WA<br/>+19542474087"] -->|Meta Webhook| MAPI["Meta Cloud API"]
+            BW -->|GHL Forward| GHL["GoHighLevel CRM"]
+        end
+
+        %% Webhook Routing
+        OGW -->|whatsapp_queue.py POST| CR_OC["Cloud Run Webhook<br/>/webhook/openclaw-whatsapp"]
+        MAPI -->|POST| CR_META["Cloud Run Webhook<br/>/webhook/whatsapp"]
+        GHL -->|POST| CR_GHL["Cloud Run Webhook<br/>/webhook/ghl-whatsapp"]
+
+        %% GCP Cloud Run Server
+        subgraph jomAI Agent App (jom-slack-bot)
+            CR_OC --> PP["process_inbound_whatsapp"]
+            CR_META --> PP
+            CR_GHL --> PP
+            
+            PP -->|1. Generate Draft| CL["Anthropic API<br/>claude-sonnet-4-6"]
+            PP -->|2. Write Status 'pending'| NDB[("Neon Database<br/>whatsapp_approvals")]
+            PP -->|3. Post Block Kit Card| SLK["Slack Channel<br/>#jom-inbound-reception"]
+        end
+
+        %% Slack Workspace
+        subgraph Slack Workspace
+            SLK -->|Rich Card with Buttons| OP["Operator Actions"]
+            OP -->|Approve & Send| ACT_APP["Approve Action<br/>approve_whatsapp"]
+            OP -->|Edit Draft| ACT_EDT["Edit Action<br/>edit_whatsapp"]
+            OP -->|Dismiss| ACT_DIS["Dismiss Action<br/>dismiss_whatsapp"]
+        end
+
+        %% Action Callback Routing
+        ACT_APP -->|POST /slack/events| CR_EV["Cloud Run Action Listener"]
+        ACT_EDT -->|Open Modal & Submit| CR_EV
+        ACT_DIS -->|Strip Buttons & Update Card| CR_EV
+
+        %% Delivery Channels
+        subgraph Outbound Delivery
+            CR_EV -->|If Business WA| MBW["Meta WhatsApp API<br/>Direct send_text"]
+            CR_EV -->|If Personal WA| DB_APP["Update DB status = 'approved'"]
+            
+            %% Local Watcher Daemon
+            LD["Local Daemon watcher<br/>whatsapp_approved_daemon.py"] -->|Poll DB status = 'approved'| NDB
+            LD -->|Run openclaw CLI| CLI["openclaw message send"]
+            CLI -->|Deliver Message| PW
+            LD -->|Update DB status = 'sent'| NDB
+            LD -->|Post Confirmation Thread| SLK
+        end
+  </div>
+
+  <h3 style="font-size: .95rem; font-weight: 700; margin-bottom: 16px; margin-top: 24px;">Sequence of Operations</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>Inbound Webhook Capture</h4>
+        <p>Inbound messages from Meta APIs, GHL, or local OpenClaw gateways forward payloads to <strong>jomAI Agent App</strong>'s Cloud Run webhooks.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>Response Drafting &amp; Queueing</h4>
+        <p>The agent generates a draft response using the Anthropic API, writes the session record to Neon DB (status: <code>pending</code>), and posts an interactive card to Slack.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>Operator Action</h4>
+        <p>Operators review the card in Slack and can either <strong>Approve &amp; Send</strong>, <strong>Edit Draft</strong> (via a Slack Modal), or <strong>Dismiss</strong> the draft response.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h4>Outbound Routing</h4>
+        <p>Approved drafts are sent directly to the <strong>Open-Signal Gateway</strong> (using GHL/Meta APIs for business numbers, or queueing in the database for the local watcher daemon to deliver via the openclaw CLI for personal accounts).</p>
+      </div>
     </div>
   </div>
 </div>

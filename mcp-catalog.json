@@ -313,6 +313,110 @@
         { "name": "create_document",                 "category": "documents",       "description": "Create a document or contract from a template" },
         { "name": "send_document_for_signature",     "category": "documents",       "description": "Send a document for e-signature to a contact" }
       ]
+    },
+    {
+      "id": "open-signal-meta-mcp",
+      "name": "Open-Signal Meta Gateway",
+      "description": "White-label webhook manager and manifest manager for Meta platforms (WhatsApp, Facebook, Instagram). Handles webhook configurations, verification challenges, and metadata manifests.",
+      "category": "marketing-integrations",
+      "status": "production",
+      "transport": "streamable-http",
+      "endpoint": "https://mcp.jom.services/request-access",
+      "endpoint_note": "Actual endpoint provided upon access approval. Request at https://mcp.jom.services/request-access",
+      "auth": {
+        "type": "bearer",
+        "header": "Authorization",
+        "format": "Bearer <MCP_API_KEY>",
+        "oauth2_pkce": true,
+        "oauth2_note": "OAuth 2.0 PKCE supported for Claude.ai web. Authorization server discovered at <endpoint>/.well-known/oauth-authorization-server.",
+        "note": "API key provided upon access approval. Request at https://mcp.jom.services/request-access"
+      },
+      "hosting": {
+        "provider": "Google Cloud Run",
+        "region": "us-central1",
+        "service_name": "meta-mcp-prod",
+        "image": "us-central1-docker.pkg.dev/ghlpest-controlv2/openclaw-mcp-repo/meta-mcp:latest",
+        "platform": "linux/amd64"
+      },
+      "credentials": {
+        "source": "GCP Secret Manager",
+        "path": "pestpro/integrations/meta",
+        "region": "us-east-1"
+      },
+      "tool_count": 1,
+      "tools": [
+        { "name": "get_meta_webhook_info", "category": "webhooks", "description": "Securely retrieves the Meta webhook integration manifest from AWS Secrets Manager including endpoints and AWS component metadata." }
+      ]
+    },
+    {
+      "id": "open-signal-whatsapp-mcp",
+      "name": "Open-Signal Messaging Connector",
+      "description": "Multi-tenant communication connector interfacing with WhatsApp and GoHighLevel APIs for outbound messaging, contact management, and message history.",
+      "category": "communications",
+      "status": "production",
+      "transport": "streamable-http",
+      "endpoint": "https://mcp.jom.services/request-access",
+      "endpoint_note": "Actual endpoint provided upon access approval. Request at https://mcp.jom.services/request-access",
+      "auth": {
+        "type": "bearer",
+        "header": "Authorization",
+        "format": "Bearer <MCP_API_KEY>",
+        "oauth2_pkce": true,
+        "oauth2_note": "OAuth 2.0 PKCE supported for Claude.ai web. Authorization server discovered at <endpoint>/.well-known/oauth-authorization-server.",
+        "note": "API key provided upon access approval. Request at https://mcp.jom.services/request-access"
+      },
+      "hosting": {
+        "provider": "Google Cloud Run",
+        "region": "us-central1",
+        "service_name": "whatsapp-business-mcp-prod",
+        "image": "us-central1-docker.pkg.dev/ghlpest-controlv2/openclaw-mcp-repo/whatsapp-business-mcp:latest",
+        "platform": "linux/amd64"
+      },
+      "credentials": {
+        "source": "GCP Secret Manager",
+        "path": "pestpro/integrations/whatsapp",
+        "region": "us-east-1"
+      },
+      "tool_count": 5,
+      "tools": [
+        { "name": "send_whatsapp_message", "category": "messages", "description": "Send a WhatsApp message to a contact through GHL." },
+        { "name": "get_whatsapp_conversations", "category": "conversations", "description": "Retrieve recent WhatsApp conversations from GHL." },
+        { "name": "get_whatsapp_messages", "category": "messages", "description": "Retrieve WhatsApp messages from a specific contact or conversation." },
+        { "name": "search_whatsapp_contacts", "category": "contacts", "description": "Search for contacts who have WhatsApp conversations." },
+        { "name": "get_whatsapp_account_status", "category": "admin", "description": "Check WhatsApp Business account status and integration health." }
+      ]
+    },
+    {
+      "id": "jomai-agent",
+      "name": "jomAI Agent App",
+      "description": "Primary client-facing AI Agent orchestrator and webhook router (currently running in Slack, ready for white-label client replication).",
+      "category": "orchestration",
+      "status": "production",
+      "transport": "streamable-http",
+      "endpoint": "https://mcp.jom.services/request-access",
+      "endpoint_note": "Actual endpoint provided upon access approval. Request at https://mcp.jom.services/request-access",
+      "auth": {
+        "type": "bearer",
+        "header": "Authorization",
+        "format": "Bearer <MCP_API_KEY>",
+        "oauth2_pkce": true,
+        "oauth2_note": "OAuth 2.0 PKCE supported for Claude.ai web. Authorization server discovered at <endpoint>/.well-known/oauth-authorization-server.",
+        "note": "API key provided upon access approval. Request at https://mcp.jom.services/request-access"
+      },
+      "hosting": {
+        "provider": "Google Cloud Run",
+        "region": "us-central1",
+        "service_name": "jom-slack-bot",
+        "image": "us-central1-docker.pkg.dev/ghlpest-controlv2/openclaw-mcp-repo/slack-bot:latest",
+        "platform": "linux/amd64"
+      },
+      "credentials": {
+        "source": "GCP Secret Manager",
+        "path": "pestpro/integrations/slack-bot",
+        "region": "us-east-1"
+      },
+      "tool_count": 0,
+      "tools": []
     }
   ],
   "connector": {
