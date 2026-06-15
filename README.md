@@ -27,17 +27,17 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
   "mcpServers": {
     "briostack-ops": {
       "type": "streamable-http",
-      "url": "https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp",
+      "url": "https://briostack-mcp-prod-138839186214.us-central1.run.app/mcp",
       "headers": { "Authorization": "Bearer <MCP_API_KEY>" }
     },
     "cardpointe-mcp": {
       "type": "streamable-http",
-      "url": "https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp",
+      "url": "https://cardpointe-mcp-prod-138839186214.us-central1.run.app/mcp",
       "headers": { "Authorization": "Bearer <MCP_API_KEY>" }
     },
     "agency-mcp": {
       "type": "streamable-http",
-      "url": "https://gdip7vymuh.us-west-2.awsapprunner.com/mcp",
+      "url": "https://agency-mcp-prod-138839186214.us-central1.run.app/mcp",
       "headers": { "Authorization": "Bearer <MCP_API_KEY>" }
     }
   }
@@ -54,15 +54,15 @@ Add to `.cursor/mcp.json` in your project root:
 {
   "mcpServers": {
     "briostack-ops": {
-      "url": "https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp",
+      "url": "https://briostack-mcp-prod-138839186214.us-central1.run.app/mcp",
       "headers": { "Authorization": "Bearer <MCP_API_KEY>" }
     },
     "cardpointe-mcp": {
-      "url": "https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp",
+      "url": "https://cardpointe-mcp-prod-138839186214.us-central1.run.app/mcp",
       "headers": { "Authorization": "Bearer <MCP_API_KEY>" }
     },
     "agency-mcp": {
-      "url": "https://gdip7vymuh.us-west-2.awsapprunner.com/mcp",
+      "url": "https://agency-mcp-prod-138839186214.us-central1.run.app/mcp",
       "headers": { "Authorization": "Bearer <MCP_API_KEY>" }
     }
   }
@@ -79,10 +79,10 @@ Add to `.cursor/mcp.json` in your project root:
 |----------|--------|---------|
 | `https://mcp.jom.services/.well-known/mcp.json` | JSON | Standard server discovery |
 | `https://mcp.jom.services/mcp-catalog.json` | JSON | Full catalog with tools, hosting, credentials |
-| `https://vnf9mp2vik.us-east-2.awsapprunner.com/` | HTTP | BrioStack health check |
-| `https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp` | MCP/SSE | BrioStack MCP endpoint |
-| `https://qwnm3rvm8m.us-east-2.awsapprunner.com/mcp` | MCP/SSE | CardPointe MCP endpoint |
-| `https://gdip7vymuh.us-west-2.awsapprunner.com/mcp` | MCP/SSE | Agency MCP endpoint |
+| `https://briostack-mcp-prod-138839186214.us-central1.run.app/` | HTTP | BrioStack health check |
+| `https://briostack-mcp-prod-138839186214.us-central1.run.app/mcp` | MCP/SSE | BrioStack MCP endpoint |
+| `https://cardpointe-mcp-prod-138839186214.us-central1.run.app/mcp` | MCP/SSE | CardPointe MCP endpoint |
+| `https://agency-mcp-prod-138839186214.us-central1.run.app/mcp` | MCP/SSE | Agency MCP endpoint |
 
 ---
 
@@ -90,20 +90,18 @@ Add to `.cursor/mcp.json` in your project root:
 
 ### Prerequisites
 
-- AWS CLI configured (`us-east-2`)
+- Google Cloud SDK (`gcloud`) configured
 - Docker with `--platform linux/amd64` support
-- ECR repo: `us-central1-docker.pkg.dev/ghlpest-controlv2/openclaw-mcp-repo/briostack-mcp`
+- Artifact Registry repo: `us-central1-docker.pkg.dev/ghlpest-controlv2/openclaw-mcp-repo/briostack-mcp`
 - GCP Secret Manager: `pestpro/integrations/briostack`
 
 ### Build & Push
 
 ```bash
-# Authenticate to ECR
-aws ecr get-login-password --region us-east-2 | \
-  docker login --username AWS --password-stdin \
-  767397993913.dkr.ecr.us-east-2.amazonaws.com
+# Authenticate to Artifact Registry
+gcloud auth configure-docker us-central1-docker.pkg.dev
 
-# Build for amd64 (REQUIRED — App Runner is x86_64)
+# Build for amd64 (REQUIRED for Cloud Run)
 docker build --platform linux/amd64 \
   -t us-central1-docker.pkg.dev/ghlpest-controlv2/openclaw-mcp-repo/briostack-mcp:latest \
   hosted/
@@ -112,30 +110,19 @@ docker build --platform linux/amd64 \
 docker push us-central1-docker.pkg.dev/ghlpest-controlv2/openclaw-mcp-repo/briostack-mcp:latest
 ```
 
-### App Runner Service
+### Cloud Run Service
 
 - **Service name:** `briostack-mcp-prod`
-- **ARN:** `arn:aws:apprunner:us-east-2:767397993913:service/briostack-mcp-prod/4eda73f27c634148ba4bb7505971926e`
-- **Region:** `us-east-2`
+- **Region:** `us-central1`
 - **Port:** `8001`
-- **Health check:** TCP on port 8001
-
-#### IAM Roles Required
-
-**ECR access role** (trust: `build.apprunner.amazonaws.com`):
-- `AmazonEC2ContainerRegistryReadOnly`
-
-**Instance role** (trust: `tasks.apprunner.amazonaws.com`):
-- `AmazonSSMReadOnlyAccess`
-- Inline policy for `secretsmanager:GetSecretValue` on `arn:aws:secretsmanager:us-east-2:767397993913:secret:pestpro/*`
-- CloudWatch Logs write permissions
+- **Service Account Role Required:** `roles/secretmanager.secretAccessor` on the Secret Manager secret `pestpro/integrations/briostack`.
 
 ### Server Configuration
 
-The FastMCP server **must** bind to `0.0.0.0` (not `127.0.0.1`) for App Runner container access:
+The FastMCP server **must** bind to `0.0.0.0` (not `127.0.0.1`) for Cloud Run container access:
 
 ```python
-mcp = FastMCP("BrioStack Operations", host="0.0.0.0", port=8001)
+mcp = FastMCP("BrioStack Operations", host="0.0.0.0", port=8001, stateless_http=True)
 ```
 
 Entry point selects transport via argv:
@@ -152,12 +139,11 @@ CMD ["python3", "server.py", "--http"]
 ### Health Check
 
 ```bash
-# Should return {"error":"Not Acceptable: Client must accept text/event-stream"}
-# This is CORRECT — the server is healthy, it just requires SSE accept header
-curl https://vnf9mp2vik.us-east-2.awsapprunner.com/mcp
+# Should return the SSE connection or a text stream
+curl -H "Accept: text/event-stream" https://briostack-mcp-prod-138839186214.us-central1.run.app/sse
 
-# Actual health endpoint
-curl https://vnf9mp2vik.us-east-2.awsapprunner.com/
+# Actual health/root endpoint
+curl https://briostack-mcp-prod-138839186214.us-central1.run.app/
 ```
 
 ---
@@ -187,7 +173,7 @@ The `CNAME` file in this repo root tells GitHub Pages which domain to serve.
 
 ## Credentials
 
-All credentials are stored in GCP Secret Manager (`us-east-2`):
+All credentials are stored in GCP Secret Manager (`us-central1`):
 
 | Server | Secret Path |
 |--------|------------|

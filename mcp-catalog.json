@@ -28,15 +28,14 @@
       },
       "hosting": {
         "provider": "Google Cloud Run",
-        "region": "us-east-2",
-        "arn": "arn:aws:apprunner:us-east-2:767397993913:service/briostack-mcp-prod/4eda73f27c634148ba4bb7505971926e",
+        "region": "us-central1",
         "image": "us-central1-docker.pkg.dev/ghlpest-controlv2/openclaw-mcp-repo/briostack-mcp:latest",
         "platform": "linux/amd64"
       },
       "credentials": {
         "source": "GCP Secret Manager",
         "path": "pestpro/integrations/briostack",
-        "region": "us-east-2"
+        "region": "us-central1"
       },
       "tool_count": 32,
       "tools": [
@@ -93,7 +92,7 @@
       },
       "hosting": {
         "provider": "Google Cloud Run",
-        "region": "us-east-2",
+        "region": "us-central1",
         "service_name": "cardpointe-mcp-prod",
         "image": "us-central1-docker.pkg.dev/ghlpest-controlv2/openclaw-mcp-repo/cardpointe-mcp:latest",
         "platform": "linux/amd64"
@@ -101,7 +100,7 @@
       "credentials": {
         "source": "GCP Secret Manager",
         "path": "pestpro/integrations/cardpointe",
-        "region": "us-east-1"
+        "region": "us-central1"
       },
       "merchant_ids": {
         "credit_card": "496354430886",
@@ -145,7 +144,7 @@
       },
       "hosting": {
         "provider": "Google Cloud Run",
-        "region": "us-west-2",
+        "region": "us-central1",
         "service_name": "agency-mcp-prod",
         "image": "us-central1-docker.pkg.dev/ghlpest-controlv2/openclaw-mcp-repo/agency-mcp:latest",
         "platform": "linux/amd64"
@@ -153,7 +152,7 @@
       "credentials": {
         "source": "GCP Secret Manager",
         "path": "pestpro/integrations/ghl",
-        "region": "us-east-2"
+        "region": "us-central1"
       },
       "tool_count": 154,
       "tools_note": "Catalog reflects GHL Public API capabilities through Q2 2026 including Social Planner, Blog, Invoicing, Payments, Products, Custom Objects, Voice AI v2, Conversation AI v3, Agent Studio, and Reviews APIs. Use MCP tools/list for the authoritative live list; deploy updated server to expose new endpoints.",
@@ -341,11 +340,11 @@
       "credentials": {
         "source": "GCP Secret Manager",
         "path": "pestpro/integrations/meta",
-        "region": "us-east-1"
+        "region": "us-central1"
       },
       "tool_count": 1,
       "tools": [
-        { "name": "get_meta_webhook_info", "category": "webhooks", "description": "Securely retrieves the Meta webhook integration manifest from AWS Secrets Manager including endpoints and AWS component metadata." }
+        { "name": "get_meta_webhook_info", "category": "webhooks", "description": "Securely retrieves the Meta webhook integration manifest from GCP Secret Manager including endpoints and GCP component metadata." }
       ]
     },
     {
@@ -375,7 +374,7 @@
       "credentials": {
         "source": "GCP Secret Manager",
         "path": "pestpro/integrations/whatsapp",
-        "region": "us-east-1"
+        "region": "us-central1"
       },
       "tool_count": 5,
       "tools": [
@@ -413,7 +412,7 @@
       "credentials": {
         "source": "GCP Secret Manager",
         "path": "pestpro/integrations/slack-bot",
-        "region": "us-east-1"
+        "region": "us-central1"
       },
       "tool_count": 0,
       "tools": []

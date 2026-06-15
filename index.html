@@ -450,7 +450,7 @@
   </div>
 
   <div id="tab-local" class="tab-pane">
-    <p style="font-size:.82rem;color:#6b7280;margin-bottom:12px">Full local config for all three servers via stdio. Requires Python 3.11+, <code>mcp</code>, <code>boto3</code>, and AWS credentials.</p>
+    <p style="font-size:.82rem;color:#6b7280;margin-bottom:12px">Full local config for all three servers via stdio. Requires Python 3.11+, <code>mcp</code>, <code>google-cloud-secret-manager</code>, <code>google-auth</code>, and GCP credentials.</p>
     <pre id="local-pre"><button class="copy-pre" onclick="copyPre('local-pre')">copy</button><span class="hlc">// claude_desktop_config.json — all three servers, local stdio</span>
 {
   <span class="hl">"mcpServers"</span>: {
@@ -734,7 +734,7 @@
       <table>
         <thead><tr><th>Tool</th><th>Category</th><th>Description</th></tr></thead>
         <tbody>
-          <tr><td class="tool-name">get_meta_webhook_info</td><td><span class="cat-badge">webhooks</span></td><td>Securely retrieves the Meta webhook integration manifest from AWS Secrets Manager including endpoints and AWS component metadata.</td></tr>
+           <tr><td class="tool-name">get_meta_webhook_info</td><td><span class="cat-badge">webhooks</span></td><td>Securely retrieves the Meta webhook integration manifest from GCP Secret Manager including endpoints and GCP component metadata.</td></tr>
         </tbody>
       </table>
     </div>
@@ -908,49 +908,49 @@
       <div class="step-num">1</div>
       <div class="step-body">
         <h4>Prerequisites</h4>
-        <p>Python 3.11+, Docker (or Colima), AWS CLI v2, access to account <code>767397993913</code> (us-east-2). Colima users: <code>colima start</code> — no Docker Desktop needed.</p>
+        <p>Python 3.11+, Docker (or Colima), Google Cloud SDK (<code>gcloud</code>), access to GCP project <code>ghlpest-controlv2</code>. Colima users: <code>colima start</code> — no Docker Desktop needed.</p>
       </div>
     </div>
     <div class="step">
       <div class="step-num">2</div>
       <div class="step-body">
         <h4>Clone &amp; install</h4>
-        <p><code>cd ~/briostack-mcp/hosted &amp;&amp; pip install -r requirements.txt</code> — installs <code>mcp&gt;=1.27</code>, <code>boto3</code>, <code>uvicorn</code>, <code>requests</code>.</p>
+        <p><code>cd ~/briostack-mcp/hosted &amp;&amp; pip install -r requirements.txt</code> — installs <code>mcp&gt;=1.27</code>, <code>google-cloud-secret-manager</code>, <code>google-auth</code>, <code>uvicorn</code>, <code>requests</code>.</p>
       </div>
     </div>
     <div class="step">
       <div class="step-num">3</div>
       <div class="step-body">
-        <h4>Secrets Manager</h4>
-        <p>Store credentials at <code>pestpro/integrations/briostack</code> in GCP Secret Manager (us-east-2) with keys <code>api_key</code>, <code>base_url</code>, <code>instance</code>. The server loads these at runtime via IAM role — no env vars needed in production.</p>
+        <h4>Secret Manager</h4>
+        <p>Store credentials at <code>pestpro/integrations/briostack</code> in GCP Secret Manager (us-central1) with keys <code>api_key</code>, <code>base_url</code>, <code>instance</code>. The server loads these at runtime via service account — no env vars needed in production.</p>
       </div>
     </div>
     <div class="step">
       <div class="step-num">4</div>
       <div class="step-body">
         <h4>Build &amp; push (amd64 required)</h4>
-        <p><code>docker build --platform linux/amd64 -t us-central1-docker.pkg.dev/ghlpest-controlv2/openclaw-mcp-repo/briostack-mcp:latest .</code><br/>Then: <code>docker push ...</code>. The <code>--platform linux/amd64</code> flag is mandatory — App Runner runs x86_64, not ARM.</p>
+        <p><code>docker build --platform linux/amd64 -t us-central1-docker.pkg.dev/ghlpest-controlv2/openclaw-mcp-repo/briostack-mcp:latest .</code><br/>Then: <code>docker push us-central1-docker.pkg.dev/ghlpest-controlv2/openclaw-mcp-repo/briostack-mcp:latest</code>. The <code>--platform linux/amd64</code> flag ensures compatibility across all Cloud Run environments.</p>
       </div>
     </div>
     <div class="step">
       <div class="step-num">5</div>
       <div class="step-body">
-        <h4>IAM roles</h4>
-        <p>Two roles required: <code>briostack-mcp-apprunner-ecr</code> (trust <code>build.apprunner.amazonaws.com</code>, policy <code>AWSAppRunnerServicePolicyForECRAccess</code>) and <code>briostack-mcp-apprunner-instance</code> (trust <code>tasks.apprunner.amazonaws.com</code>, inline policy for <code>secretsmanager:GetSecretValue</code> on <code>pestpro/*</code>).</p>
+        <h4>IAM permissions</h4>
+        <p>Assign Secret Manager Secret Accessor role (<code>roles/secretmanager.secretAccessor</code>) to the Google Cloud Run runtime service account so it can retrieve the integration credentials.</p>
       </div>
     </div>
     <div class="step">
       <div class="step-num">6</div>
       <div class="step-body">
-        <h4>Create App Runner service</h4>
-        <p>Port <code>8001</code>, TCP health check (interval 20s, threshold 1), instance role attached. Auto-deploy on ECR push is enabled — just push a new image to redeploy.</p>
+        <h4>Create Cloud Run service</h4>
+        <p>Deploy to Cloud Run on port <code>8001</code>. Enable HTTP/1 or HTTP/2 transport with startup CPU allocation. Auto-deploy can be configured using Google Cloud Build triggers linked to your GitHub repo.</p>
       </div>
     </div>
     <div class="step">
       <div class="step-num">7</div>
       <div class="step-body">
         <h4>Verify</h4>
-        <p><code>curl https://&lt;apprunner-url&gt;/mcp</code> → expect <code>{"error":"Not Acceptable: Client must accept text/event-stream"}</code>. That response confirms the server is healthy and accepting MCP connections.</p>
+        <p><code>curl -H "Accept: text/event-stream" https://&lt;cloudrun-url&gt;/sse</code> → expect the event stream or a SSE connection. That response confirms the server is healthy and accepting remote MCP connections.</p>
       </div>
     </div>
   </div>
