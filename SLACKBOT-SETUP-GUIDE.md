@@ -56,9 +56,8 @@ from datetime import datetime
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 
-# AWS SDK for GCP Secret Manager (boto3-compatible interface)
-import boto3
-from botocore.exceptions import ClientError
+# GCP Secret Manager SDK
+from google.cloud import secretmanager
 
 # Logging setup
 logging.basicConfig(
@@ -73,7 +72,7 @@ class SecretManager:
     
     def __init__(self, project_id: str = "ghlpest-controlv2"):
         self.project_id = project_id
-        self.client = boto3.client('secretsmanager', region_name='us-central1')
+        self.client = secretmanager.SecretManagerServiceClient()
     
     def get_secret(self, secret_path: str) -> Dict[str, Any]:
         """
@@ -88,8 +87,8 @@ class SecretManager:
         secret_name = f"projects/{self.project_id}/secrets/{secret_path}/versions/latest"
         
         try:
-            response = self.client.get_secret_value(SecretId=secret_name)
-            secret_json = response.get('SecretString')
+            response = self.client.access_secret_version(request={"name": secret_name})
+            secret_json = response.payload.data.decode('UTF-8')
             
             if not secret_json:
                 raise ValueError(f"Secret {secret_path} has no value")
@@ -105,7 +104,7 @@ class SecretManager:
             
             return credentials
             
-        except ClientError as e:
+        except Exception as e:
             logger.error(f"❌ Failed to load secret {secret_path}: {e}")
             raise
         except json.JSONDecodeError as e:
@@ -249,9 +248,8 @@ uvicorn[standard]>=0.27.0
 # HTTP client for GHL API calls
 httpx>=0.27.0
 
-# AWS SDK for Secret Manager (GCP Secret Manager uses boto3-compatible interface)
-boto3>=1.34.0
-botocore>=1.34.0
+# GCP SDK for Secret Manager
+google-cloud-secret-manager>=2.16.0
 
 # Slack SDK
 slack-bolt>=1.18.0
@@ -299,10 +297,6 @@ COPY slackbot_server.py .
 # Runtime configuration
 ENV PORT=8080
 ENV PYTHONUNBUFFERED=1
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=40s \
-  CMD curl -f http://localhost:${PORT}/health || exit 1
 
 # Start SlackBot
 CMD ["python", "slackbot_server.py"]
