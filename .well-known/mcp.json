@@ -37,6 +37,39 @@
       "auth": ["bearer", "oauth2_pkce"],
       "oauth2_pkce": true,
       "authorization_server_note": "Discovered at <endpoint>/.well-known/oauth-authorization-server after access approval"
+    },
+    {
+      "id": "open-signal-meta-mcp",
+      "name": "Open-Signal Meta Gateway",
+      "transport": "streamable-http",
+      "status": "production",
+      "access_required": true,
+      "access_url": "https://mcp.jom.services/request-access.html",
+      "auth": ["bearer", "oauth2_pkce"],
+      "oauth2_pkce": true,
+      "authorization_server_note": "Discovered at <endpoint>/.well-known/oauth-authorization-server after access approval"
+    },
+    {
+      "id": "open-signal-whatsapp-mcp",
+      "name": "Open-Signal Messaging Connector",
+      "transport": "streamable-http",
+      "status": "production",
+      "access_required": true,
+      "access_url": "https://mcp.jom.services/request-access.html",
+      "auth": ["bearer", "oauth2_pkce"],
+      "oauth2_pkce": true,
+      "authorization_server_note": "Discovered at <endpoint>/.well-known/oauth-authorization-server after access approval"
+    },
+    {
+      "id": "jomai-agent",
+      "name": "jomAI Agent App",
+      "transport": "streamable-http",
+      "status": "production",
+      "access_required": true,
+      "access_url": "https://mcp.jom.services/request-access.html",
+      "auth": ["bearer", "oauth2_pkce"],
+      "oauth2_pkce": true,
+      "authorization_server_note": "Discovered at <endpoint>/.well-known/oauth-authorization-server after access approval"
     }
   ]
 }

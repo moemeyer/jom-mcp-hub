@@ -1,0 +1,60 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+!README.md
+PLAN.md
+CLOUD_RUN_CICD.md
+
+# CI/CD configs (not needed in container)
+.github
+cloudbuild.yaml
+setup-cloud-build-triggers.sh
+.cloud-build-test
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info
+.eggs
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets (should never be in repo anyway)
+.env
+*.key
+*.pem
+secrets/
+
+# Build artifacts
+dist/
+build/
+
+# Static site files (not needed for MCP servers)
+index.html
+mcp-catalog.json
+request-access.html
+.well-known/
+CNAME
+.nojekyll
