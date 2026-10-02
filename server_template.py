@@ -103,7 +103,7 @@ async def get_agency_credentials() -> dict[str, Any]:
         return credentials
 
     except (GoogleAPIError, json.JSONDecodeError, KeyError) as e:
-        _LOG.error(f"Failed to load credentials from {SECRET_PATH}: {e}")
+        _LOG.error("Failed to load credentials from Secret Manager (%s)", type(e).__name__)
         raise RuntimeError(f"Cannot start server without valid credentials at {SECRET_PATH}") from e
 
 
