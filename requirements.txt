@@ -3,7 +3,7 @@
 
 # MCP SDK
 fastmcp>=0.2.0
-mcp>=1.27.0
+mcp>=2.3.0
 
 # Web framework (streamable-http transport)
 starlette>=0.37.0
