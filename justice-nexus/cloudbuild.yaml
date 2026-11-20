@@ -1,0 +1,42 @@
+# Cloud Build — Justice Nexus MCP (build only; deploy is manual per hub policy)
+substitutions:
+  _REGION: 'us-central1'
+  _SERVICE_NAME: 'justice-nexus-mcp'
+  _IMAGE_TAG: 'latest'
+
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-image'
+    args:
+      - 'build'
+      - '--platform=linux/amd64'
+      - '--tag=us-central1-docker.pkg.dev/${PROJECT_ID}/openclaw-mcp-repo/justice-nexus-mcp:${_IMAGE_TAG}'
+      - '--tag=us-central1-docker.pkg.dev/${PROJECT_ID}/openclaw-mcp-repo/justice-nexus-mcp:${SHORT_SHA}'
+      - '--file=justice-nexus/Dockerfile'
+      - '.'
+    env:
+      - 'DOCKER_BUILDKIT=1'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'push-image'
+    args:
+      - 'push'
+      - '--all-tags'
+      - 'us-central1-docker.pkg.dev/${PROJECT_ID}/openclaw-mcp-repo/justice-nexus-mcp'
+    waitFor: ['build-image']
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  substitutionOption: 'ALLOW_LOOSE'
+  dynamic_substitutions: true
+
+timeout: '900s'
+
+images:
+  - 'us-central1-docker.pkg.dev/${PROJECT_ID}/openclaw-mcp-repo/justice-nexus-mcp:${_IMAGE_TAG}'
+  - 'us-central1-docker.pkg.dev/${PROJECT_ID}/openclaw-mcp-repo/justice-nexus-mcp:${SHORT_SHA}'
+
+tags:
+  - 'mcp-server'
+  - 'justice-nexus'
+  - '${_SERVICE_NAME}'

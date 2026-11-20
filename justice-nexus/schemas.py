@@ -1,11 +1,18 @@
-from pydantic import BaseModel, Field
+from datetime import datetime, timezone
 from typing import Optional
-from datetime import datetime
+
+from pydantic import BaseModel, Field
+
+
+def _utc_now() -> datetime:
+    return datetime.now(timezone.utc)
+
 
 class Provenance(BaseModel):
     source_url: Optional[str] = None
-    retrieved_at: datetime = Field(default_factory=datetime.utcnow)
+    retrieved_at: datetime = Field(default_factory=_utc_now)
     confidence: float = 0.0
+
 
 class PublicRecordsRequest(BaseModel):
     id: str
@@ -17,6 +24,7 @@ class PublicRecordsRequest(BaseModel):
     provenance: Provenance = Field(default_factory=Provenance)
     not_legal_advice: bool = True
     human_review_recommended: bool = True
+
 
 class OpenMeetingRecord(BaseModel):
     id: str
@@ -33,6 +41,7 @@ class OpenMeetingRecord(BaseModel):
     provenance: Provenance = Field(default_factory=Provenance)
     not_legal_advice: bool = True
 
+
 class ProcurementRecord(BaseModel):
     id: str
     solicitation_number: Optional[str] = None
@@ -45,6 +54,7 @@ class ProcurementRecord(BaseModel):
     portal_url: Optional[str] = None
     provenance: Provenance = Field(default_factory=Provenance)
 
+
 class JudgmentRecord(BaseModel):
     id: str
     case_number: Optional[str] = None
@@ -54,6 +64,7 @@ class JudgmentRecord(BaseModel):
     creditor: str
     recording_date: Optional[datetime] = None
     provenance: Provenance = Field(default_factory=Provenance)
+
 
 class LienRecord(BaseModel):
     id: str
