@@ -1,0 +1,10 @@
+{
+  "id": "justice-nexus-mcp",
+  "name": "Justice Nexus",
+  "transport": "streamable-http",
+  "status": "development",
+  "description": "Legal research, public records, open meetings, procurement, judgments and liens MCP server.",
+  "access_required": true,
+  "auth": ["bearer", "oauth2_pkce"],
+  "oauth2_pkce": true
+}
