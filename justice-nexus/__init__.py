@@ -1,0 +1,1 @@
+"""Justice Nexus MCP server package."""
