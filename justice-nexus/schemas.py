@@ -1,20 +1,24 @@
 from datetime import datetime, timezone
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 def _utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
 
-class Provenance(BaseModel):
+class _StrictModel(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+
+class Provenance(_StrictModel):
     source_url: Optional[str] = None
     retrieved_at: datetime = Field(default_factory=_utc_now)
     confidence: float = 0.0
 
 
-class PublicRecordsRequest(BaseModel):
+class PublicRecordsRequest(_StrictModel):
     id: str
     jurisdiction: str
     request_type: str
@@ -26,7 +30,7 @@ class PublicRecordsRequest(BaseModel):
     human_review_recommended: bool = True
 
 
-class OpenMeetingRecord(BaseModel):
+class OpenMeetingRecord(_StrictModel):
     id: str
     body_name: str
     jurisdiction: str
@@ -42,7 +46,7 @@ class OpenMeetingRecord(BaseModel):
     not_legal_advice: bool = True
 
 
-class ProcurementRecord(BaseModel):
+class ProcurementRecord(_StrictModel):
     id: str
     solicitation_number: Optional[str] = None
     agency: str
@@ -55,7 +59,7 @@ class ProcurementRecord(BaseModel):
     provenance: Provenance = Field(default_factory=Provenance)
 
 
-class JudgmentRecord(BaseModel):
+class JudgmentRecord(_StrictModel):
     id: str
     case_number: Optional[str] = None
     court: str
@@ -66,7 +70,7 @@ class JudgmentRecord(BaseModel):
     provenance: Provenance = Field(default_factory=Provenance)
 
 
-class LienRecord(BaseModel):
+class LienRecord(_StrictModel):
     id: str
     type: str
     amount: Optional[float] = None

@@ -13,6 +13,9 @@ from typing import Any, Dict, Optional
 from uuid import uuid4
 
 from fastmcp import FastMCP
+from starlette.applications import Starlette
+from starlette.responses import Response
+from starlette.routing import Mount, Route
 
 _PKG_DIR = Path(__file__).resolve().parent
 if str(_PKG_DIR) not in sys.path:
@@ -30,6 +33,8 @@ except ImportError:
 logging.basicConfig(level=logging.INFO)
 _LOG = logging.getLogger(__name__)
 
+_DEFAULT_PORT = 8002
+
 _NOT_IMPLEMENTED_STUB: Dict[str, Any] = {
     "status": "not_implemented",
     "source": None,
@@ -38,6 +43,16 @@ _NOT_IMPLEMENTED_STUB: Dict[str, Any] = {
 }
 
 _mcp: FastMCP | None = None
+
+
+def http_port() -> int:
+    """Resolve the HTTP listen port from PORT (Cloud Run contract)."""
+    return int(os.environ.get("PORT", str(_DEFAULT_PORT)))
+
+
+async def health(_request) -> Response:
+    """Unauthenticated liveness probe (no operational data)."""
+    return Response(status_code=200)
 
 
 def _stub_search_result(records_key: str) -> Dict[str, Any]:
@@ -112,6 +127,13 @@ def get_mcp() -> FastMCP:
     return _mcp
 
 
+def _starlette_with_health(*, routes: list, lifespan) -> Starlette:
+    return Starlette(
+        routes=[Route("/health", health, methods=["GET"])] + routes,
+        lifespan=lifespan,
+    )
+
+
 def build_app(*, api_key: str | None = None):
     """Starlette app with optional OAuth routes from the shared hub module."""
     instance = create_mcp(api_key=api_key) if api_key is not None else get_mcp()
@@ -124,7 +146,10 @@ def build_app(*, api_key: str | None = None):
         from oauth.oauth_provider import OAuthProvider
     except ImportError:
         _LOG.warning("OAuth provider not available — MCP bearer auth only")
-        return mcp_app
+        return _starlette_with_health(
+            routes=[Mount("/", app=mcp_app)],
+            lifespan=mcp_app.lifespan,
+        )
 
     secret_path = os.environ.get(
         "JUSTICE_NEXUS_SECRET_PATH",
@@ -137,10 +162,8 @@ def build_app(*, api_key: str | None = None):
         server_label="Justice Nexus",
         gcp_project=project,
     )
-    from starlette.applications import Starlette
-    from starlette.routing import Mount
 
-    return Starlette(
+    return _starlette_with_health(
         routes=oauth.routes() + [Mount("/", app=mcp_app)],
         lifespan=mcp_app.lifespan,
     )
@@ -156,6 +179,6 @@ if __name__ == "__main__":
     import uvicorn
 
     app = build_app()
-    port = int(os.environ.get("PORT", 8002))
+    port = http_port()
     _LOG.info("Starting Justice Nexus MCP on port %s", port)
     uvicorn.run(app, host="0.0.0.0", port=port)

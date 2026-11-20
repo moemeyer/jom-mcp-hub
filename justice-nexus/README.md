@@ -47,22 +47,41 @@ pip install -r justice-nexus/requirements.txt
 pytest justice-nexus/tests -q
 ```
 
-## Docker / Cloud Run
+## Docker / Cloud Run (manual deploy only)
+
+There is **no** `cloudbuild.yaml` or repo-managed Cloud Build trigger for this server — builds and deploys are **manual** so Justice Nexus stays isolated from other hub pipelines.
 
 Build from repository root (includes `oauth/`):
 
 ```bash
-docker build -f justice-nexus/Dockerfile -t justice-nexus-mcp .
+docker build -f justice-nexus/Dockerfile -t us-central1-docker.pkg.dev/PROJECT_ID/openclaw-mcp-repo/justice-nexus-mcp:TAG .
+docker push us-central1-docker.pkg.dev/PROJECT_ID/openclaw-mcp-repo/justice-nexus-mcp:TAG
 ```
 
-Cloud Build config: `justice-nexus/cloudbuild.yaml` (build + push image; deploy is managed separately).
+Deploy to a **dedicated dev** service (example name `justice-nexus-mcp-dev`), require auth at the edge, and mount the bearer token from Secret Manager:
+
+```bash
+gcloud run deploy justice-nexus-mcp-dev \
+  --image=us-central1-docker.pkg.dev/PROJECT_ID/openclaw-mcp-repo/justice-nexus-mcp:TAG \
+  --region=us-central1 \
+  --platform=managed \
+  --no-allow-unauthenticated \
+  --update-secrets=JUSTICE_NEXUS_MCP_API_KEY=pestpro-integrations-justice-nexus:latest \
+  --set-env-vars=GOOGLE_CLOUD_PROJECT=PROJECT_ID,PORT=8002
+```
+
+Adjust secret naming to match your Secret Manager resource. The process **exits on startup** if neither `MCP_API_KEY` / `JUSTICE_NEXUS_MCP_API_KEY` nor Secret Manager provides a key.
+
+### Health check
+
+- `GET /health` — **unauthenticated**, returns HTTP 200 with an empty body (for load balancers and Cloud Run probes).
+- MCP traffic remains behind bearer auth on `/mcp`.
 
 Runtime env (typical):
 
-- `MCP_API_KEY` or Secret Manager binding
-- `PORT` (default `8002`)
+- `MCP_API_KEY` or `JUSTICE_NEXUS_MCP_API_KEY`, or Secret Manager via `JUSTICE_NEXUS_SECRET_PATH`
+- `PORT` (default `8002`; Cloud Run sets this automatically)
 - `GOOGLE_CLOUD_PROJECT`
-- `JUSTICE_NEXUS_SECRET_PATH` (optional)
 - `MCP_SERVER_BASE_URL` (OAuth metadata)
 
 ## Planned data sources (not wired)

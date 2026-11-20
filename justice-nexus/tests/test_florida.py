@@ -21,7 +21,7 @@ from florida import (  # noqa: E402
         ("Florida", True),
         ("fl", True),
         ("Fla.", True),
-        ("Broward County, FL", True),
+        ("Fictional County, FL", True),
         ("Example City, Florida", True),
         ("Georgia", False),
         ("New York, NY", False),
@@ -34,7 +34,7 @@ def test_is_florida_jurisdiction(jurisdiction: str, expected: bool) -> None:
 
 def test_public_records_citation_only_ch119() -> None:
     assert (
-        statute_citation_for_request("public_records", "Miami-Dade County, FL")
+        statute_citation_for_request("public_records", "Example Metro County, FL")
         == CITATION_PUBLIC_RECORDS
     )
     assert CITATION_OPEN_MEETINGS not in (CITATION_PUBLIC_RECORDS)
