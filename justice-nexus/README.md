@@ -23,7 +23,7 @@ Stub tools never invent placeholder rows (no fake creditors, confidence scores, 
 Configure the key via:
 
 1. `MCP_API_KEY` or `JUSTICE_NEXUS_MCP_API_KEY` environment variable (local dev / tests), or
-2. GCP Secret Manager (`JUSTICE_NEXUS_SECRET_PATH`, default `pestpro/integrations/justice-nexus`) with JSON field `mcp_api_key` or `api_key`.
+2. GCP Secret Manager (`JUSTICE_NEXUS_SECRET_PATH`, default `justice-nexus-mcp-api-key`) with JSON `{"mcp_api_key": "..."}`.
 
 Never commit secrets or `.env` files.
 
@@ -58,7 +58,11 @@ docker build -f justice-nexus/Dockerfile -t us-central1-docker.pkg.dev/PROJECT_I
 docker push us-central1-docker.pkg.dev/PROJECT_ID/openclaw-mcp-repo/justice-nexus-mcp:TAG
 ```
 
-Deploy to a **dedicated dev** service (example name `justice-nexus-mcp-dev`), require auth at the edge, and mount the bearer token from Secret Manager:
+Deploy to the isolated dev service **`justice-nexus-mcp-dev`**, require authentication at the edge, and load the bearer key **only from Secret Manager at runtime** (no plain `MCP_API_KEY` env var in production):
+
+1. Create secret `justice-nexus-mcp-api-key` with payload `{"mcp_api_key": "<token>"}`.
+2. Grant the Cloud Run runtime service account **`roles/secretmanager.secretAccessor` on that secret only** (not project-wide).
+3. Deploy:
 
 ```bash
 gcloud run deploy justice-nexus-mcp-dev \
@@ -66,11 +70,10 @@ gcloud run deploy justice-nexus-mcp-dev \
   --region=us-central1 \
   --platform=managed \
   --no-allow-unauthenticated \
-  --update-secrets=JUSTICE_NEXUS_MCP_API_KEY=pestpro-integrations-justice-nexus:latest \
-  --set-env-vars=GOOGLE_CLOUD_PROJECT=PROJECT_ID,PORT=8002
+  --set-env-vars=GOOGLE_CLOUD_PROJECT=PROJECT_ID,JUSTICE_NEXUS_SECRET_PATH=justice-nexus-mcp-api-key,PORT=8002
 ```
 
-Adjust secret naming to match your Secret Manager resource. The process **exits on startup** if neither `MCP_API_KEY` / `JUSTICE_NEXUS_MCP_API_KEY` nor Secret Manager provides a key.
+`OAuthProvider` is wired with `secret_key='mcp_api_key'` and the same `JUSTICE_NEXUS_SECRET_PATH`. Use `MCP_API_KEY` / `JUSTICE_NEXUS_MCP_API_KEY` **only for local dev and CI**. The process **exits on startup** if production has no env override and Secret Manager cannot be read.
 
 ### Health check
 

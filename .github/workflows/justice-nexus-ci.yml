@@ -4,10 +4,14 @@ on:
   push:
     paths:
       - 'justice-nexus/**'
+      - 'mcp-catalog.json'
+      - 'oauth/**'
       - '.github/workflows/justice-nexus-ci.yml'
   pull_request:
     paths:
       - 'justice-nexus/**'
+      - 'mcp-catalog.json'
+      - 'oauth/**'
       - '.github/workflows/justice-nexus-ci.yml'
 
 jobs:

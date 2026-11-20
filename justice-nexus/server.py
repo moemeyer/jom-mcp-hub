@@ -18,8 +18,10 @@ from starlette.responses import Response
 from starlette.routing import Mount, Route
 
 _PKG_DIR = Path(__file__).resolve().parent
-if str(_PKG_DIR) not in sys.path:
-    sys.path.insert(0, str(_PKG_DIR))
+_REPO_ROOT = _PKG_DIR.parent
+for _path in (_PKG_DIR, _REPO_ROOT):
+    if str(_path) not in sys.path:
+        sys.path.insert(0, str(_path))
 
 try:
     from .auth import McpApiKeyVerifier, load_mcp_api_key
@@ -153,7 +155,7 @@ def build_app(*, api_key: str | None = None):
 
     secret_path = os.environ.get(
         "JUSTICE_NEXUS_SECRET_PATH",
-        "pestpro/integrations/justice-nexus",
+        "justice-nexus-mcp-api-key",
     )
     project = os.environ.get("GOOGLE_CLOUD_PROJECT", "ghlpest-controlv2")
     oauth = OAuthProvider(

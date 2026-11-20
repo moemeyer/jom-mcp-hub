@@ -6,16 +6,24 @@ import json
 import logging
 import os
 import secrets
+import sys
+from pathlib import Path
 from typing import Any
 
 from fastmcp.server.auth import AccessToken, TokenVerifier
 from google.api_core.exceptions import GoogleAPIError
 from google.cloud import secretmanager
 
+_REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from oauth.gcp_secret_resource import resolve_secret_version_resource_name
+
 _LOG = logging.getLogger(__name__)
 
 _API_KEY_ENV_VARS = ("MCP_API_KEY", "JUSTICE_NEXUS_MCP_API_KEY")
-_DEFAULT_SECRET_PATH = "pestpro/integrations/justice-nexus"
+_DEFAULT_SECRET_PATH = "justice-nexus-mcp-api-key"
 _JSON_KEY_CANDIDATES = ("mcp_api_key", "api_key", "token")
 
 
@@ -46,10 +54,7 @@ def load_mcp_api_key() -> str:
 
     project = os.environ.get("GOOGLE_CLOUD_PROJECT", "ghlpest-controlv2")
     secret_path = os.environ.get("JUSTICE_NEXUS_SECRET_PATH", _DEFAULT_SECRET_PATH).strip()
-    if "/" not in secret_path:
-        secret_name = f"projects/{project}/secrets/{secret_path}/versions/latest"
-    else:
-        secret_name = secret_path
+    secret_name = resolve_secret_version_resource_name(secret_path, project=project)
 
     try:
         client = secretmanager.SecretManagerServiceClient()

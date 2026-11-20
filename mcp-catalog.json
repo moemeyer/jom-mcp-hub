@@ -416,6 +416,43 @@
       },
       "tool_count": 0,
       "tools": []
+    },
+    {
+      "id": "justice-nexus-mcp",
+      "name": "Justice Nexus MCP",
+      "description": "Public records requests, open meetings, procurement search, and judgments/liens research (development stubs for search tools until live data sources are connected).",
+      "category": "legal-research",
+      "status": "development",
+      "transport": "streamable-http",
+      "endpoint": "",
+      "endpoint_note": "Not yet deployed to a public URL. Catalog registration only — request access at https://mcp.jom.services/request-access when the dev service is available.",
+      "auth": {
+        "type": "bearer",
+        "header": "Authorization",
+        "format": "Bearer <MCP_API_KEY>",
+        "oauth2_pkce": true,
+        "oauth2_note": "OAuth 2.0 PKCE supported when the service is deployed. Authorization server at <endpoint>/.well-known/oauth-authorization-server.",
+        "note": "API key provided upon access approval when the service is live."
+      },
+      "hosting": {
+        "provider": "Google Cloud Run",
+        "region": "us-central1",
+        "service_name": "justice-nexus-mcp-dev",
+        "image": "",
+        "platform": "linux/amd64"
+      },
+      "credentials": {
+        "source": "GCP Secret Manager",
+        "path": "justice-nexus-mcp-api-key",
+        "region": "us-central1"
+      },
+      "tool_count": 4,
+      "tools": [
+        { "name": "generate_public_records_request", "category": "public-records", "description": "Draft a structured public records request with jurisdiction-aware Florida citations." },
+        { "name": "search_open_meetings", "category": "open-meetings", "description": "Search government meeting notices and minutes (stub until data source is wired)." },
+        { "name": "search_procurement", "category": "procurement", "description": "Search government solicitations and awards (stub until data source is wired)." },
+        { "name": "search_judgments_and_liens", "category": "judgments-liens", "description": "Search recorded judgments and liens (stub until data source is wired)." }
+      ]
     }
   ],
   "connector": {

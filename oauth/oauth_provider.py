@@ -87,6 +87,8 @@ import boto3
 from botocore.exceptions import ClientError
 from google.cloud import secretmanager
 from google.api_core.exceptions import GoogleAPIError
+
+from oauth.gcp_secret_resource import resolve_secret_version_resource_name
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 from starlette.routing import Route
@@ -288,13 +290,14 @@ class OAuthProvider:
             return self._cached_key
             
         client = secretmanager.SecretManagerServiceClient()
-        secret_path = self.secret_name
-        if "/" not in secret_path:
-            secret_path = f"projects/{self.gcp_project}/secrets/{secret_path}/versions/latest"
-            
+        secret_resource = resolve_secret_version_resource_name(
+            self.secret_name,
+            project=self.gcp_project,
+        )
+
         resp = await asyncio.get_running_loop().run_in_executor(
             None,
-            lambda: client.access_secret_version(request={"name": secret_path}),
+            lambda: client.access_secret_version(request={"name": secret_resource}),
         )
         payload = json.loads(resp.payload.data.decode("UTF-8"))
         self._cached_key = payload[self.secret_key]

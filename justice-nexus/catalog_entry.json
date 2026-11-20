@@ -9,7 +9,7 @@
   "oauth2_pkce": true,
   "credentials": {
     "source": "GCP Secret Manager",
-    "path": "pestpro/integrations/justice-nexus",
+    "path": "justice-nexus-mcp-api-key",
     "env_override": ["MCP_API_KEY", "JUSTICE_NEXUS_MCP_API_KEY"]
   },
   "tools": [
